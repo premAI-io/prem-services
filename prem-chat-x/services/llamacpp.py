@@ -1,8 +1,6 @@
 from llama_cpp import Llama
-
-from app.core import config
-from app.core.utils import get_model_info
-from app.services.chat.interface import ChatModel
+from services.interface import ChatModel
+from utils import get_model_info
 
 
 class LLaMACPPBasedModel(ChatModel):
@@ -20,7 +18,7 @@ class LLaMACPPBasedModel(ChatModel):
         stop: str = "",
         **kwargs,
     ):
-        response = cls.model.create_chat_completion(
+        return cls.model.create_chat_completion(
             messages,
             temperature=temperature,
             top_p=top_p,
@@ -28,12 +26,13 @@ class LLaMACPPBasedModel(ChatModel):
             stop=[stop],
             max_tokens=max_tokens,
         )
-        return response
 
     @classmethod
     def get_model(cls):
         if cls.model is None:
-            model_parameters = get_model_info(config.MODEL_ID)
+            model_parameters = get_model_info(
+                f"./ml/models/{get_model_info()['modelWeightsName']}"
+            )
             cls.model = Llama(
                 model_path=model_parameters.get("modelWeightsPath"), embedding=True
             )
@@ -42,5 +41,4 @@ class LLaMACPPBasedModel(ChatModel):
 
     @classmethod
     def embeddings(cls, text):
-        response = cls.model.create_embedding(text)
-        return response
+        return cls.model.create_embedding(text)

@@ -1,9 +1,16 @@
 from fastapi import APIRouter
+from models import (
+    ChatCompletionInput,
+    EmbeddingsInput,
+    HealthResponse,
+    format_chat_response,
+)
+from utils import MODEL_ID, get_model
 
 router = APIRouter()
 
 
-@router.get("/", response_model=HealthResponse, name="health:get-data")
+@router.get("/", response_model=HealthResponse)
 async def health():
     return HealthResponse(status=True)
 
@@ -23,7 +30,7 @@ async def chat_completions(body: ChatCompletionInput):
         logit_bias=body.logit_bias,
     )
 
-    return format_chat_response(model_name=config.MODEL_ID, predictions=predictions)
+    return format_chat_response(model_name=MODEL_ID, predictions=predictions)
 
 
 @router.post("/embeddings")

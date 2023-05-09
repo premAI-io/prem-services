@@ -1,8 +1,5 @@
 import uuid
 from datetime import datetime as dt
-from pydantic import BaseModel
-import uuid
-from datetime import datetime as dt
 
 from pydantic import BaseModel
 
