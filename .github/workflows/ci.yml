@@ -40,7 +40,7 @@ jobs:
 
       - name: Run the tests
         run: |
-         docker run -it --rm --name prem-chat-vicuna-7b-q4-m1 --env-file ./prem-chat-x/.env prem-chat-llama-cpp-test pytest
+         docker run -it --rm --name prem-chat-vicuna-7b-q4-m1 prem-chat-llama-cpp-test pytest
 
       - name: Tear down the Stack
         run: docker stop
@@ -51,6 +51,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2
 
