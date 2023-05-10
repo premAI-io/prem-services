@@ -24,6 +24,7 @@ MODELS_INFO = [
         "modelWeightsSize": 4212859520,
         "modelTypes": ["chat", "embeddings"],
         "modelDevice": "m1",
+        "modelMemoryRequirements": "8gb",
     },
     {
         "id": "gpt4all-lora-q4",
@@ -35,6 +36,7 @@ MODELS_INFO = [
         "modelWeightsSize": 4212864640,
         "modelTypes": ["chat", "embeddings"],
         "modelDevice": "m1",
+        "modelMemoryRequirements": "8gb",
     },
 ]
 
