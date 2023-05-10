@@ -43,7 +43,7 @@ jobs:
          docker run --rm --name prem-chat-vicuna-7b-q4-m1 prem-chat-llama-cpp-test pytest
 
       - name: Tear down the Stack
-        run: docker stop
+        run: docker stop prem-chat-vicuna-7b-q4-m1
 
   push:
     runs-on: ubuntu-latest
