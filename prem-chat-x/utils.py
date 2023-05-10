@@ -10,13 +10,12 @@ def get_models_info() -> dict:
     return {
         "data": [
             {
-                "id": "ggml-vicuna-7b-1.1-q4_2",
+                "id": "vicuna-7b-q4",
                 "name": "Vicuna 7B 1.1 Q4",
                 "maxLength": 12000,
                 "tokenLimit": 4000,
                 "description": "Vicuna 7B 1.1 Q4",
                 "modelWeightsName": "ggml-vicuna-7b-1.1-q4_2.bin",
-                "modelWeightsUrl": "https://prem-models.s3.eu-central-1.amazonaws.com/ggml-vicuna-7b-1.1-q4_2.bin",
                 "modelWeightsSize": 4212859520,
                 "modelTypes": ["chat", "embeddings"],
                 "modelDevice": "m1",
@@ -28,7 +27,6 @@ def get_models_info() -> dict:
                 "tokenLimit": 4000,
                 "description": "GPT4ALL-Lora Quantized GGML",
                 "modelWeightsName": "gpt4all-lora-quantized-ggml.bin",
-                "modelWeightsUrl": "https://prem-models.s3.eu-central-1.amazonaws.com/gpt4all-lora-quantized-ggml.bin",
                 "modelWeightsSize": 4212864640,
                 "modelTypes": ["chat", "embeddings"],
                 "modelDevice": "m1",

@@ -9,6 +9,5 @@
 .travis.yml
 venv
 .git
-*/models/
-*/notebooks/
-*.bin
+./ml/models/
+.bin

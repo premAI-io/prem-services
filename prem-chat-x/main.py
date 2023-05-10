@@ -1,12 +1,10 @@
-import uvicorn
 import logging
 
+import uvicorn
+from events import create_start_app_handler
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from routes import router as api_router
-from events import create_start_app_handler
-
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
