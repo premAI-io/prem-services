@@ -2,6 +2,7 @@ name: CI
 
 env:
   DOCKER_BUILDKIT: 1
+  DOCKER_CLI_EXPERIMENTAL: "enabled"
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 on:
@@ -33,14 +34,16 @@ jobs:
       - name: Checkout Code Repository
         uses: actions/checkout@v3
 
-      - name: Build the Stack
-        run: docker-compose build
+      - name: Build the images
+        run: |
+         docker buildx build --file ./prem-chat-x/docker/llamacpp/m1/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag prem-chat-llama-cpp-test ./prem-chat-x
 
-      - name: Run APIs Tests
-        run: docker-compose run prem_controller pytest ./tests/test_controller.py
+      - name: Run the tests
+        run: |
+         docker run -it --rm --name prem-chat-vicuna-7b-q4-m1 --env-file ./prem-chat-x/.env prem-chat-llama-cpp-test pytest
 
       - name: Tear down the Stack
-        run: docker-compose down
+        run: docker stop
 
   push:
     runs-on: ubuntu-latest
@@ -48,10 +51,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    if: github.event_name == 'push'
-    env:
-      DOCKER_CLI_EXPERIMENTAL: "enabled"
-
     steps:
       - uses: actions/checkout@v2
 
@@ -75,13 +74,13 @@ jobs:
         run: |
           docker buildx build \
             --push \
-            --file ./prem-chat-x/docker/llamacpp/cpu/Dockerfile \
+            --file ./prem-chat-x/docker/llamacpp/m1/Dockerfile \
             --build-arg="MODEL_ID=vicuna-7b-q4" \
-            --tag ghcr.io/premai-io/prem-chat-vicuna-7b-q4-cpu:latest \
+            --tag ghcr.io/premai-io/prem-chat-vicuna-7b-q4-m1:latest \
             --platform linux/arm64,linux/amd64 ./prem-chat-x
           docker buildx build \
             --push \
-            --file ./prem-chat-x/docker/llamacpp/cpu/Dockerfile \
+            --file ./prem-chat-x/docker/llamacpp/m1/Dockerfile \
             --build-arg="MODEL_ID=gpt4all-lora-q4" \
-            --tag ghcr.io/premai-io/prem-chat-gpt4all-lora-q4-cpu:latest \
+            --tag ghcr.io/premai-io/prem-chat-gpt4all-lora-q4-m1:latest \
             --platform linux/arm64,linux/amd64 ./prem-chat-x
