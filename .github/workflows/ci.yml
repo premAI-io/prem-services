@@ -76,6 +76,9 @@ jobs:
             --build-arg="MODEL_ID=vicuna-7b-q4" \
             --tag ghcr.io/premai-io/prem-chat-vicuna-7b-q4-m1:latest \
             --platform linux/arm64,linux/amd64 ./prem-chat-x
+
+          docker system prune -f -a
+
           docker buildx build \
             --push \
             --file ./prem-chat-x/docker/llamacpp/m1/Dockerfile \
