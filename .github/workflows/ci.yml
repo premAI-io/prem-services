@@ -43,7 +43,7 @@ jobs:
          docker run --rm --name prem-chat-vicuna-7b-q4-m1 prem-chat-llama-cpp-test pytest
 
   push:
-    runs-on: macOS
+    runs-on: self-hosted
     needs: [pytest]
     permissions:
       contents: read
