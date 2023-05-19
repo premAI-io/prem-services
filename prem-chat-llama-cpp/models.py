@@ -1,5 +1,17 @@
+import os
+
 from llama_cpp import Llama
-from utils import get_model_info
+
+MODEL_ZOO = {
+    "gpt4all-lora-q4": {"modelWeightsName": "gpt4all-lora-q4.bin"},
+    "vicuna-7b-q4": {
+        "modelWeightsName": "vicuna-7b-q4.bin",
+    },
+}
+
+
+def get_model_info() -> dict:
+    return MODEL_ZOO[os.getenv("MODEL_ID", None)]
 
 
 class ChatModel:

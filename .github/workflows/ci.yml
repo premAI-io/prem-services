@@ -14,7 +14,7 @@ on:
 
 jobs:
   linter:
-    runs-on: self-hosted
+    runs-on: gpu
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v3
@@ -28,7 +28,7 @@ jobs:
         uses: pre-commit/action@v3.0.0
 
   pytest:
-    runs-on: self-hosted
+    runs-on: gpu
     needs: [linter]
     steps:
       - name: Checkout Code Repository
@@ -50,7 +50,7 @@ jobs:
         run: docker run -it --rm --gpus all --name prem-chat-dolly-v2-12b --env-file ./prem-chat-dolly-v2/.env prem-chat-dolly-v2 pytest
 
   push:
-    runs-on: self-hosted
+    runs-on: gpu
     needs: [pytest]
     permissions:
       contents: read
