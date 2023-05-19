@@ -36,7 +36,7 @@ jobs:
 
       - name: Build the images
         run: |
-         docker buildx build --file ./prem-chat-x/docker/llamacpp/m1/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag prem-chat-llama-cpp-test ./prem-chat-x
+         docker buildx build --file ./prem-chat-llama-cpp/docker/m1/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag prem-chat-llama-cpp-test ./prem-chat-llama-cpp
 
       - name: Run the tests
         run: |
@@ -72,16 +72,16 @@ jobs:
         run: |
           docker buildx build \
             --push \
-            --file ./prem-chat-x/docker/llamacpp/m1/Dockerfile \
+            --file ./prem-chat-llama-cpp/docker/m1/Dockerfile \
             --build-arg="MODEL_ID=vicuna-7b-q4" \
             --tag ghcr.io/premai-io/prem-chat-vicuna-7b-q4-m1:latest \
-            --platform linux/arm64,linux/amd64 ./prem-chat-x
+            --platform linux/arm64,linux/amd64 ./prem-chat-llama-cpp
 
           docker system prune -f -a
 
           docker buildx build \
             --push \
-            --file ./prem-chat-x/docker/llamacpp/m1/Dockerfile \
+            --file ./prem-chat-llama-cpp/docker/m1/Dockerfile \
             --build-arg="MODEL_ID=gpt4all-lora-q4" \
             --tag ghcr.io/premai-io/prem-chat-gpt4all-lora-q4-m1:latest \
-            --platform linux/arm64,linux/amd64 ./prem-chat-x
+            --platform linux/arm64,linux/amd64 ./prem-chat-llama-cpp
