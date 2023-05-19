@@ -14,7 +14,7 @@ on:
 
 jobs:
   linter:
-    runs-on: ubuntu-latest
+    runs-on: gpu
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v3
@@ -28,7 +28,7 @@ jobs:
         uses: pre-commit/action@v3.0.0
 
   pytest:
-    runs-on: ubuntu-latest
+    runs-on: gpu
     needs: [linter]
     steps:
       - name: Checkout Code Repository
@@ -43,7 +43,7 @@ jobs:
          docker run --rm --name prem-chat-vicuna-7b-q4-m1 prem-chat-llama-cpp-test pytest
 
   push:
-    runs-on: self-hosted
+    runs-on: gpu
     needs: [pytest]
     permissions:
       contents: read
