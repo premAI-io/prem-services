@@ -9,11 +9,11 @@ WORKDIR /usr/src/app/
 
 RUN wget https://prem-models.s3.eu-central-1.amazonaws.com/${MODEL_ID}.bin
 RUN mkdir -p ./ml/models/
-RUN cp ${MODEL_ID}.bin ./ml/models/
+RUN mv ${MODEL_ID}.bin ./ml/models/
 
-COPY /requirements/ ./requirements/
+COPY requirements.txt ./
 
-RUN pip install --no-cache-dir -r ./requirements/llamacpp.txt --upgrade pip
+RUN pip install --no-cache-dir -r ./requirements.txt --upgrade pip
 
 COPY . .
 
