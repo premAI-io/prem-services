@@ -14,7 +14,7 @@ on:
 
 jobs:
   linter:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v3
@@ -28,19 +28,26 @@ jobs:
         uses: pre-commit/action@v3.0.0
 
   pytest:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: [linter]
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v3
 
       - name: Build the images
-        run: |
-         docker buildx build --file ./prem-chat-llama-cpp/docker/m1/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag prem-chat-llama-cpp-test ./prem-chat-llama-cpp
+        run: docker buildx build --file ./prem-chat-llama-cpp/docker/m1/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag prem-chat-llama-cpp ./prem-chat-llama-cpp
 
       - name: Run the tests
-        run: |
-         docker run --rm --name prem-chat-vicuna-7b-q4-m1 prem-chat-llama-cpp-test pytest
+        run: docker run --rm --name prem-chat-vicuna-7b-q4-m1 prem-chat-llama-cpp pytest
+
+      - name: Prune
+        run: docker system prune -a -f
+
+      - name: Build the images
+        run: docker buildx build --file ./prem-chat-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=dolly-v2-12b" --tag prem-chat-dolly-v2 ./prem-chat-dolly-v2
+
+      - name: Run the tests
+        run: docker run -it --rm --gpus all --name prem-chat-dolly-v2-12b --env-file ./prem-chat-dolly-v2/.env prem-chat-dolly-v2 pytest
 
   push:
     runs-on: self-hosted
@@ -85,3 +92,12 @@ jobs:
             --build-arg="MODEL_ID=gpt4all-lora-q4" \
             --tag ghcr.io/premai-io/prem-chat-gpt4all-lora-q4-m1:latest \
             --platform linux/arm64,linux/amd64 ./prem-chat-llama-cpp
+
+          docker system prune -f -a
+
+          docker buildx build \
+            --push \
+            --file ./prem-chat-dolly-v2/docker/gpu/Dockerfile \
+            --build-arg="MODEL_ID=dolly-v2-12b" \
+            --tag ghcr.io/premai-io/prem-chat-dolly-v2-12b-gpu:latest \
+            --platform linux/arm64,linux/amd64 ./dolly-v2-12b

@@ -1,5 +1,5 @@
-from llama_cpp import Llama
-from utils import get_model_info
+import torch
+from transformers import pipeline
 
 
 class ChatModel:
@@ -26,7 +26,7 @@ class ChatModel:
         pass
 
 
-class LLaMACPPBasedModel(ChatModel):
+class DollyBasedModel(ChatModel):
     model = None
 
     @classmethod
@@ -41,25 +41,17 @@ class LLaMACPPBasedModel(ChatModel):
         stop: str = "",
         **kwargs,
     ):
-        return cls.model.create_chat_completion(
-            messages,
-            temperature=temperature,
-            top_p=top_p,
-            stream=stream,
-            stop=[stop],
-            max_tokens=max_tokens,
-        )
+        message = messages[-1]["content"]
+        print(message)
+        return [cls.model(message)[0]["generated_text"]]
 
     @classmethod
     def get_model(cls):
         if cls.model is None:
-            cls.model = Llama(
-                model_path=f"./ml/models/{get_model_info()['modelWeightsName']}",
-                embedding=True,
+            cls.model = pipeline(
+                model="databricks/dolly-v2-12b",
+                torch_dtype=torch.bfloat16,
+                trust_remote_code=True,
+                device_map="auto",
             )
-
         return cls.model
-
-    @classmethod
-    def embeddings(cls, text):
-        return cls.model.create_embedding(text)
