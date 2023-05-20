@@ -47,7 +47,7 @@ jobs:
         run: docker buildx build --file ./prem-chat-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=dolly-v2-12b" --tag prem-chat-dolly-v2 ./prem-chat-dolly-v2
 
       - name: Run the tests
-        run: docker run -it --rm --gpus all --name prem-chat-dolly-v2-12b prem-chat-dolly-v2 pytest
+        run: docker run --rm --gpus all --name prem-chat-dolly-v2-12b prem-chat-dolly-v2 pytest
 
   push:
     runs-on: gpu
