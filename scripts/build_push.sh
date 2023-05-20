@@ -13,3 +13,7 @@ docker system prune -f -a
 
 docker buildx build --push --file ./prem-michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/prem-michelangelo-stable-diffusion-2-1-base-gpu:latest --platform linux/arm64,linux/amd64 ./prem-michelangelo-sd
 docker buildx build --push --file ./prem-michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/prem-michelangelo-stable-diffusion-2-base-gpu:latest --platform linux/arm64,linux/amd64 ./prem-michelangelo-sd
+
+docker system prune -f -a
+
+docker buildx build --push --file ./prem-audio-to-text-wh/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/prem-audio-to-text-whisper-large-v2-gpu:latest --platform linux/arm64,linux/amd64 ./prem-audio-to-text-wh
