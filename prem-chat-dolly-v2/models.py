@@ -1,3 +1,5 @@
+import os
+
 import torch
 from transformers import pipeline
 
@@ -48,9 +50,9 @@ class DollyBasedModel(ChatModel):
     def get_model(cls):
         if cls.model is None:
             cls.model = pipeline(
-                model="databricks/dolly-v2-12b",
+                model=os.getenv("MODEL_ID", None),
                 torch_dtype=torch.bfloat16,
                 trust_remote_code=True,
-                device_map="auto",
+                device_map=os.getenv("DEVICE", None),
             )
         return cls.model

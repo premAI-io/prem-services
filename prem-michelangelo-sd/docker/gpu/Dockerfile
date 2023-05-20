@@ -1,15 +1,13 @@
-FROM huggingface/transformers-pytorch-gpu:4.28.1
+FROM huggingface/transformers-pytorch-gpu:latest
 
 ARG MODEL_ID
 ARG DEVICE
 
-RUN pip install "accelerate>=0.16.0,<1"
-
 WORKDIR /usr/src/app/
 
-COPY requirements.txt ./
+COPY requirements.txt /usr/src/app/
 
-RUN pip install --no-cache-dir -r ./requirements.txt --upgrade pip
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY download.py .
 

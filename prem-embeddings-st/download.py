@@ -1,4 +1,11 @@
+import argparse
+
 from sentence_transformers import SentenceTransformer
 
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
-model.encode(["Hello World!"])
+parser = argparse.ArgumentParser()
+parser.add_argument("--model", help="Model to download")
+args = parser.parse_args()
+
+print(f"Downloading model {args.model}")
+
+model = SentenceTransformer(args.model)

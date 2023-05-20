@@ -4,7 +4,7 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models import SentenceTransformerBasedModel
+from models import DiffuserBasedModel
 from routes import router as api_router
 
 load_dotenv()
@@ -18,7 +18,7 @@ logging.basicConfig(
 
 def create_start_app_handler(app: FastAPI):
     def start_app() -> None:
-        SentenceTransformerBasedModel.get_model()
+        DiffuserBasedModel.get_model()
 
     return start_app
 

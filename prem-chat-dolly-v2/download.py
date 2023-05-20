@@ -1,6 +1,12 @@
-from transformers import AutoModel, AutoTokenizer
+import argparse
 
-model_name = "databricks/dolly-v2-12b"
+import torch
+from transformers import pipeline
 
-model = AutoModel.from_pretrained(model_name)
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+parser = argparse.ArgumentParser()
+parser.add_argument("--model", help="Model to download")
+args = parser.parse_args()
+
+print(f"Downloading model {args.model}")
+
+model = pipeline(model=args.model, torch_dtype=torch.bfloat16, trust_remote_code=True)

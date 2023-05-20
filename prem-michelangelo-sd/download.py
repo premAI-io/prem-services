@@ -1,7 +1,11 @@
+import argparse
+
 from diffusers import DiffusionPipeline
 
-pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-2-1-base")
-pipe = pipe.to("mps")
-pipe.enable_attention_slicing()
+parser = argparse.ArgumentParser()
+parser.add_argument("--model", help="Model to download")
+args = parser.parse_args()
 
-_ = pipe("Hello World.", num_inference_steps=1)
+print(f"Downloading model {args.model}")
+
+pipe = DiffusionPipeline.from_pretrained(args.model)

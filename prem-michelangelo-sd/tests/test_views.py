@@ -6,10 +6,9 @@ def test_generate_image() -> None:
     app = get_application()
     with TestClient(app) as client:
         response = client.post(
-            "/api/v1/embeddings",
+            "/api/v1/images/generations",
             json={
-                "model": "all-MiniLM-L6-v2",
-                "input": "Hello!",
+                "prompt": "Hello World",
             },
         )
         assert response.status_code == 200
