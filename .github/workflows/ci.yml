@@ -49,6 +49,15 @@ jobs:
       - name: Run the tests
         run: docker run --rm --gpus all --name prem-chat-dolly-v2-12b prem-chat-dolly-v2 pytest
 
+      - name: Prune
+        run: docker system prune -a -f
+
+      - name: Build the images
+        run: docker buildx build --file ./prem-embeddings-st/docker/gpu/Dockerfile --build-arg="MODEL_ID=all-MiniLM-L6-v2" --tag prem-embeddings-st ./prem-embeddings-st
+
+      - name: Run the tests
+        run: docker run --rm --gpus all --name prem-embeddings-st prem-embeddings-st pytest
+
   push:
     runs-on: gpu
     needs: [pytest]
@@ -101,3 +110,12 @@ jobs:
             --build-arg="MODEL_ID=dolly-v2-12b" \
             --tag ghcr.io/premai-io/prem-chat-dolly-v2-12b-gpu:latest \
             --platform linux/arm64,linux/amd64 ./dolly-v2-12b
+
+          docker system prune -f -a
+
+          docker buildx build \
+            --push \
+            --file ./prem-embeddings-st/docker/gpu/Dockerfile \
+            --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
+            --tag ghcr.io/premai-io/prem-embeddings-all-MiniLM-L6-v2-gpu:latest \
+            --platform linux/arm64,linux/amd64 ./prem-embeddings-st

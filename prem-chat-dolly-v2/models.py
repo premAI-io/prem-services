@@ -42,7 +42,6 @@ class DollyBasedModel(ChatModel):
         **kwargs,
     ):
         message = messages[-1]["content"]
-        print(message)
         return [cls.model(message)[0]["generated_text"]]
 
     @classmethod
