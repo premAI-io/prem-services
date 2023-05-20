@@ -30,7 +30,7 @@ async def audio_transcriptions(
     temperature: float = 0,
     language: str = "",
 ):
-    file_location = f"audio_files/{file.filename}"
+    file_location = f"files/{file.filename}"
     os.makedirs(os.path.dirname(file_location), exist_ok=True)
     with open(file_location, "wb+") as f:
         f.write(await file.read())

@@ -17,3 +17,7 @@ docker buildx build --push --file ./prem-michelangelo-sd/docker/gpu/Dockerfile -
 docker system prune -f -a
 
 docker buildx build --push --file ./prem-audio-to-text-wh/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/prem-audio-to-text-whisper-large-v2-gpu:latest --platform linux/arm64,linux/amd64 ./prem-audio-to-text-wh
+
+docker system prune -f -a
+
+docker buildx build --push --file ./prem-text-to-audio-ba/docker/gpu/Dockerfile --tag ghcr.io/premai-io/prem-text-to-audio-bark-gpu:latest --platform linux/arm64,linux/amd64 ./prem-text-to-audio-ba

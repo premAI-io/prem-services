@@ -1,8 +1,10 @@
+echo "Building and testing bark models"
+docker buildx build --file ./prem-text-to-audio-ba/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --build-arg="DEVICE=cuda" --tag prem-text-to-audio-ba ./prem-text-to-audio-ba
+docker run --rm --gpus all --name prem-text-to-audio-ba prem-text-to-audio-ba pytest
+
 echo "Building and testing whisper models"
 docker buildx build --file ./prem-audio-to-text-wh/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --build-arg="DEVICE=cuda" --tag prem-audio-to-text-wh ./prem-audio-to-text-wh
 docker run --rm --gpus all --name prem-audio-to-text-wh prem-audio-to-text-wh pytest
-
-exit
 
 echo "Building and testing stable diffusion based models"
 sudo docker buildx build --file ./prem-michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --build-arg="DEVICE=cuda" --tag prem-michelangelo-sd ./prem-michelangelo-sd
