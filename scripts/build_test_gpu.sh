@@ -1,23 +1,23 @@
 echo "Building and testing replit based models"
-docker buildx build --file ./prem-copilot-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --build-arg="DEVICE=gpu" --tag prem-copilot-replit2 ./prem-copilot-replit
-docker run --rm --gpus all --name prem-copilot-replit prem-copilot-replit pytest
+docker buildx build --file ./copilot-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --build-arg="DEVICE=gpu" --tag copilot-replit2 ./copilot-replit
+docker run --rm --gpus all --name copilot-replit copilot-replit pytest
 
 echo "Building and testing bark models"
-docker buildx build --file ./prem-text-to-audio-ba/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --build-arg="DEVICE=cuda" --tag prem-text-to-audio-ba ./prem-text-to-audio-ba
-docker run --rm --gpus all --name prem-text-to-audio-ba prem-text-to-audio-ba pytest
+docker buildx build --file ./text-to-audio-ba/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --build-arg="DEVICE=cuda" --tag text-to-audio-ba ./text-to-audio-ba
+docker run --rm --gpus all --name text-to-audio-ba text-to-audio-ba pytest
 
 echo "Building and testing whisper models"
-docker buildx build --file ./prem-audio-to-text-wh/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --build-arg="DEVICE=cuda" --tag prem-audio-to-text-wh ./prem-audio-to-text-wh
-docker run --rm --gpus all --name prem-audio-to-text-wh prem-audio-to-text-wh pytest
+docker buildx build --file ./audio-to-text-wh/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --build-arg="DEVICE=cuda" --tag audio-to-text-wh ./audio-to-text-wh
+docker run --rm --gpus all --name audio-to-text-wh audio-to-text-wh pytest
 
 echo "Building and testing stable diffusion based models"
-sudo docker buildx build --file ./prem-michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --build-arg="DEVICE=cuda" --tag prem-michelangelo-sd ./prem-michelangelo-sd
-sudo docker run --rm --gpus all --name prem-michelangelo-sd prem-michelangelo-sd pytest
+sudo docker buildx build --file ./michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --build-arg="DEVICE=cuda" --tag michelangelo-sd ./michelangelo-sd
+sudo docker run --rm --gpus all --name michelangelo-sd michelangelo-sd pytest
 
 echo "Building and testing sentence transformers based models"
-sudo docker buildx build --file ./prem-embeddings-st/docker/gpu/Dockerfile --build-arg="MODEL_ID=sentence-transformers/all-MiniLM-L6-v2" --build-arg="DEVICE=cuda" --tag prem-embeddings-st ./prem-embeddings-st
-sudo docker run --rm --gpus all --name prem-embeddings-st prem-embeddings-st pytest
+sudo docker buildx build --file ./embeddings-st/docker/gpu/Dockerfile --build-arg="MODEL_ID=sentence-transformers/all-MiniLM-L6-v2" --build-arg="DEVICE=cuda" --tag embeddings-st ./embeddings-st
+sudo docker run --rm --gpus all --name embeddings-st embeddings-st pytest
 
 echo "Building and testing dolly based models"
-docker buildx build --file ./prem-chat-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --build-arg="DEVICE=auto" --tag prem-chat-dolly-v2 ./prem-chat-dolly-v2
-docker run --rm --gpus all --name prem-chat-dolly-v2 prem-chat-dolly-v2 pytest
+docker buildx build --file ./chat-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --build-arg="DEVICE=auto" --tag chat-dolly-v2 ./chat-dolly-v2
+docker run --rm --gpus all --name chat-dolly-v2 chat-dolly-v2 pytest
