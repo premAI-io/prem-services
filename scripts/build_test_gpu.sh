@@ -1,3 +1,7 @@
+echo "Building and testing replit based models"
+docker buildx build --file ./prem-copilot-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --build-arg="DEVICE=gpu" --tag prem-copilot-replit2 ./prem-copilot-replit
+docker run --rm --gpus all --name prem-copilot-replit prem-copilot-replit pytest
+
 echo "Building and testing bark models"
 docker buildx build --file ./prem-text-to-audio-ba/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --build-arg="DEVICE=cuda" --tag prem-text-to-audio-ba ./prem-text-to-audio-ba
 docker run --rm --gpus all --name prem-text-to-audio-ba prem-text-to-audio-ba pytest
