@@ -63,42 +63,6 @@ jobs:
           docker buildx build --file ./michelangelo-sd/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-cpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd
           docker buildx build --file ./michelangelo-sd/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-cpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd
 
-  build-gpu:
-    runs-on: gpu
-    needs: [linter]
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          install: true
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Push the Images
-        run: |
-          docker buildx build --push --file ./chat-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest --platform linux/arm64,linux/amd64 ./chat-dolly-v2
-          docker buildx build --push --file ./embeddings-st/docker/gpu/Dockerfile --build-arg="MODEL_ID=sentence-transformers/all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-MiniLM-L6-v2-gpu:latest --platform linux/arm64,linux/amd64 ./embeddings-st
-          docker buildx build --push --file ./audio-to-text-wh/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest --platform linux/arm64,linux/amd64 ./audio-to-text-wh
-          docker buildx build --push --file ./text-to-audio-ba/docker/gpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest --platform linux/arm64,linux/amd64 ./text-to-audio-ba
-          docker buildx build --push --file ./copilot-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest --platform linux/arm64,linux/amd64 ./copilot-replit
-          docker buildx build --push --file ./michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd
-          docker buildx build --push --file ./michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd
-
-
   test-cpu:
     runs-on: gpu
     needs: [build-cpu]
@@ -115,25 +79,6 @@ jobs:
           docker run --rm ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest pytest
           docker run --rm ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-cpu:latest pytest
           docker run --rm ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-cpu:latest pytest
-
-  test-gpu:
-    runs-on: gpu
-    needs: [build-gpu]
-    steps:
-      - name: Checkout Code Repository
-        uses: actions/checkout@v3
-
-      - name: Build and Test the Images for GPU devices
-        run: bash ./scripts/build_test_gpu.sh
-
-      - name: Build and Test the Images for Mac M1 devices
-        run: |
-          docker run --rm --gpus all ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest pytest
-          docker run --rm --gpus all ghcr.io/premai-io/embeddings-all-MiniLM-L6-v2-gpu:latest pytest
-          docker run --rm --gpus all ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest pytest
-          docker run --rm --gpus all ghcr.io/premai-io/text-to-audio-bark-gpu:latest pytest
-          docker run --rm --gpus all ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest pytest
-          docker run --rm --gpus all ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest pytest
 
   push-cpu:
     runs-on: gpu
@@ -171,6 +116,57 @@ jobs:
           docker push ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest
           docker push ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-cpu:latest
           docker push ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-cpu:latest
+
+  build-gpu:
+    runs-on: gpu
+    needs: [linter]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          install: true
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push the Images
+        run: |
+          docker buildx build --push --file ./chat-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest --platform linux/arm64,linux/amd64 ./chat-dolly-v2
+          docker buildx build --push --file ./embeddings-st/docker/gpu/Dockerfile --build-arg="MODEL_ID=sentence-transformers/all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-MiniLM-L6-v2-gpu:latest --platform linux/arm64,linux/amd64 ./embeddings-st
+          docker buildx build --push --file ./audio-to-text-wh/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest --platform linux/arm64,linux/amd64 ./audio-to-text-wh
+          docker buildx build --push --file ./text-to-audio-ba/docker/gpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest --platform linux/arm64,linux/amd64 ./text-to-audio-ba
+          docker buildx build --push --file ./copilot-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest --platform linux/arm64,linux/amd64 ./copilot-replit
+          docker buildx build --push --file ./michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd
+          docker buildx build --push --file ./michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd
+
+  test-gpu:
+    runs-on: gpu
+    needs: [build-gpu]
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v3
+
+      - name: Build and Test the Images for Mac M1 devices
+        run: |
+          docker run --rm --gpus all ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest pytest
+          docker run --rm --gpus all ghcr.io/premai-io/embeddings-all-MiniLM-L6-v2-gpu:latest pytest
+          docker run --rm --gpus all ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest pytest
+          docker run --rm --gpus all ghcr.io/premai-io/text-to-audio-bark-gpu:latest pytest
+          docker run --rm --gpus all ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest pytest
+          docker run --rm --gpus all ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest pytest
 
   push-gpu:
     runs-on: gpu
