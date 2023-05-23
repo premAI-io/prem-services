@@ -54,14 +54,14 @@ jobs:
 
       - name: Build the images
         run: |
-          docker buildx build --file ./chat-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest --platform linux/arm64,linux/amd64 ./chat-llama-cpp > /dev/null
-          docker buildx build --file ./chat-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=gpt4all-lora-q4" --tag ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest --platform linux/arm64,linux/amd64 ./chat-llama-cpp > /dev/null
-          docker buildx build --file ./embeddings-st/docker/cpu/Dockerfile --build-arg="MODEL_ID=sentence-transformers/all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-MiniLM-L6-v2-cpu:latest --platform linux/arm64,linux/amd64 ./embeddings-st > /dev/null
-          docker buildx build --file ./audio-to-text-wh/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest --platform linux/arm64,linux/amd64 ./audio-to-text-wh > /dev/null
-          docker buildx build --file ./text-to-audio-ba/docker/cpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-cpu:latest --platform linux/arm64,linux/amd64 ./text-to-audio-ba > /dev/null
-          docker buildx build --file ./copilot-t5/docker/cpu/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest --platform linux/arm64,linux/amd64 ./copilot-t5 > /dev/null
-          docker buildx build --file ./michelangelo-sd/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-cpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd > /dev/null
-          docker buildx build --file ./michelangelo-sd/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-cpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd > /dev/null
+          docker buildx build --file ./chat-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest --platform linux/arm64,linux/amd64 ./chat-llama-cpp --quiet
+          docker buildx build --file ./chat-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=gpt4all-lora-q4" --tag ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest --platform linux/arm64,linux/amd64 ./chat-llama-cpp --quiet
+          docker buildx build --file ./embeddings-st/docker/cpu/Dockerfile --build-arg="MODEL_ID=sentence-transformers/all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-MiniLM-L6-v2-cpu:latest --platform linux/arm64,linux/amd64 ./embeddings-st --quiet
+          docker buildx build --file ./audio-to-text-wh/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest --platform linux/arm64,linux/amd64 ./audio-to-text-wh --quiet
+          docker buildx build --file ./text-to-audio-ba/docker/cpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-cpu:latest --platform linux/arm64,linux/amd64 ./text-to-audio-ba --quiet
+          docker buildx build --file ./copilot-t5/docker/cpu/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest --platform linux/arm64,linux/amd64 ./copilot-t5 --quiet
+          docker buildx build --file ./michelangelo-sd/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-cpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd --quiet
+          docker buildx build --file ./michelangelo-sd/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-cpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd --quiet
 
   test-cpu:
     runs-on: gpu
@@ -144,13 +144,13 @@ jobs:
 
       - name: Build and Push the Images
         run: |
-          docker buildx build --file ./chat-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest --platform linux/arm64,linux/amd64 ./chat-dolly-v2 > /dev/null
-          docker buildx build --file ./embeddings-st/docker/gpu/Dockerfile --build-arg="MODEL_ID=sentence-transformers/all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-MiniLM-L6-v2-gpu:latest --platform linux/arm64,linux/amd64 ./embeddings-st > /dev/null
-          docker buildx build --file ./audio-to-text-wh/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest --platform linux/arm64,linux/amd64 ./audio-to-text-wh > /dev/null
-          docker buildx build --file ./text-to-audio-ba/docker/gpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest --platform linux/arm64,linux/amd64 ./text-to-audio-ba > /dev/null
-          docker buildx build --file ./copilot-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest --platform linux/arm64,linux/amd64 ./copilot-replit > /dev/null
-          docker buildx build --file ./michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd > /dev/null
-          docker buildx build --file ./michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd > /dev/null
+          docker buildx build --file ./chat-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest --platform linux/arm64,linux/amd64 ./chat-dolly-v2 --quiet
+          docker buildx build --file ./embeddings-st/docker/gpu/Dockerfile --build-arg="MODEL_ID=sentence-transformers/all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-MiniLM-L6-v2-gpu:latest --platform linux/arm64,linux/amd64 ./embeddings-st --quiet
+          docker buildx build --file ./audio-to-text-wh/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest --platform linux/arm64,linux/amd64 ./audio-to-text-wh --quiet
+          docker buildx build --file ./text-to-audio-ba/docker/gpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest --platform linux/arm64,linux/amd64 ./text-to-audio-ba --quiet
+          docker buildx build --file ./copilot-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest --platform linux/arm64,linux/amd64 ./copilot-replit --quiet
+          docker buildx build --file ./michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd --quiet
+          docker buildx build --file ./michelangelo-sd/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd --quiet
 
   test-gpu:
     runs-on: gpu
