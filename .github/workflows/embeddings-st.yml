@@ -1,4 +1,4 @@
-name: CI
+name: Embeddings Sentence Transformer
 
 env:
   DOCKER_BUILDKIT: 1

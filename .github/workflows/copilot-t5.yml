@@ -1,4 +1,4 @@
-name: CI
+name: Copilot T5
 
 env:
   DOCKER_BUILDKIT: 1

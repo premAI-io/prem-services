@@ -1,4 +1,4 @@
-name: CI
+name: Chat Dolly V2
 
 env:
   DOCKER_BUILDKIT: 1
