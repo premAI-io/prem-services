@@ -24,7 +24,7 @@ class T5BasedModel(object):
     @classmethod
     def get_model(cls):
         if cls.model is None:
-            cls.tokenizer = AutoTokenizer.from_pretrained(os.getenv("MODEL_ID", None))
+            cls.tokenizer = AutoTokenizer.from_pretrained(os.getenv("MODEL_ID", "cpu"))
             cls.model = T5ForConditionalGeneration.from_pretrained(
                 os.getenv("MODEL_ID", None)
             ).to(os.getenv("DEVICE", None))

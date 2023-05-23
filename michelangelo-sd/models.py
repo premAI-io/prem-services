@@ -19,6 +19,6 @@ class DiffuserBasedModel(object):
     def get_model(cls):
         if cls.model is None:
             cls.model = DiffusionPipeline.from_pretrained(os.getenv("MODEL_ID", None))
-            cls.model = cls.model.to(os.getenv("DEVICE", None))
+            cls.model = cls.model.to(os.getenv("DEVICE", "cpu"))
             cls.model.enable_attention_slicing()
         return cls.model

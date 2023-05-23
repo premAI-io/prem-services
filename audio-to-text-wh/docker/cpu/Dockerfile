@@ -1,7 +1,6 @@
 FROM python:3.10-slim-bullseye
 
 ARG MODEL_ID
-ARG DEVICE
 
 WORKDIR /usr/src/app/
 
@@ -26,6 +25,6 @@ RUN python3 download.py --model $MODEL_ID
 COPY . .
 
 ENV MODEL_ID=$MODEL_ID
-ENV DEVICE=$DEVICE
+ENV DEVICE=cpu
 
 CMD python3 main.py

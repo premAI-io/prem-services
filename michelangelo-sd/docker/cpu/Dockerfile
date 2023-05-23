@@ -17,6 +17,7 @@ RUN apt-get update && \
 
 COPY requirements.txt /usr/src/app/
 
+RUN pip3 install transformers==4.29.2 accelerate==0.19.0 torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY download.py .

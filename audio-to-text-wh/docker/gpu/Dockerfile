@@ -1,7 +1,6 @@
 FROM huggingface/transformers-pytorch-gpu:latest
 
 ARG MODEL_ID
-ARG DEVICE
 
 WORKDIR /usr/src/app/
 
@@ -14,6 +13,6 @@ COPY . .
 RUN python3 download.py --model $MODEL_ID
 
 ENV MODEL_ID=$MODEL_ID
-ENV DEVICE=$DEVICE
+ENV DEVICE=cuda
 
 CMD python3 main.py

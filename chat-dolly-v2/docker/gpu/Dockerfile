@@ -1,7 +1,6 @@
 FROM huggingface/transformers-pytorch-gpu:4.28.1
 
 ARG MODEL_ID
-ARG DEVICE
 
 RUN pip install "accelerate>=0.16.0,<1"
 
@@ -18,6 +17,6 @@ RUN python3 download.py --model $MODEL_ID
 COPY . .
 
 ENV MODEL_ID=$MODEL_ID
-ENV DEVICE=$DEVICE
+ENV DEVICE=auto
 
 CMD python3 main.py

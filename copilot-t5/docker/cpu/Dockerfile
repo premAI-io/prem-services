@@ -15,5 +15,6 @@ RUN python3 download.py --model $MODEL_ID
 COPY . .
 
 ENV MODEL_ID=$MODEL_ID
+ENV DEVICE=cpu
 
 CMD python main.py

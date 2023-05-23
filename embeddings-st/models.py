@@ -15,6 +15,6 @@ class SentenceTransformerBasedModel(object):
     def get_model(cls):
         if cls.model is None:
             cls.model = SentenceTransformer(
-                os.getenv("MODEL_ID", None), device=os.getenv("DEVICE", None)
+                os.getenv("MODEL_ID", None), device=os.getenv("DEVICE", "cpu")
             )
         return cls.model

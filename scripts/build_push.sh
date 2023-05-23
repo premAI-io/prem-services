@@ -1,6 +1,8 @@
-docker buildx build --push --file ./chat-llama-cpp/docker/m1/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag ghcr.io/premai-io/chat-vicuna-7b-q4-m1:latest --platform linux/arm64,linux/amd64 ./chat-llama-cpp
-docker buildx build --push --file ./chat-llama-cpp/docker/m1/Dockerfile --build-arg="MODEL_ID=gpt4all-lora-q4" --tag ghcr.io/premai-io/chat-gpt4all-lora-q4-m1:latest --platform linux/arm64,linux/amd64 ./chat-llama-cpp
-docker buildx build --push --file ./copilot-t5/docker/m1/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag ghcr.io/premai-io/copilot-codet5p-220m-py-m1:latest --platform linux/arm64,linux/amd64 ./copilot-t5
+docker buildx build --push --file ./chat-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest --platform linux/arm64,linux/amd64 ./chat-llama-cpp
+docker buildx build --push --file ./chat-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=gpt4all-lora-q4" --tag ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest --platform linux/arm64,linux/amd64 ./chat-llama-cpp
+docker buildx build --push --file ./copilot-t5/docker/cpu/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest --platform linux/arm64,linux/amd64 ./copilot-t5
+docker buildx build --push --file ./michelangelo-sd/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-cpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd
+docker buildx build --push --file ./michelangelo-sd/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-cpu:latest --platform linux/arm64,linux/amd64 ./michelangelo-sd
 
 docker buildx build --push --file ./chat-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest --platform linux/arm64,linux/amd64 ./chat-dolly-v2
 docker buildx build --push --file ./embeddings-st/docker/gpu/Dockerfile --build-arg="MODEL_ID=sentence-transformers/all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-MiniLM-L6-v2-gpu:latest --platform linux/arm64,linux/amd64 ./embeddings-st
