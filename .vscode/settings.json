@@ -9,4 +9,9 @@
     "[python]": {
         "editor.defaultFormatter": "ms-python.autopep8"
     },
+    // "github.copilot.advanced": {
+    //     "debug.overrideEngine": "codegen",
+    //     "debug.testOverrideProxyUrl": "http://localhost:18080",
+    //     "debug.overrideProxyUrl": "http://localhost:18080"
+    // }
 }
