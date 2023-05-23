@@ -12,7 +12,8 @@ RUN apt-get update && \
     build-essential \
     git \
     wget \
-    libatlas-base-dev
+    libatlas-base-dev \
+    ffmpeg
 
 COPY requirements.txt /usr/src/app/
 

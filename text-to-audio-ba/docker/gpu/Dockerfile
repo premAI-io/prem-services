@@ -10,7 +10,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN python3 download.py --model $MODEL_ID
+RUN python3 download.py
 
 ENV MODEL_ID=$MODEL_ID
 ENV DEVICE=cuda

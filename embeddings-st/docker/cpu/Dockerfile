@@ -20,13 +20,11 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY download.py .
 
-RUN python3 download.py
+RUN python3 download.py --model $MODEL_ID
 
 COPY . .
 
 ENV MODEL_ID=$MODEL_ID
 ENV DEVICE=cpu
-ENV SUNO_OFFLOAD_CPU=True
-ENV SUNO_USE_SMALL_MODELS=True
 
 CMD python3 main.py
