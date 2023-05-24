@@ -5,5 +5,6 @@ requests==2.28.2
 tqdm==4.65.0
 httpx==0.23.3
 python-dotenv==1.0.0
+tenacity==8.2.2
 python-multipart==0.0.6
 openai-whisper==20230314
