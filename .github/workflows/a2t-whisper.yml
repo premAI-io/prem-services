@@ -62,4 +62,4 @@ jobs:
     - name: Push the Images
       run: |
         docker buildx build --push --file ./a2t-whisper/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest --platform linux/arm64,linux/amd64 ./a2t-whisper
-        docker buildx build --push --file ./a2t-whisper/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest --platform linux/arm64,linux/amd64 ./a2t-whisper
+        docker buildx build --push --file ./a2t-whisper/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest --platform linux/amd64 ./a2t-whisper

@@ -73,4 +73,4 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and Push
-      run: docker buildx build --push --file ./cpl-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest --platform linux/arm64,linux/amd64 ./cpl-replit
+      run: docker buildx build --push --file ./cpl-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest --platform linux/amd64 ./cpl-replit

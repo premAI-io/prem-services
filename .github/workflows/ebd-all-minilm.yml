@@ -62,4 +62,4 @@ jobs:
     - name: Build and Push
       run: |
         docker buildx build --push --file ./ebd-all-minilm/docker/cpu/Dockerfile --build-arg="MODEL_ID=all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest --platform linux/arm64,linux/amd64 ./ebd-all-minilm
-        docker buildx build --push --file ./ebd-all-minilm/docker/gpu/Dockerfile --build-arg="MODEL_ID=all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest --platform linux/arm64,linux/amd64 ./ebd-all-minilm
+        docker buildx build --push --file ./ebd-all-minilm/docker/gpu/Dockerfile --build-arg="MODEL_ID=all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest --platform linux/amd64 ./ebd-all-minilm

@@ -57,4 +57,4 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and Push
-      run: docker buildx build --push --file ./cpl-t5/docker/cpu/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest --platform linux/arm64,linux/amd64 ./cpl-t5
+      run: docker buildx build --push --file ./cpl-t5/docker/cpu/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest --platform linux/amd64 ./cpl-t5

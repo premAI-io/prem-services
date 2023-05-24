@@ -62,4 +62,4 @@ jobs:
     - name: Build and Push
       run: |
         docker buildx build --push --file ./t2a-bark/docker/cpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-cpu:latest --platform linux/arm64,linux/amd64 ./t2a-bark
-        docker buildx build --push --file ./t2a-bark/docker/gpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest --platform linux/arm64,linux/amd64 ./t2a-bark
+        docker buildx build --push --file ./t2a-bark/docker/gpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest --platform linux/amd64 ./t2a-bark

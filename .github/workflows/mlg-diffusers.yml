@@ -70,5 +70,5 @@ jobs:
         docker buildx build --push --file ./mlg-diffusers/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-cpu:latest --platform linux/arm64,linux/amd64 ./mlg-diffusers
         docker buildx build --push --file ./mlg-diffusers/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-cpu:latest --platform linux/arm64,linux/amd64 ./mlg-diffusers
 
-        docker buildx build --push --file ./mlg-diffusers/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest --platform linux/arm64,linux/amd64 ./mlg-diffusers
-        docker buildx build --push --file ./mlg-diffusers/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest --platform linux/arm64,linux/amd64 ./mlg-diffusers
+        docker buildx build --push --file ./mlg-diffusers/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest --platform linux/amd64 ./mlg-diffusers
+        docker buildx build --push --file ./mlg-diffusers/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest --platform linux/amd64 ./mlg-diffusers
