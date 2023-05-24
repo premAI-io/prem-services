@@ -27,7 +27,7 @@ jobs:
 
     - name: Test the Images
       run: |
-        docker build --file ./cht-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag cht-dolly-v2 ./cht-dolly-v2
+        docker build --file ./cht-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --tag cht-dolly-v2 ./cht-dolly-v2
         docker run --rm --gpus all cht-dolly-v2 pytest
 
   push-cht-dolly-v2:
