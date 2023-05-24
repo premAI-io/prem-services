@@ -15,13 +15,31 @@ on:
       - "a2t-whisper/**"
 
 jobs:
-  ci-a2t-whisper:
+  test-a2t-whisper:
     runs-on: gpu
     permissions:
       contents: read
       packages: write
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Code Repository
+      uses: actions/checkout@v3
+
+    - name: Test the Images
+      run: |
+        docker build --file ./a2t-whisper/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag a2t-whisper-tiny-cpu ./a2t-whisper
+        docker run --rm a2t-whisper-tiny-cpu pytest
+
+        docker build --file ./a2t-whisper/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag a2t-whisper-large-v2-gpu ./a2t-whisper
+        docker run --rm a2t-whisper-large-v2-gpu pytest
+
+  push-a2t-whisper:
+    runs-on: gpu
+    needs: [test-a2t-whisper]
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v1
@@ -38,14 +56,6 @@ jobs:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Test the Images
-      run: |
-        docker build --file ./a2t-whisper/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag a2t-whisper-tiny-cpu ./a2t-whisper
-        docker build --file ./a2t-whisper/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag a2t-whisper-large-v2-gpu ./a2t-whisper
-        docker run --rm a2t-whisper-tiny-cpu pytest
-        docker run --rm a2t-whisper-large-v2-gpu pytest
-
     - name: Push the Images
       run: |
         docker buildx build --push --file ./a2t-whisper/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest --platform linux/arm64,linux/amd64 ./a2t-whisper
