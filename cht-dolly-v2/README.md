@@ -1,3 +1,3 @@
 # Dolly v2
 
-## Description
+## Description & Usage

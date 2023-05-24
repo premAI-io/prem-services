@@ -36,7 +36,7 @@ jobs:
       run: |
         docker pull ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest || true
 
-    - name: Test the Images
+    - name: Build the Images
       run: |
         docker build --pull \
           --cache-from ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest \
@@ -81,4 +81,4 @@ jobs:
           --file ./cht-dolly-v2/docker/gpu/Dockerfile \
           --build-arg="MODEL_ID=databricks/dolly-v2-12b" \
           --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest \
-          --platform linux/amd64 ./chat-dolly-v2
+          --platform linux/amd64 ./cht-dolly-v2
