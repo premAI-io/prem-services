@@ -1,0 +1,74 @@
+name: Michelangelo Diffusers
+
+env:
+  DOCKER_BUILDKIT: 1
+  DOCKER_CLI_EXPERIMENTAL: "enabled"
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "mlg-diffusers/**"
+
+  push:
+    branches: ["main"]
+    paths:
+      - "mlg-diffusers/**"
+
+jobs:
+  test-mlg-diffusers:
+    runs-on: gpu
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Test the Images
+      run: |
+        docker build --file ./mlg-diffusers/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag mlg-diffusers-cpu ./mlg-diffusers
+        docker run --rm mlg-diffusers-cpu pytest
+
+        docker build --file ./mlg-diffusers/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag mlg-diffusers-cpu ./mlg-diffusers
+        docker run --rm mlg-diffusers-cpu pytest
+
+        docker build --file ./mlg-diffusers/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag mlg-diffusers-gpu ./mlg-diffusers
+        docker run --rm --gpus all mlg-diffusers-gpu pytest
+
+        docker build --file ./mlg-diffusers/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag mlg-diffusers-gpu ./mlg-diffusers
+        docker run --rm --gpus all mlg-diffusers-gpu pytest
+
+  push-mlg-diffusers:
+    runs-on: gpu
+    needs: [test-mlg-diffusers]
+    permissions:
+      contents: read
+      packages: write
+    if: github.event_name == 'push'
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        install: true
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and Push
+      run: |
+        docker buildx build --push --file ./mlg-diffusers/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-cpu:latest --platform linux/arm64,linux/amd64 ./mlg-diffusers
+        docker buildx build --push --file ./mlg-diffusers/docker/cpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-cpu:latest --platform linux/arm64,linux/amd64 ./mlg-diffusers
+
+        docker buildx build --push --file ./mlg-diffusers/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest --platform linux/arm64,linux/amd64 ./mlg-diffusers
+        docker buildx build --push --file ./mlg-diffusers/docker/gpu/Dockerfile --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest --platform linux/arm64,linux/amd64 ./mlg-diffusers

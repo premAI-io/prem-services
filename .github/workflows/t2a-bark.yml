@@ -1,4 +1,4 @@
-name: Chat Dolly V2
+name: Text to Audio Bark
 
 env:
   DOCKER_BUILDKIT: 1
@@ -9,15 +9,15 @@ on:
   pull_request:
     branches: ["main"]
     paths:
-      - "cht-dolly-v2/**"
+      - "t2a-bark/**"
 
   push:
     branches: ["main"]
     paths:
-      - "cht-dolly-v2/**"
+      - "t2a-bark/**"
 
 jobs:
-  test-cht-dolly-v2:
+  test-t2a-bark:
     runs-on: gpu
     permissions:
       contents: read
@@ -27,12 +27,15 @@ jobs:
 
     - name: Test the Images
       run: |
-        docker build --file ./cht-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag cht-dolly-v2 ./cht-dolly-v2
-        docker run --rm --gpus all cht-dolly-v2 pytest
+        docker build --file ./t2a-bark/docker/cpu/Dockerfile --tag t2a-bark-cpu ./t2a-bark
+        docker run --rm t2a-bark-cpu pytest
 
-  push-cht-dolly-v2:
+        docker build --file ./t2a-bark/docker/gpu/Dockerfile --tag t2a-bark-gpu ./t2a-bark
+        docker run --rm --gpus all t2a-bark-gpu pytest
+
+  push-t2a-bark:
     runs-on: gpu
-    needs: [test-cht-dolly-v2]
+    needs: [test-t2a-bark]
     permissions:
       contents: read
       packages: write
@@ -57,4 +60,6 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and Push
-      run: docker buildx build --push --file ./cht-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest --platform linux/arm64,linux/amd64 ./chat-dolly-v2
+      run: |
+        docker buildx build --push --file ./t2a-bark/docker/cpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-cpu:latest --platform linux/arm64,linux/amd64 ./t2a-bark
+        docker buildx build --push --file ./t2a-bark/docker/gpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest --platform linux/arm64,linux/amd64 ./t2a-bark

@@ -8,6 +8,8 @@ env:
 on:
   pull_request:
     branches: ["main"]
+    paths:
+      - "a2t-whisper/**"
 
   push:
     branches: ["main"]
@@ -38,6 +40,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    if: github.event_name == 'push'
     steps:
     - uses: actions/checkout@v3
 

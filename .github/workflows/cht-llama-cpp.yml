@@ -8,42 +8,55 @@ env:
 on:
   pull_request:
     branches: ["main"]
+    paths:
+      - "cht-llama-cpp/**"
 
   push:
     branches: ["main"]
     paths:
-      - "chat-llma-cpp/**"
+      - "cht-llama-cpp/**"
 
 jobs:
-    deploy-chat-dolly-v2:
-        runs-on: gpu
-        permissions:
-            contents: read
-            packages: write
-        steps:
-        - uses: actions/checkout@v2
+  test-cht-llama-cpp:
+    runs-on: gpu
+    permissions:
+        contents: read
+        packages: write
+    steps:
+    - uses: actions/checkout@v3
 
-        - name: Set up QEMU
-          uses: docker/setup-qemu-action@v1
+    - name: Build and Test
+      run: |
+        docker build --file ./cht-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag cht-llama-cpp ./cht-llama-cpp
+        docker run --rm cht-llama-cpp pytest
 
-        - name: Set up Docker Buildx
-          id: buildx
-          uses: docker/setup-buildx-action@v2
-          with:
-            install: true
+  push-cht-llama-cpp:
+    runs-on: gpu
+    needs: [test-cht-llama-cpp]
+    permissions:
+        contents: read
+        packages: write
+    if: github.event_name == 'push'
+    steps:
+    - uses: actions/checkout@v3
 
-        - name: Login to GitHub Container Registry
-          uses: docker/login-action@v2
-          with:
-            registry: ghcr.io
-            username: ${{ github.repository_owner }}
-            password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
 
-        - name: Build and Test
-          run: |
-            docker build --file ./cht-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag cht-llama-cpp ./cht-llama-cpp
-            docker run --rm cht-llama-cpp pytest
-        - name: Build and Push
-          run: |
-            docker buildx build --file ./cht-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest --platform linux/arm64,linux/amd64 ./cht-llama-cpp
-            docker buildx build --file ./cht-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=gpt4all-lora-q4" --tag ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest --platform linux/arm64,linux/amd64 ./cht-llama-cpp
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        install: true
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and Push
+      run: |
+        docker buildx build --file ./cht-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest --platform linux/arm64,linux/amd64 ./cht-llama-cpp
+        docker buildx build --file ./cht-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=gpt4all-lora-q4" --tag ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest --platform linux/arm64,linux/amd64 ./cht-llama-cpp

@@ -1,0 +1,76 @@
+name: Copilot Replit
+
+env:
+  DOCKER_BUILDKIT: 1
+  DOCKER_CLI_EXPERIMENTAL: "enabled"
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "cpl-replit/**"
+
+  push:
+    branches: ["main"]
+    paths:
+      - "cpl-replit/**"
+
+jobs:
+  test-cpl-replit:
+    runs-on: gpu
+    permissions:
+        contents: read
+        packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        install: true
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and Test
+      run: |
+        docker build --file ./cpl-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag cpl-replit-gpu --platform linux/arm64,linux/amd64 ./cpl-replit
+        docker run --rm --gpus all cpl-replit-gpu pytest
+
+  deploy-cpl-replit:
+    runs-on: gpu
+    needs: [test-cpl-replit]
+    permissions:
+        contents: read
+        packages: write
+    if: github.event_name == 'push'
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v2
+      with:
+        install: true
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and Push
+      run: docker buildx build --push --file ./cpl-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest --platform linux/arm64,linux/amd64 ./cpl-replit
