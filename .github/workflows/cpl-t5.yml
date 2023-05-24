@@ -25,9 +25,26 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Build and Push
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Pull the latest images for caching
       run: |
-        docker build --file ./cpl-t5/docker/cpu/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag cpl-t5-cpu ./cpl-t5
+        docker pull ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest || true
+
+    - name: Build
+      run: |
+        docker build --pull \
+          --cache-from ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest \
+          --file ./cpl-t5/docker/cpu/Dockerfile \
+          --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \
+          --tag cpl-t5-cpu ./cpl-t5
+    - name: Test
+      run: |
         docker run --rm cpl-t5-cpu pytest
 
   push-cpl-t5:
@@ -57,4 +74,11 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and Push
-      run: docker buildx build --push --file ./cpl-t5/docker/cpu/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest --platform linux/amd64 ./cpl-t5
+      run: |
+        docker buildx create --use
+        docker buildx build --push --pull \
+          --cache-from ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest \
+          --file ./cpl-t5/docker/cpu/Dockerfile \
+          --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \
+          --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest \
+          --platform linux/amd64 ./cpl-t5

@@ -25,12 +25,38 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Test the Images
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Pull the latest images for caching
       run: |
-        docker build --file ./ebd-all-minilm/docker/cpu/Dockerfile --build-arg="MODEL_ID=all-MiniLM-L6-v2" --tag ebd-all-minilm-cpu ./ebd-all-minilm
+        docker pull ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest || true
+        docker pull ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest || true
+
+    - name: Build the CPU Images
+      run: |
+        docker build --pull \
+          --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
+          --file ./ebd-all-minilm/docker/cpu/Dockerfile \
+          --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
+          --tag ebd-all-minilm-cpu ./ebd-all-minilm
+    - name: Test the CPU Images
+      run: |
         docker run --rm ebd-all-minilm-cpu pytest
 
-        docker build --file ./ebd-all-minilm/docker/gpu/Dockerfile --build-arg="MODEL_ID=all-MiniLM-L6-v2" --tag ebd-all-minilm-gpu ./ebd-all-minilm
+    - name: Build the GPU Images
+      run: |
+        docker build --pull \
+          --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest \
+          --file ./ebd-all-minilm/docker/gpu/Dockerfile \
+          --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
+          --tag ebd-all-minilm-gpu ./ebd-all-minilm
+    - name: Test the GPU Images
+      run: |
         docker run --rm --gpus all ebd-all-minilm-gpu pytest
 
   push-ebd-all-minilm:
@@ -61,5 +87,16 @@ jobs:
 
     - name: Build and Push
       run: |
-        docker buildx build --push --file ./ebd-all-minilm/docker/cpu/Dockerfile --build-arg="MODEL_ID=all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest --platform linux/arm64,linux/amd64 ./ebd-all-minilm
-        docker buildx build --push --file ./ebd-all-minilm/docker/gpu/Dockerfile --build-arg="MODEL_ID=all-MiniLM-L6-v2" --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest --platform linux/amd64 ./ebd-all-minilm
+        docker buildx create --use
+        docker buildx build --push --pull \
+          --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
+          --file ./ebd-all-minilm/docker/cpu/Dockerfile \
+          --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
+          --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
+          --platform linux/arm64,linux/amd64 ./ebd-all-minilm
+        docker buildx build --push --pull \
+          --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest \
+          --file ./ebd-all-minilm/docker/gpu/Dockerfile \
+          --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
+          --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest \
+          --platform linux/amd64 ./ebd-all-minilm

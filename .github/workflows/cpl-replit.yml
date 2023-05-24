@@ -25,15 +25,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v1
-
-    - name: Set up Docker Buildx
-      id: buildx
-      uses: docker/setup-buildx-action@v2
-      with:
-        install: true
-
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v2
       with:
@@ -41,9 +32,19 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build and Test
+    - name: Pull the latest images for caching
       run: |
-        docker build --file ./cpl-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag cpl-replit-gpu --platform linux/arm64,linux/amd64 ./cpl-replit
+        docker pull ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest || true
+
+    - name: Build
+      run: |
+        docker build --pull \
+          --cache-from ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest \
+          --file ./cpl-replit/docker/gpu/Dockerfile
+          --build-arg="MODEL_ID=replit/replit-code-v1-3b"
+          --tag cpl-replit-gpu --platform linux/arm64,linux/amd64 ./cpl-replit
+    - name: Test
+      run: |
         docker run --rm --gpus all cpl-replit-gpu pytest
 
   deploy-cpl-replit:
@@ -73,4 +74,11 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build and Push
-      run: docker buildx build --push --file ./cpl-replit/docker/gpu/Dockerfile --build-arg="MODEL_ID=replit/replit-code-v1-3b" --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest --platform linux/amd64 ./cpl-replit
+      run: |
+        docker buildx create --use
+        docker buildx build --push --pull \
+          --cache-from ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest \
+          --file ./cpl-replit/docker/gpu/Dockerfile \
+          --build-arg="MODEL_ID=replit/replit-code-v1-3b" \
+          --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest \
+          --platform linux/amd64 ./cpl-replit

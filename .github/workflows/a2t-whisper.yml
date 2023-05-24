@@ -26,12 +26,34 @@ jobs:
     - name: Checkout Code Repository
       uses: actions/checkout@v3
 
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Pull the latest images for caching
+      run: |
+        ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest || true
+        ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest || true
+
+    - name: Build the CPU Images
+      run: |
+        docker build --pull \
+          --file ./a2t-whisper/docker/cpu/Dockerfile \
+          --build-arg="MODEL_ID=tiny" \
+          --tag a2t-whisper-tiny-cpu ./a2t-whisper
     - name: Test the Images
       run: |
-        docker build --file ./a2t-whisper/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag a2t-whisper-tiny-cpu ./a2t-whisper
         docker run --rm a2t-whisper-tiny-cpu pytest
 
+    - name: Build the GPU Images
+      run: |
         docker build --file ./a2t-whisper/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag a2t-whisper-large-v2-gpu ./a2t-whisper
+
+    - name: Test the Images
+      run: |
         docker run --rm a2t-whisper-large-v2-gpu pytest
 
   push-a2t-whisper:
@@ -61,5 +83,16 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Push the Images
       run: |
-        docker buildx build --push --file ./a2t-whisper/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest --platform linux/arm64,linux/amd64 ./a2t-whisper
-        docker buildx build --push --file ./a2t-whisper/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest --platform linux/amd64 ./a2t-whisper
+        docker buildx create --use
+        docker buildx build --push --pull \
+          --cache-from ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest \
+          --file ./a2t-whisper/docker/cpu/Dockerfile \
+          --build-arg="MODEL_ID=tiny" \
+          --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest \
+          --platform linux/arm64,linux/amd64 ./a2t-whisper
+        docker buildx build --push --pull \
+          --cache-from ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest \
+          --file ./a2t-whisper/docker/gpu/Dockerfile \
+          --build-arg="MODEL_ID=large-v2" \
+          --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest \
+          --platform linux/amd64 ./a2t-whisper
