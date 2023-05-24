@@ -39,17 +39,14 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build the Images
-      run: |
-        docker buildx build --file ./a2t-whisper/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest --tag a2t-whisper-tiny-cpu --platform linux/arm64,linux/amd64 ./a2t-whisper
-        docker buildx build --file ./a2t-whisper/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest --tag a2t-whisper-large-v2-gpu --platform linux/arm64,linux/amd64 ./a2t-whisper
-
     - name: Test the Images
       run: |
+        docker build --file ./a2t-whisper/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag a2t-whisper-tiny-cpu ./a2t-whisper
+        docker build --file ./a2t-whisper/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag a2t-whisper-large-v2-gpu ./a2t-whisper
         docker run --rm a2t-whisper-tiny-cpu pytest
         docker run --rm a2t-whisper-large-v2-gpu pytest
 
     - name: Push the Images
       run: |
-        docker push ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest
-        docker push ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest
+        docker buildx build --push --file ./a2t-whisper/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest --platform linux/arm64,linux/amd64 ./a2t-whisper
+        docker buildx build --push --file ./a2t-whisper/docker/gpu/Dockerfile --build-arg="MODEL_ID=large-v2" --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest --platform linux/arm64,linux/amd64 ./a2t-whisper
