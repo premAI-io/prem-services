@@ -41,8 +41,8 @@ jobs:
 
         - name: Test the Images
           run: |
-            docker build --file ./cht-dolly-v2/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag cht-dolly-v2-cpu ./cht-dolly-v2
-            docker run --rm --gpus all cht-dolly-v2-cpu pytest
+            docker build --file ./cht-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag cht-dolly-v2 ./cht-dolly-v2
+            docker run --rm --gpus all cht-dolly-v2 pytest
 
         - name: Build and Push
           run: docker buildx build --push --file ./cht-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest --platform linux/arm64,linux/amd64 ./chat-dolly-v2

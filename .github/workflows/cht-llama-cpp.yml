@@ -39,5 +39,11 @@ jobs:
             username: ${{ github.repository_owner }}
             password: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Build, Test and Push
-          run: ./chat-llama-cpp/build.sh
+        - name: Build and Test
+          run: |
+            docker build --file ./cht-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag cht-llama-cpp ./cht-llama-cpp
+            docker run --rm cht-llama-cpp pytest
+        - name: Build and Push
+          run: |
+            docker buildx build --file ./cht-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=vicuna-7b-q4" --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest --platform linux/arm64,linux/amd64 ./cht-llama-cpp
+            docker buildx build --file ./cht-llama-cpp/docker/cpu/Dockerfile --build-arg="MODEL_ID=gpt4all-lora-q4" --tag ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest --platform linux/arm64,linux/amd64 ./cht-llama-cpp
