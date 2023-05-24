@@ -25,13 +25,22 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Test the Images
+    - name: Pull the latest images for caching
       run: |
-        docker build --file ./t2a-bark/docker/cpu/Dockerfile --tag t2a-bark-cpu ./t2a-bark
-        docker run --rm t2a-bark-cpu pytest
+        docker pull ghcr.io/premai-io/text-to-audio-bark-cpu:latest || true
+        docker pull ghcr.io/premai-io/text-to-audio-bark-gpu:latest || true
 
-        docker build --file ./t2a-bark/docker/gpu/Dockerfile --tag t2a-bark-gpu ./t2a-bark
-        docker run --rm --gpus all t2a-bark-gpu pytest
+    - name: Build the CPU Images
+      run: docker build --pull --cache-from=ghcr.io/premai-io/text-to-audio-bark-cpu:latest --file ./t2a-bark/docker/cpu/Dockerfile --tag t2a-bark-cpu ./t2a-bark
+
+    - name: Test the CPU Images
+      run: docker run --rm t2a-bark-cpu pytest
+
+    - name: Build the GPU Images
+      run: docker build --pull --cache-from=ghcr.io/premai-io/text-to-audio-bark-gpu:latest --file ./t2a-bark/docker/gpu/Dockerfile --tag t2a-bark-gpu ./t2a-bark
+
+    - name: Test the GPU Images
+      run: docker run --rm --gpus all t2a-bark-gpu pytest
 
   push-t2a-bark:
     runs-on: gpu
@@ -61,5 +70,6 @@ jobs:
 
     - name: Build and Push
       run: |
-        docker buildx build --push --file ./t2a-bark/docker/cpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-cpu:latest --platform linux/arm64,linux/amd64 ./t2a-bark
-        docker buildx build --push --file ./t2a-bark/docker/gpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest --platform linux/amd64 ./t2a-bark
+        docker buildx create --use
+        docker buildx build --push --pull --cache-from=ghcr.io/premai-io/text-to-audio-bark-cpu:latest --file ./t2a-bark/docker/cpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-cpu:latest --platform linux/arm64,linux/amd64 ./t2a-bark
+        docker buildx build --push --pull --cache-from=ghcr.io/premai-io/text-to-audio-bark-gpu:latest --file ./t2a-bark/docker/gpu/Dockerfile --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest --platform linux/amd64 ./t2a-bark
