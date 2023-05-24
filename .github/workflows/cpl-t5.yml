@@ -27,7 +27,7 @@ jobs:
 
     - name: Build and Push
       run: |
-        docker build --file ./cpl-t5/docker/cpu/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag cpl-t5-cpu --platform linux/arm64,linux/amd64 ./cpl-t5
+        docker build --file ./cpl-t5/docker/cpu/Dockerfile --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" --tag cpl-t5-cpu ./cpl-t5
         docker run --rm cpl-t5-cpu pytest
 
   push-cpl-t5:
