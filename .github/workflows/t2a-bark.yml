@@ -25,6 +25,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Pull the latest images for caching
       run: |
         docker pull ghcr.io/premai-io/text-to-audio-bark-cpu:latest || true
