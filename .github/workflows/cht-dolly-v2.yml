@@ -12,10 +12,10 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "chat-dolly-v2/**"
+      - "cht-dolly-v2/**"
 
 jobs:
-    deploy-chat-dolly-v2:
+    deploy-cht-dolly-v2:
         runs-on: gpu
         permissions:
             contents: read
@@ -39,5 +39,10 @@ jobs:
             username: ${{ github.repository_owner }}
             password: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Build, Test and Push
-          run: ./chat-dolly-v2/build.sh
+        - name: Test the Images
+          run: |
+            docker build --file ./cht-dolly-v2/docker/cpu/Dockerfile --build-arg="MODEL_ID=tiny" --tag cht-dolly-v2-cpu ./cht-dolly-v2
+            docker run --rm --gpus all cht-dolly-v2-cpu pytest
+
+        - name: Build and Push
+          run: docker buildx build --push --file ./cht-dolly-v2/docker/gpu/Dockerfile --build-arg="MODEL_ID=databricks/dolly-v2-12b" --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest --platform linux/arm64,linux/amd64 ./chat-dolly-v2
