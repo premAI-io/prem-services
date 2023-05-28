@@ -36,7 +36,7 @@ jobs:
       run: |
         docker pull ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest || true
 
-    - name: Build the Images
+    - name: Build and Test the Images
       run: |
         docker build --pull \
           --cache-from ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest \
@@ -45,7 +45,7 @@ jobs:
           --tag cht-dolly-v2 ./cht-dolly-v2
     - name: Test the Container
       run: |
-        docker run --rm --gpus all cht-dolly-v2 pytest
+        docker run --gpus all cht-dolly-v2 pytest
 
   push-cht-dolly-v2:
     runs-on: gpu
