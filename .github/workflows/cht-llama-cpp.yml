@@ -1,6 +1,7 @@
 name: Chat Llama.cpp
 
 env:
+  VERSION: 0.0.1
   DOCKER_BUILDKIT: 1
   DOCKER_CLI_EXPERIMENTAL: "enabled"
   COMPOSE_DOCKER_CLI_BUILD: 1
@@ -40,12 +41,14 @@ jobs:
           --file ./cht-llama-cpp/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=vicuna-7b-q4" \
           --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest \
+          --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:$VERSION \
           --platform linux/arm64,linux/amd64 ./cht-llama-cpp
         docker buildx build --push \
           --cache-from ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest \
           --file ./cht-llama-cpp/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=gpt4all-lora-q4" \
           --tag ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest \
+          --tag ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:$VERSION \
           --platform linux/arm64,linux/amd64 ./cht-llama-cpp
     - name: Test
       run: |
