@@ -11,6 +11,7 @@ on:
     branches: ["main"]
     paths:
       - "cht-dolly-v2/**"
+      - "scripts/**"
 
 jobs:
   build-test-push-cht-dolly-v2:

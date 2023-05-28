@@ -7,15 +7,11 @@ env:
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 on:
-  pull_request:
-    branches: ["main"]
-    paths:
-      - "cpl-t5/**"
-
   push:
     branches: ["main"]
     paths:
       - "cpl-t5/**"
+      - "scripts/**"
 
 jobs:
   build-test-push-cpl-t5:
@@ -45,6 +41,7 @@ jobs:
           --file ./cpl-t5/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \
           --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest \
+          --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:$VERSION \
           --platform linux/amd64 ./cpl-t5
     - name: Test
       run: |

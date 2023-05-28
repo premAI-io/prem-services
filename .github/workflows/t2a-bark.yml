@@ -7,15 +7,11 @@ env:
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 on:
-  pull_request:
-    branches: ["main"]
-    paths:
-      - "t2a-bark/**"
-
   push:
     branches: ["main"]
     paths:
       - "t2a-bark/**"
+      - "scripts/**"
 
 jobs:
   build-test-push-t2a-bark:

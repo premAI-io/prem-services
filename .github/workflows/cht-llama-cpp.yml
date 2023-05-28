@@ -11,6 +11,7 @@ on:
     branches: ["main"]
     paths:
       - "cht-llama-cpp/**"
+      - "scripts/**"
 
 jobs:
   build-test-push-cht-llama-cpp:

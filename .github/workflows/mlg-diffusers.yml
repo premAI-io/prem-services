@@ -7,15 +7,11 @@ env:
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 on:
-  pull_request:
-    branches: ["main"]
-    paths:
-      - "mlg-diffusers/**"
-
   push:
     branches: ["main"]
     paths:
       - "mlg-diffusers/**"
+      - "scripts/**"
 
 jobs:
   build-test-push-mlg-diffusers:
