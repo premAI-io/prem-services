@@ -11,7 +11,7 @@ MODEL_ZOO = {
 
 
 def get_model_info() -> dict:
-    return MODEL_ZOO[os.getenv("MODEL_ID", None)]
+    return MODEL_ZOO[os.getenv("MODEL_ID", "vicuna-7b-q4")]
 
 
 class LLaMACPPBasedModel(object):
