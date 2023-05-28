@@ -6,7 +6,6 @@ env:
   COMPOSE_DOCKER_CLI_BUILD: 1
 
 on:
-
   push:
     branches: ["main"]
     paths:
@@ -44,7 +43,7 @@ jobs:
     - name: Build
       run: |
         docker buildx create --use
-        docker buildx build \
+        docker buildx build --push \
           --cache-from ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest \
           --file ./cht-dolly-v2/docker/gpu/Dockerfile \
           --build-arg="MODEL_ID=databricks/dolly-v2-12b" \
@@ -54,7 +53,3 @@ jobs:
     - name: Test
       run: |
         docker run --gpus all ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest pytest
-
-    - name: Push
-      run: |
-        docker push ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest

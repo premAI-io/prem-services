@@ -15,8 +15,8 @@ jobs:
   build-test-push-cht-llama-cpp:
     runs-on: gpu
     permissions:
-        contents: read
-        packages: write
+      contents: read
+      packages: write
     steps:
     - uses: actions/checkout@v3
 
@@ -35,13 +35,13 @@ jobs:
     - name: Build
       run: |
         docker buildx create --use
-        docker buildx build \
+        docker buildx build --push \
           --cache-from ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest \
           --file ./cht-llama-cpp/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=vicuna-7b-q4" \
           --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest \
           --platform linux/arm64,linux/amd64 ./cht-llama-cpp
-        docker buildx build \
+        docker buildx build --push \
           --cache-from ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest \
           --file ./cht-llama-cpp/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=gpt4all-lora-q4" \
@@ -50,8 +50,3 @@ jobs:
     - name: Test
       run: |
         docker run --rm ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest pytest
-
-    - name: Push
-      run: |
-        docker push ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest
-        docker push ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest
