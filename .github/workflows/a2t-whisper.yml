@@ -40,7 +40,7 @@ jobs:
 
     - name: Build the CPU Images
       run: |
-        docker build --pull \
+        docker build \
           --file ./a2t-whisper/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=tiny" \
           --tag a2t-whisper-tiny-cpu ./a2t-whisper
@@ -84,13 +84,13 @@ jobs:
     - name: Push the Images
       run: |
         docker buildx create --use
-        docker buildx build --push --pull \
+        docker buildx build --push \
           --cache-from ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest \
           --file ./a2t-whisper/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=tiny" \
           --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest \
           --platform linux/arm64,linux/amd64 ./a2t-whisper
-        docker buildx build --push --pull \
+        docker buildx build --push \
           --cache-from ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest \
           --file ./a2t-whisper/docker/gpu/Dockerfile \
           --build-arg="MODEL_ID=large-v2" \

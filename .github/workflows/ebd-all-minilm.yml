@@ -39,7 +39,7 @@ jobs:
 
     - name: Build the CPU Images
       run: |
-        docker build --pull \
+        docker build \
           --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
           --file ./ebd-all-minilm/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
@@ -50,7 +50,7 @@ jobs:
 
     - name: Build the GPU Images
       run: |
-        docker build --pull \
+        docker build \
           --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest \
           --file ./ebd-all-minilm/docker/gpu/Dockerfile \
           --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
@@ -88,13 +88,13 @@ jobs:
     - name: Build and Push
       run: |
         docker buildx create --use
-        docker buildx build --push --pull \
+        docker buildx build --push \
           --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
           --file ./ebd-all-minilm/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
           --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
           --platform linux/arm64,linux/amd64 ./ebd-all-minilm
-        docker buildx build --push --pull \
+        docker buildx build --push \
           --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest \
           --file ./ebd-all-minilm/docker/gpu/Dockerfile \
           --build-arg="MODEL_ID=all-MiniLM-L6-v2" \

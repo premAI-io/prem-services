@@ -38,7 +38,7 @@ jobs:
 
     - name: Build
       run: |
-        docker build --pull \
+        docker build \
           --cache-from ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest \
           --file ./cpl-t5/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \
@@ -76,7 +76,7 @@ jobs:
     - name: Build and Push
       run: |
         docker buildx create --use
-        docker buildx build --push --pull \
+        docker buildx build --push \
           --cache-from ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest \
           --file ./cpl-t5/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \

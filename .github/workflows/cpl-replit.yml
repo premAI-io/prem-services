@@ -38,7 +38,7 @@ jobs:
 
     - name: Build
       run: |
-        docker build --pull \
+        docker build \
           --cache-from ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest \
           --file ./cpl-replit/docker/gpu/Dockerfile
           --build-arg="MODEL_ID=replit/replit-code-v1-3b"
@@ -76,7 +76,7 @@ jobs:
     - name: Build and Push
       run: |
         docker buildx create --use
-        docker buildx build --push --pull \
+        docker buildx build --push \
           --cache-from ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest \
           --file ./cpl-replit/docker/gpu/Dockerfile \
           --build-arg="MODEL_ID=replit/replit-code-v1-3b" \

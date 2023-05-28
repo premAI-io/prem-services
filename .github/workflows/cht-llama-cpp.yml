@@ -39,7 +39,7 @@ jobs:
 
     - name: Build and Test
       run: |
-        docker build --pull \
+        docker build \
           --cache-from ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest \
           --file ./cht-llama-cpp/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=vicuna-7b-q4" \
@@ -77,13 +77,13 @@ jobs:
     - name: Build and Push
       run: |
         docker buildx create --use
-        docker buildx build --pull \
+        docker buildx build \
           --cache-from ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest \
           --file ./cht-llama-cpp/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=vicuna-7b-q4" \
           --tag ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest \
           --platform linux/arm64,linux/amd64 ./cht-llama-cpp
-        docker buildx build --pull \
+        docker buildx build \
           --cache-from ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest \
           --file ./cht-llama-cpp/docker/cpu/Dockerfile \
           --build-arg="MODEL_ID=gpt4all-lora-q4" \
