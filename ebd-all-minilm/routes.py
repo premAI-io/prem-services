@@ -41,6 +41,11 @@ async def health():
     return HealthResponse(status=True)
 
 
-@router.post("/embeddings")
+@router.post("/embeddings", response_model=EmbeddingsResponse)
 async def embeddings(body: EmbeddingsInput):
-    return model.embeddings(text=body.input)
+    return EmbeddingsResponse(
+        object="list",
+        data=[EmbeddingObject(embedding=model.embeddings(text=body.input))],
+        model=body.model,
+        usage=EmbeddingUsage(),
+    )

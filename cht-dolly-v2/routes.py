@@ -1,4 +1,3 @@
-import os
 import uuid
 from datetime import datetime as dt
 from typing import List, Optional, Union
@@ -44,7 +43,7 @@ async def health():
     return HealthResponse(status=True)
 
 
-@router.post("/chat/completions")
+@router.post("/chat/completions", response_model=ChatCompletionResponse)
 async def chat_completions(body: ChatCompletionInput):
     predictions = model.generate(
         messages=body.messages,
@@ -58,12 +57,11 @@ async def chat_completions(body: ChatCompletionInput):
         frequence_penalty=body.frequence_penalty,
         logit_bias=body.logit_bias,
     )
-    return {
-        "id": uuid.uuid4(),
-        "model": os.getenv("MODEL_ID", None),
-        "object": "chat.completion",
-        "created": int(dt.now().timestamp()),
-        "choices": [
+    return ChatCompletionResponse(
+        id=str(uuid.uuid4()),
+        model=body.model,
+        object="chat.completion",
+        choices=[
             {
                 "role": "assistant",
                 "index": idx,
@@ -72,5 +70,5 @@ async def chat_completions(body: ChatCompletionInput):
             }
             for idx, text in enumerate(predictions)
         ],
-        "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
-    }
+        usage={"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
+    )
