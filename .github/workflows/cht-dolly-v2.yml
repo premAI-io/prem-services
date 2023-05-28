@@ -1,6 +1,7 @@
 name: Chat Dolly V2
 
 env:
+  VERSION: 0.0.1
   DOCKER_BUILDKIT: 1
   DOCKER_CLI_EXPERIMENTAL: "enabled"
   COMPOSE_DOCKER_CLI_BUILD: 1
@@ -48,6 +49,7 @@ jobs:
           --file ./cht-dolly-v2/docker/gpu/Dockerfile \
           --build-arg="MODEL_ID=databricks/dolly-v2-12b" \
           --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest \
+          --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:$VERSION \
           --platform linux/amd64 ./cht-dolly-v2
 
     - name: Test
