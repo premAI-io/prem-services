@@ -1,5 +1,6 @@
 VERSION=0.0.1
 
+docker system prune -f -a
 docker buildx create --use
 
 # docker buildx build --push \
