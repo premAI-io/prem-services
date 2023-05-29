@@ -1,0 +1,48 @@
+name: Copilot T5
+
+env:
+  VERSION: 0.0.1
+  DOCKER_BUILDKIT: 1
+  DOCKER_CLI_EXPERIMENTAL: "enabled"
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "cpl-t5/**"
+      - "scripts/**"
+
+jobs:
+  build-test-push-cpl-t5:
+    runs-on: gpu
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Pull the latest images for caching
+      run: |
+        docker pull ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest || true
+
+    - name: Build
+      run: |
+        docker buildx create --use
+        docker buildx build --push \
+          --cache-from ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest \
+          --file ./cpl-t5/docker/cpu/Dockerfile \
+          --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \
+          --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest \
+          --tag ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:$VERSION \
+          --platform linux/amd64 ./cpl-t5
+    - name: Test
+      run: |
+        docker run --rm ghcr.io/premai-io/copilot-codet5p-220m-py-cpu:latest pytest

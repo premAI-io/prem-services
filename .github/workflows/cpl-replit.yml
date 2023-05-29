@@ -1,0 +1,48 @@
+name: Copilot Replit
+
+env:
+  VERSION: 0.0.1
+  DOCKER_BUILDKIT: 1
+  DOCKER_CLI_EXPERIMENTAL: "enabled"
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "cpl-replit/**"
+      - "scripts/**"
+
+jobs:
+  build-test-push-cpl-replit:
+    runs-on: gpu
+    permissions:
+        contents: read
+        packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Pull the latest images for caching
+      run: |
+        docker pull ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest || true
+
+    - name: Build
+      run: |
+        docker buildx create --use
+        docker buildx build --push \
+          --cache-from ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest \
+          --file ./cpl-replit/docker/gpu/Dockerfile \
+          --build-arg="MODEL_ID=replit/replit-code-v1-3b" \
+          --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest \
+          --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:$VERSION \
+          --platform linux/amd64 ./cpl-replit
+    - name: Test
+      run: |
+        docker run --rm --gpus all ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest pytest
