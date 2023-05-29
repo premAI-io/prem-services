@@ -9,12 +9,12 @@ from pydantic import BaseModel
 class ChatCompletionInput(BaseModel):
     model: str
     messages: list[dict]
-    temperature: float = 1.0
-    top_p: float = 1.0
+    temperature: float = 0.2
+    top_p: float = 0.95
     n: int = 1
     stream: bool = False
-    stop: str | list | None = ""
-    max_tokens: int = 7
+    stop: str | list | None = []
+    max_tokens: int = 256
     presence_penalty: float = 0.0
     frequence_penalty: float = 0.0
     logit_bias: dict | None = {}
@@ -68,7 +68,7 @@ async def health():
 
 @router.post("/chat/completions", response_model=ChatCompletionResponse)
 async def chat_completions(body: ChatCompletionInput):
-    predictions = model.generate(
+    return model.generate(
         messages=body.messages,
         temperature=body.temperature,
         top_p=body.top_p,
@@ -79,21 +79,6 @@ async def chat_completions(body: ChatCompletionInput):
         presence_penalty=body.presence_penalty,
         frequence_penalty=body.frequence_penalty,
         logit_bias=body.logit_bias,
-    )
-    return ChatCompletionResponse(
-        id=str(uuid.uuid4()),
-        model=body.model,
-        object="chat.completion",
-        choices=[
-            {
-                "role": "assistant",
-                "index": idx,
-                "message": {"role": "assistant", "content": text},
-                "finish_reason": "stop",
-            }
-            for idx, text in enumerate(predictions)
-        ],
-        usage={"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
     )
 
 
