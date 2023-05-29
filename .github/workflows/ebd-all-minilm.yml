@@ -11,7 +11,6 @@ on:
     branches: ["main"]
     paths:
       - "ebd-all-minilm/**"
-      - "scripts/**"
 
 jobs:
   build-test-push-ebd-all-minilm:
