@@ -14,7 +14,7 @@ on:
 
 jobs:
   linter:
-    runs-on: gpu
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v3
