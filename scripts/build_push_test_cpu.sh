@@ -1,4 +1,4 @@
-export VERSION=0.0.3
+export VERSION=0.0.4
 
 docker system prune -f -a
 docker buildx create --use
