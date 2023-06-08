@@ -2,7 +2,7 @@ import json
 import uuid
 from datetime import datetime as dt
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
 from models import LLaMACPPBasedModel as model
 from pydantic import BaseModel
@@ -88,24 +88,36 @@ async def generate_chunk_based_response(body):
 
 @router.post("/chat/completions", response_model=ChatCompletionResponse)
 async def chat_completions(body: ChatCompletionInput):
-    if body.stream:
-        return StreamingResponse(
-            generate_chunk_based_response(body), media_type="text/event-stream"
+    try:
+        if body.stream:
+            return StreamingResponse(
+                generate_chunk_based_response(body), media_type="text/event-stream"
+            )
+        return model.generate(
+            messages=body.messages,
+            temperature=body.temperature,
+            top_p=body.top_p,
+            n=body.n,
+            stream=body.stream,
+            max_tokens=body.max_tokens,
+            stop=body.stop,
+            presence_penalty=body.presence_penalty,
+            frequence_penalty=body.frequence_penalty,
+            logit_bias=body.logit_bias,
         )
-    return model.generate(
-        messages=body.messages,
-        temperature=body.temperature,
-        top_p=body.top_p,
-        n=body.n,
-        stream=body.stream,
-        max_tokens=body.max_tokens,
-        stop=body.stop,
-        presence_penalty=body.presence_penalty,
-        frequence_penalty=body.frequence_penalty,
-        logit_bias=body.logit_bias,
-    )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail={"message": str(error)},
+        )
 
 
 @router.post("/embeddings", response_model=EmbeddingsResponse)
 async def embeddings(body: EmbeddingsInput):
-    return model.embeddings(text=body.input)
+    try:
+        return model.embeddings(text=body.input)
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail={"message": str(error)},
+        )

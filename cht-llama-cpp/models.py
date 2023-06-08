@@ -3,10 +3,8 @@ import os
 from llama_cpp import Llama
 
 MODEL_ZOO = {
-    "gpt4all-lora-q4": {"modelWeightsName": "gpt4all-lora-q4.bin"},
-    "vicuna-7b-q4": {
-        "modelWeightsName": "vicuna-7b-q4.bin",
-    },
+    "gpt4all-lora-q4": {"modelWeightsName": "gpt4all-lora-q4.bin", "ctxMaxTokens": 512},
+    "vicuna-7b-q4": {"modelWeightsName": "vicuna-7b-q4.bin", "ctxMaxTokens": 512},
 }
 
 
@@ -16,6 +14,24 @@ def get_model_info() -> dict:
 
 class LLaMACPPBasedModel(object):
     model = None
+
+    @classmethod
+    def tokenize(cls, prompt):
+        return cls.model.tokenize(b" " + prompt.encode("utf-8"))
+
+    @classmethod
+    def reduce_number_of_messages(cls, messages, max_tokens):
+        buffer_tokens = 32
+        ctx_max_tokens = get_model_info()["ctxMaxTokens"]
+        num_messages = len(messages)
+
+        tokens = [len(cls.tokenize(doc["content"])) for doc in messages]
+
+        token_count = sum(tokens[:num_messages])
+        while token_count + max_tokens + buffer_tokens > ctx_max_tokens:
+            num_messages -= 1
+            token_count -= tokens[num_messages]
+        return messages[:num_messages]
 
     @classmethod
     def generate(
@@ -29,6 +45,7 @@ class LLaMACPPBasedModel(object):
         stop: list = [],
         **kwargs,
     ):
+        messages = cls.reduce_number_of_messages(messages[::-1], max_tokens)[::-1]
         return cls.model.create_chat_completion(
             messages,
             temperature=temperature,
