@@ -7,8 +7,8 @@ class SentenceTransformerBasedModel(object):
     model = None
 
     @classmethod
-    def embeddings(cls, text):
-        values = cls.model.encode([text])[0]
+    def embeddings(cls, texts):
+        values = cls.model.encode(texts)
         return values.tolist()
 
     @classmethod
