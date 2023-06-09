@@ -4,7 +4,7 @@
     "editor.formatOnSave": true,
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
-    "python.testing.cwd": "${workspaceFolder}",
+    "python.testing.cwd": "${workspaceFolder}/ebd-all-minilm/",
     "python.analysis.inlayHints.functionReturnTypes": true,
     "[python]": {
         "editor.defaultFormatter": "ms-python.autopep8"
