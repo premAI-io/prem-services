@@ -63,21 +63,21 @@ docker run --rm --gpus all ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:lat
 docker system prune -f -a
 
 docker buildx build --push \
-    --cache-from=ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest \
-    --file ./mlg-diffusers/docker/gpu/Dockerfile \
+    --cache-from=ghcr.io/premai-io/diffusion-stable-diffusion-2-1-base-gpu:latest \
+    --file ./dfs-diffusers/docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" \
-    --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:latest \
-    --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-1-base-gpu:$VERSION \
-    --platform linux/amd64 ./mlg-diffusers
+    --tag ghcr.io/premai-io/diffusion-stable-diffusion-2-1-base-gpu:latest \
+    --tag ghcr.io/premai-io/diffusion-stable-diffusion-2-1-base-gpu:$VERSION \
+    --platform linux/amd64 ./dfs-diffusers
 docker buildx build --push \
-    --cache-from=ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest \
-    --file ./mlg-diffusers/docker/gpu/Dockerfile \
+    --cache-from=ghcr.io/premai-io/diffusion-stable-diffusion-2-base-gpu:latest \
+    --file ./dfs-diffusers/docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" \
-    --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest \
-    --tag ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:$VERSION \
-    --platform linux/amd64 ./mlg-diffusers
+    --tag ghcr.io/premai-io/diffusion-stable-diffusion-2-base-gpu:latest \
+    --tag ghcr.io/premai-io/diffusion-stable-diffusion-2-base-gpu:$VERSION \
+    --platform linux/amd64 ./dfs-diffusers
 
-docker run --rm --gpus all ghcr.io/premai-io/michelangelo-stable-diffusion-2-base-gpu:latest pytest
+docker run --rm --gpus all ghcr.io/premai-io/diffusion-stable-diffusion-2-base-gpu:latest pytest
 
 docker system prune -f -a
 
