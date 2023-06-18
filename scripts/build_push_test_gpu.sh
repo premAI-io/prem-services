@@ -39,14 +39,14 @@ docker run --rm ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest pyte
 docker system prune -f -a
 
 docker buildx build --push \
-    --cache-from ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest \
+    --cache-from ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
     --file ./cpl-replit/docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=replit/replit-code-v1-3b" \
-    --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest \
-    --tag ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:$VERSION \
+    --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
+    --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:$VERSION \
     --platform linux/amd64 ./cpl-replit
 
-docker run --rm --gpus all ghcr.io/premai-io/copilot-replit-code-v1-3b-gpu:latest pytest
+docker run --rm --gpus all ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest pytest
 
 docker system prune -f -a
 
