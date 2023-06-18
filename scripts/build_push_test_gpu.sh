@@ -44,7 +44,7 @@ docker buildx build --push \
     --build-arg="MODEL_ID=replit/replit-code-v1-3b" \
     --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
     --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:$VERSION \
-    --platform linux/amd64 ./cpl-replit
+    --platform linux/amd64 ./cdr-replit
 
 docker run --rm --gpus all ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest pytest
 
