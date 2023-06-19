@@ -1,7 +1,6 @@
 export VERSION=0.0.2
 
 docker system prune -f -a
-docker buildx create --use
 
 docker buildx build --push \
     --cache-from ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest \
@@ -40,7 +39,7 @@ docker system prune -f -a
 
 docker buildx build --push \
     --cache-from ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
-    --file ./cpl-replit/docker/gpu/Dockerfile \
+    --file ./cdr-replit/docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=replit/replit-code-v1-3b" \
     --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
     --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:$VERSION \
