@@ -1,7 +1,6 @@
 export VERSION=0.0.5
 
 docker system prune -f -a
-docker buildx create --use
 
 docker buildx build --push \
     --cache-from ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest \
@@ -45,7 +44,7 @@ docker system prune -f -a
 
 docker buildx build --push \
     --cache-from ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest \
-    --file ./cpl-t5/docker/cpu/Dockerfile \
+    --file ./cdr-t5/docker/cpu/Dockerfile \
     --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \
     --tag ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest \
     --tag ghcr.io/premai-io/coder-codet5p-220m-py-cpu:$VERSION \
