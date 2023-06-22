@@ -10,7 +10,7 @@ on:
   push:
     branches: ["main"]
     paths:
-      - "ccht-llama-cpp/**"
+      - "cht-llama-cpp/**"
 
 jobs:
   build-test-push-cht-llama-cpp:
