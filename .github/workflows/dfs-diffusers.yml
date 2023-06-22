@@ -28,7 +28,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Test the Images
+    - name: Build & Push the Images
       run: |
         docker buildx build --push \
             --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-cpu:latest \
@@ -75,7 +75,7 @@ jobs:
             --tag ghcr.io/premai-io/diffuser-stable-diffusion-1-5-gpu:$VERSION \
             --platform linux/arm64,linux/amd64 ./dfs-diffusers
 
-    - name:
+    - name: Test the Images
       run: |
         docker run --rm ghcr.io/premai-io/diffuser-stable-diffusion-2-base-cpu:latest pytest
         docker run --rm --gpus all ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:latest pytest
