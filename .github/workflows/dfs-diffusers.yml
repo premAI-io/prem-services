@@ -13,8 +13,8 @@ on:
       - "dfs-diffusers/**"
 
 jobs:
-  build-test-push-mlg-diffusers:
-    runs-on: gpu
+  build-test-push-dfs-diffusers:
+    runs-on: self-hosted
     permissions:
       contents: read
       packages: write

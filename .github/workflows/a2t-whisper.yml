@@ -1,0 +1,52 @@
+name: Audio to Text Whisper
+
+env:
+  VERSION: 0.0.5
+  DOCKER_BUILDKIT: 1
+  DOCKER_CLI_EXPERIMENTAL: "enabled"
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "a2t-whisper/**"
+
+jobs:
+  build-test-push-a2t-whisper:
+    runs-on: self-hosted
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Test the Images
+      run: |
+        docker buildx build --push \
+            --cache-from ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest \
+            --file ./a2t-whisper/docker/cpu/Dockerfile \
+            --build-arg="MODEL_ID=tiny" \
+            --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest \
+            --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:$VERSION \
+            --platform linux/arm64,linux/amd64 ./a2t-whisper
+
+        docker buildx build --push \
+            --cache-from ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest \
+            --file ./a2t-whisper/docker/gpu/Dockerfile \
+            --build-arg="MODEL_ID=large-v2" \
+            --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest \
+            --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:$VERSION \
+            --platform linux/amd64 ./a2t-whisper
+
+    - name:
+      run: |
+        docker run --rm ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest pytest
+        docker run --rm ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest pytest

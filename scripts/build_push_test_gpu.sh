@@ -26,18 +26,6 @@ docker run --rm --gpus all ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:lat
 docker system prune -f -a
 
 docker buildx build --push \
-    --cache-from ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest \
-    --file ./a2t-whisper/docker/gpu/Dockerfile \
-    --build-arg="MODEL_ID=large-v2" \
-    --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest \
-    --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:$VERSION \
-    --platform linux/amd64 ./a2t-whisper
-
-docker run --rm ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest pytest
-
-docker system prune -f -a
-
-docker buildx build --push \
     --cache-from ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
     --file ./cdr-replit/docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=replit/replit-code-v1-3b" \
@@ -46,25 +34,6 @@ docker buildx build --push \
     --platform linux/amd64 ./cdr-replit
 
 docker run --rm --gpus all ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest pytest
-
-docker system prune -f -a
-
-docker buildx build --push \
-    --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-gpu:latest \
-    --file ./dfs-diffusers/docker/gpu/Dockerfile \
-    --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-1-base" \
-    --tag ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-gpu:latest \
-    --tag ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-gpu:$VERSION \
-    --platform linux/amd64 ./dfs-diffusers
-docker buildx build --push \
-    --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:latest \
-    --file ./dfs-diffusers/docker/gpu/Dockerfile \
-    --build-arg="MODEL_ID=stabilityai/stable-diffusion-2-base" \
-    --tag ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:latest \
-    --tag ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:$VERSION \
-    --platform linux/amd64 ./dfs-diffusers
-
-docker run --rm --gpus all ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:latest pytest
 
 docker system prune -f -a
 
