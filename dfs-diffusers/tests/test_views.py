@@ -9,6 +9,10 @@ def test_generate_image() -> None:
             "/api/v1/images/generations",
             json={
                 "prompt": "Hello World",
+                "negative_prompt": "Goodbye World",
+                "n": 4,
+                "step_count": 25,
             },
         )
         assert response.status_code == 200
+        print(response.json())
