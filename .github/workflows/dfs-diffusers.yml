@@ -1,4 +1,4 @@
-name: Prem Diffusers
+name: Diffusers Stable Diffusion
 
 env:
   VERSION: 0.0.6

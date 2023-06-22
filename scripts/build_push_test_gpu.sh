@@ -26,18 +26,6 @@ docker run --rm --gpus all ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:lat
 docker system prune -f -a
 
 docker buildx build --push \
-    --cache-from ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
-    --file ./cdr-replit/docker/gpu/Dockerfile \
-    --build-arg="MODEL_ID=replit/replit-code-v1-3b" \
-    --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
-    --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:$VERSION \
-    --platform linux/amd64 ./cdr-replit
-
-docker run --rm --gpus all ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest pytest
-
-docker system prune -f -a
-
-docker buildx build --push \
     --cache-from=ghcr.io/premai-io/text-to-audio-bark-gpu:latest \
     --file ./t2a-bark/docker/gpu/Dockerfile \
     --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest \

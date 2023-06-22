@@ -1,0 +1,43 @@
+name: Coder Replit
+
+env:
+  VERSION: 0.0.2
+  DOCKER_BUILDKIT: 1
+  DOCKER_CLI_EXPERIMENTAL: "enabled"
+  COMPOSE_DOCKER_CLI_BUILD: 1
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "cdr-replit/**"
+
+jobs:
+  build-test-push-cdr-replit:
+    runs-on: self-hosted
+    permissions:
+      contents: read
+      packages: write
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Test the Images
+      run: |
+        docker buildx build --push \
+            --cache-from ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
+            --file ./cdr-replit/docker/gpu/Dockerfile \
+            --build-arg="MODEL_ID=replit/replit-code-v1-3b" \
+            --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
+            --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:$VERSION \
+            --platform linux/amd64 ./cdr-replit
+
+    - name:
+      run: |
+        docker run --rm --gpus all ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest pytest
