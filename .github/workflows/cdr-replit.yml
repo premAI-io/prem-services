@@ -15,9 +15,6 @@ on:
 jobs:
   build-test-push-cdr-replit:
     runs-on: self-hosted
-    permissions:
-      contents: read
-      packages: write
     steps:
     - uses: actions/checkout@v3
 
