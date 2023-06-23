@@ -60,7 +60,7 @@ jobs:
         push: true
         file: ./dfs-diffusers/docker/cpu/Dockerfile
         platforms: linux/amd64,linux/arm64
-        build-args: MODEL_ID=stabilityai/stable-diffusion-v1-5
+        build-args: MODEL_ID=runwayml/stable-diffusion-v1-5
         tags: ghcr.io/premai-io/diffuser-stable-diffusion-1-5-base-cpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-1-5-base-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/diffuser-stable-diffusion-1-5-base-cpu:latest
 
@@ -70,7 +70,7 @@ jobs:
         context: ./dfs-diffusers
         push: true
         file: ./dfs-diffusers/docker/gpu/Dockerfile
-        build-args: MODEL_ID=stabilityai/stable-diffusion-v1-5
+        build-args: MODEL_ID=runwayml/stable-diffusion-v1-5
         tags: ghcr.io/premai-io/diffuser-stable-diffusion-1-5-gpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-1-5-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/diffuser-stable-diffusion-1-5-gpu:latest
 
