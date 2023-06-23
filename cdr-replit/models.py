@@ -34,9 +34,11 @@ class ReplitBasedModel(object):
     def get_model(cls):
         if cls.model is None:
             cls.tokenizer = AutoTokenizer.from_pretrained(
-                os.getenv("MODEL_ID", None), trust_remote_code=True
+                os.getenv("MODEL_ID", "replit/replit-code-v1-3b"),
+                trust_remote_code=True,
             )
             cls.model = AutoModelForCausalLM.from_pretrained(
-                os.getenv("MODEL_ID", None), trust_remote_code=True
+                os.getenv("MODEL_ID", "replit/replit-code-v1-3b"),
+                trust_remote_code=True,
             )
         return cls.model

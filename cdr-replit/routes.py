@@ -1,6 +1,7 @@
 import os
 import uuid
 from datetime import datetime as dt
+from typing import List, Optional, Union
 
 from fastapi import APIRouter
 from models import ReplitBasedModel as model
@@ -10,7 +11,7 @@ from pydantic import BaseModel
 class ChatCompletionInput(BaseModel):
     prompt: str
     temperature: float = 1.0
-    stop: str | list | None = ""
+    stop: Optional[Union[str, List[str]]] = ""
     max_tokens: int = 7
 
 
@@ -19,7 +20,7 @@ class ChatCompletionResponse(BaseModel):
     model: str
     object: str = "code_completion"
     created: int = int(dt.now().timestamp())
-    choices: list[dict]
+    choices: List[dict]
 
 
 class HealthResponse(BaseModel):
