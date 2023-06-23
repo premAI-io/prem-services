@@ -1,4 +1,4 @@
-name: Chat Dolly v2
+name: Chat Llama CPP
 
 env:
   VERSION: 0.0.5
@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-test-push-cht-llama-cpp:
-    runs-on: self-hosted
+    runs-on: self-hosted-cpu
     steps:
     - uses: actions/checkout@v3
 

@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-test-push-cdr-t5:
-    runs-on: self-hosted
+    runs-on: self-hosted-cpu
     steps:
     - uses: actions/checkout@v3
 
