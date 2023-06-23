@@ -39,15 +39,16 @@ jobs:
         file: ./a2t-whisper/docker/cpu/Dockerfile
         platforms: linux/amd64,linux/arm64
         build-args: MODEL_ID=tiny
-        tags: audio-to-text-whisper-tiny-cpu:latest,ghcr.io/audio-to-text-whisper-tiny-cpu:${{ env.VERSION }}
-        cache-from: type=registry,ref=audio-to-text-whisper-tiny-cpu:latest
+        tags: ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest,ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:${{ env.VERSION }}
+        cache-from: type=registry,ref=ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest
 
     - name: Build and push GPU image
-      run: |
-        docker buildx build --push \
-          --cache-from ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest \
-          --file ./a2t-whisper/docker/gpu/Dockerfile \
-          --build-arg="MODEL_ID=large-v2" \
-          --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest \
-          --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:$VERSION \
-          --platform linux/amd64 ./a2t-whisper
+      uses: docker/build-push-action@v4
+      with:
+        context: ./a2t-whisper
+        push: true
+        file: ./a2t-whisper/docker/gpu/Dockerfile
+        platforms: linux/amd64
+        build-args: MODEL_ID=large-v2
+        tags: ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest,ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:${{ env.VERSION }}
+        cache-from: type=registry,ref=ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest
