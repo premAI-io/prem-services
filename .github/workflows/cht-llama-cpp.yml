@@ -1,7 +1,7 @@
 name: Chat Llama CPP
 
 env:
-  VERSION: 0.0.5
+  VERSION: 1.0.0
   DOCKER_BUILDKIT: 1
   DOCKER_CLI_EXPERIMENTAL: "enabled"
   COMPOSE_DOCKER_CLI_BUILD: 1
@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-test-push-cht-llama-cpp:
-    runs-on: self-hosted-cpu
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
 
