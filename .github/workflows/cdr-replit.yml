@@ -37,8 +37,6 @@ jobs:
         context: ./cdr-replit
         push: true
         file: ./cdr-replit/docker/gpu/Dockerfile
-        platforms: linux/amd64
         build-args: MODEL_ID=replit/replit-code-v1-3b
         tags: ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest,ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest
-        cache-to: type=inline

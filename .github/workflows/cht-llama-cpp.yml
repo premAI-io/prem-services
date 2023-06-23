@@ -41,7 +41,6 @@ jobs:
         build-args: MODEL_ID=vicuna-7b-q4
         tags: ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest,ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/chat-vicuna-7b-q4-cpu:latest
-        cache-to: type=inline
 
     - name: Build and push
       uses: docker/build-push-action@v4
@@ -53,4 +52,3 @@ jobs:
         build-args: MODEL_ID=gpt4all-lora-q4
         tags: ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest,ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest
-        cache-to: type=inline

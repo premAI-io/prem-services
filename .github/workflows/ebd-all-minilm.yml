@@ -41,7 +41,6 @@ jobs:
         build-args: MODEL_ID=all-MiniLM-L6-v2
         tags: ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest,ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest
-        cache-to: type=inline
 
     - name: Build and push
       uses: docker/build-push-action@v4
@@ -49,8 +48,6 @@ jobs:
         context: ./ebd-all-minilm
         push: true
         file: ./ebd-all-minilm/docker/gpu/Dockerfile
-        platforms: linux/amd64
         build-args: MODEL_ID=all-MiniLM-L6-v2
         tags: ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest,ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpuu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest
-        cache-to: type=inline

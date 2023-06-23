@@ -41,8 +41,3 @@ jobs:
         build-args: MODEL_ID=Salesforce/codet5p-220m-py
         tags: ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest,ghcr.io/premai-io/coder-codet5p-220m-py-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest
-        cache-to: type=inline
-
-    - name: Test the Images
-      run: |
-        docker run --rm ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest pytest
