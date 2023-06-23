@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-test-push-cht-llama-cpp:
-    runs-on: self-hosted
+    runs-on: self-hosted-cpu
     steps:
     - uses: actions/checkout@v3
 
