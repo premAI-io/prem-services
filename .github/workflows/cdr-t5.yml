@@ -37,7 +37,7 @@ jobs:
         context: ./cdr-t5
         push: true
         file: ./cdr-t5/docker/cpu/Dockerfile
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         build-args: MODEL_ID=Salesforce/codet5p-220m-py
         tags: ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest,ghcr.io/premai-io/coder-codet5p-220m-py-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest

@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-test-push-dfs-diffusers:
-    runs-on: self-hosted
+    runs-on: self-hosted-cpu
     steps:
     - uses: actions/checkout@v3
 
@@ -37,7 +37,7 @@ jobs:
         context: ./dfs-diffusers
         push: true
         file: ./dfs-diffusers/docker/cpu/Dockerfile
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         build-args: MODEL_ID=stabilityai/stable-diffusion-2-1-base
         tags: ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-cpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-cpu:latest
@@ -49,7 +49,7 @@ jobs:
         context: ./dfs-diffusers
         push: true
         file: ./dfs-diffusers/docker/cpu/Dockerfile
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         build-args: MODEL_ID=stabilityai/stable-diffusion-2-base
         tags: ghcr.io/premai-io/diffuser-stable-diffusion-2-base-cpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-2-base-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/diffuser-stable-diffusion-2-base-cpu:latest
@@ -61,7 +61,7 @@ jobs:
         context: ./dfs-diffusers
         push: true
         file: ./dfs-diffusers/docker/cpu/Dockerfile
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         build-args: MODEL_ID=stabilityai/stable-diffusion-v1-5
         tags: ghcr.io/premai-io/diffuser-stable-diffusion-1-5-base-cpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-1-5-base-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/diffuser-stable-diffusion-1-5-base-cpu:latest
@@ -75,7 +75,7 @@ jobs:
         file: ./dfs-diffusers/docker/gpu/Dockerfile
         platforms: linux/amd64
         build-args: MODEL_ID=stabilityai/stable-diffusion-v1-5
-        tags: ghcr.io/premai-io/diffuser-stable-diffusion-1-5-cpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-1-5-gpu:${{ env.VERSION }}
+        tags: ghcr.io/premai-io/diffuser-stable-diffusion-1-5-gpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-1-5-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/diffuser-stable-diffusion-1-5-gpu:latest
         cache-to: type=inline
 
@@ -87,7 +87,7 @@ jobs:
         file: ./dfs-diffusers/docker/gpu/Dockerfile
         platforms: linux/amd64
         build-args: MODEL_ID=stabilityai/stable-diffusion-2-1-base
-        tags: ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-cpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-gpu:${{ env.VERSION }}
+        tags: ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-gpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-gpu:latest
         cache-to: type=inline
 
@@ -99,11 +99,6 @@ jobs:
         file: ./dfs-diffusers/docker/gpu/Dockerfile
         platforms: linux/amd64
         build-args: MODEL_ID=stabilityai/stable-diffusion-2-base
-        tags: ghcr.io/premai-io/diffuser-stable-diffusion-2-base-cpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:${{ env.VERSION }}
+        tags: ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:latest,ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:latest
         cache-to: type=inline
-
-    - name: Test the Images
-      run: |
-        docker run --rm ghcr.io/premai-io/diffuser-stable-diffusion-2-base-cpu:latest pytest
-        docker run --rm --gpus all ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:latest pytest

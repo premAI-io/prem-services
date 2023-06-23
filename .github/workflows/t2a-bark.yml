@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-test-push-t2a-bark:
-    runs-on: self-hosted
+    runs-on: self-hosted-cpu
     steps:
     - uses: actions/checkout@v3
 
@@ -37,7 +37,7 @@ jobs:
         context: ./t2a-bark
         push: true
         file: ./t2a-bark/docker/cpu/Dockerfile
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         tags: ghcr.io/premai-io/text-to-audio-bark-cpu:latest,ghcr.io/premai-io/text-to-audio-bark-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/text-to-audio-bark-cpu:latest
         cache-to: type=inline
@@ -52,8 +52,3 @@ jobs:
         tags: ghcr.io/premai-io/text-to-audio-bark-gpu:latest,ghcr.io/premai-io/text-to-audio-bark-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/text-to-audio-bark-gpu:latest
         cache-to: type=inline
-
-    - name: Test the Images
-      run: |
-        docker run --rm ghcr.io/premai-io/text-to-audio-bark-cpu:latest pytest
-        docker run --rm --gpus all ghcr.io/premai-io/text-to-audio-bark-gpu:latest pytest

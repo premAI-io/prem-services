@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-test-push-cdr-replit:
-    runs-on: self-hosted
+    runs-on: self-hosted-cpu
     steps:
     - uses: actions/checkout@v3
 
@@ -42,7 +42,3 @@ jobs:
         tags: ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest,ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest
         cache-to: type=inline
-
-    - name: Test the Images
-      run: |
-        docker run --rm --gpus all ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest pytest

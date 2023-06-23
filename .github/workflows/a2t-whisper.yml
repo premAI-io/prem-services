@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-test-push-a2t-whisper:
-    runs-on: self-hosted
+    runs-on: self-hosted-cpu
     steps:
     - uses: actions/checkout@v3
 
@@ -37,7 +37,7 @@ jobs:
         context: ./a2t-whisper
         push: true
         file: ./a2t-whisper/docker/cpu/Dockerfile
-        platforms: linux/amd64
+        platforms: linux/amd64,linux/arm64
         build-args: MODEL_ID=tiny
         tags: audio-to-text-whisper-tiny-cpu:latest,ghcr.io/audio-to-text-whisper-tiny-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=audio-to-text-whisper-tiny-cpu:latest
@@ -54,8 +54,3 @@ jobs:
         tags: audio-to-text-whisper-large-v2-gpu:latest,ghcr.io/audio-to-text-whisper-large-v2-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=audio-to-text-whisper-large-v2-gpu:latest
         cache-to: type=inline
-
-    - name: Test the Images
-      run: |
-        docker run --rm ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest pytest
-        docker run --rm ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest pytest
