@@ -18,6 +18,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v2
       with:
@@ -25,15 +31,17 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build & Push the Images
-      run: |
-        docker buildx build --push \
-            --cache-from ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
-            --file ./cdr-replit/docker/gpu/Dockerfile \
-            --build-arg="MODEL_ID=replit/replit-code-v1-3b" \
-            --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest \
-            --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:$VERSION \
-            --platform linux/amd64 ./cdr-replit
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: ./cdr-replit
+        push: true
+        file: ./cdr-replit/docker/gpu/Dockerfile
+        platforms: linux/amd64
+        build-args: MODEL_ID=replit/replit-code-v1-3b
+        tags: ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest,ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:${{ env.VERSION }}
+        cache-from: type=registry,ref=ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest
+        cache-to: type=inline
 
     - name: Test the Images
       run: |
