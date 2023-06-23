@@ -18,30 +18,42 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v2
       with:
         registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build & Push the Images
-      run: |
-        docker buildx build --push \
-            --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
-            --file ./ebd-all-minilm/docker/cpu/Dockerfile \
-            --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
-            --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
-            --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:$VERSION \
-            --platform linux/arm64,linux/amd64 ./ebd-all-minilm
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: ./ebd-all-minilm
+        push: true
+        file: ./ebd-all-minilm/docker/cpu/Dockerfile
+        platforms: linux/amd64
+        build-args: MODEL_ID=all-MiniLM-L6-v2
+        tags: ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest,ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:${{ env.VERSION }}
+        cache-from: type=registry,ref=ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest
+        cache-to: type=inline
 
-        docker buildx build --push \
-            --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest \
-            --file ./ebd-all-minilm/docker/gpu/Dockerfile \
-            --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
-            --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest \
-            --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:$VERSION \
-            --platform linux/amd64 ./ebd-all-minilm
+    - name: Build and push
+      uses: docker/build-push-action@v4
+      with:
+        context: ./ebd-all-minilm
+        push: true
+        file: ./ebd-all-minilm/docker/gpu/Dockerfile
+        platforms: linux/amd64
+        build-args: MODEL_ID=all-MiniLM-L6-v2
+        tags: ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest,ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpuu:${{ env.VERSION }}
+        cache-from: type=registry,ref=ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest
+        cache-to: type=inline
 
     - name: Test the Images
       run: |
