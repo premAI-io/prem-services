@@ -41,7 +41,6 @@ jobs:
         build-args: MODEL_ID=tiny
         tags: audio-to-text-whisper-tiny-cpu:latest,ghcr.io/audio-to-text-whisper-tiny-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=audio-to-text-whisper-tiny-cpu:latest
-        cache-to: type=inline
 
     - name: Build and push large image
       uses: docker/build-push-action@v4
@@ -53,4 +52,3 @@ jobs:
         build-args: MODEL_ID=large-v2
         tags: audio-to-text-whisper-large-v2-gpu:latest,ghcr.io/audio-to-text-whisper-large-v2-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=audio-to-text-whisper-large-v2-gpu:latest
-        cache-to: type=inline
