@@ -48,6 +48,7 @@ jobs:
         context: ./t2a-bark
         push: true
         file: ./t2a-bark/docker/gpu/Dockerfile
+        platforms: linux/amd64
         tags: ghcr.io/premai-io/text-to-audio-bark-gpu:latest,ghcr.io/premai-io/text-to-audio-bark-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/text-to-audio-bark-gpu:latest
         cache-to: type=inline
