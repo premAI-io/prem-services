@@ -1,4 +1,4 @@
-name: Chat Dolly v2
+name: Chat Llama CPP
 
 env:
   VERSION: 0.0.5
