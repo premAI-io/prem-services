@@ -41,4 +41,3 @@ jobs:
         build-args: MODEL_ID=databricks/dolly-v2-12b
         tags: ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest,ghcr.io/premai-io/chat-dolly-v2-12b-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest
-        cache-to: type=inline

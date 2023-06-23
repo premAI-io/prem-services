@@ -50,9 +50,9 @@ class DollyBasedModel(ChatModel):
     def get_model(cls):
         if cls.model is None:
             cls.model = pipeline(
-                model=os.getenv("MODEL_ID", None),
+                model=os.getenv("MODEL_ID", "databricks/dolly-v2-12b"),
                 torch_dtype=torch.bfloat16,
                 trust_remote_code=True,
-                device_map=os.getenv("DEVICE", None),
+                device_map=os.getenv("DEVICE", "auto"),
             )
         return cls.model

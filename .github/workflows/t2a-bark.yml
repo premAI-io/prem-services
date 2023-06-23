@@ -40,7 +40,6 @@ jobs:
         platforms: linux/amd64,linux/arm64
         tags: ghcr.io/premai-io/text-to-audio-bark-cpu:latest,ghcr.io/premai-io/text-to-audio-bark-cpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/text-to-audio-bark-cpu:latest
-        cache-to: type=inline
 
     - name: Build and push GPU
       uses: docker/build-push-action@v4
@@ -51,4 +50,3 @@ jobs:
         platforms: linux/amd64
         tags: ghcr.io/premai-io/text-to-audio-bark-gpu:latest,ghcr.io/premai-io/text-to-audio-bark-gpu:${{ env.VERSION }}
         cache-from: type=registry,ref=ghcr.io/premai-io/text-to-audio-bark-gpu:latest
-        cache-to: type=inline
