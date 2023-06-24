@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -e
+
 export VERSION=1.0.0
 
 docker buildx build --push \
