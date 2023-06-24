@@ -1,3 +1,5 @@
+from typing import List, Union
+
 import tiktoken
 from fastapi import APIRouter
 from models import SentenceTransformerBasedModel as model
@@ -6,14 +8,14 @@ from pydantic import BaseModel
 
 class EmbeddingsInput(BaseModel):
     model: str = None
-    input: list[str] | list[list[int]]
+    input: Union[List[str], List[List[int]]]
     user: str = ""
 
 
 class EmbeddingObject(BaseModel):
     object: str = "embedding"
     index: int = 0
-    embedding: list[float]
+    embedding: List[float]
 
 
 class EmbeddingUsage(BaseModel):
@@ -23,7 +25,7 @@ class EmbeddingUsage(BaseModel):
 
 class EmbeddingsResponse(BaseModel):
     object: str = "list"
-    data: list[EmbeddingObject]
+    data: List[EmbeddingObject]
     model: str = None
     usage: EmbeddingUsage
 
