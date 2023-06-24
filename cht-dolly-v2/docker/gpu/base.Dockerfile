@@ -1,7 +1,5 @@
 FROM huggingface/transformers-pytorch-gpu:4.28.1
 
-COPY --from=ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest/root/.cache/huggingface /root/.cache/huggingface
-
 ARG MODEL_ID
 
 RUN pip install "accelerate>=0.16.0,<1"
@@ -12,9 +10,6 @@ COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r ./requirements.txt --upgrade pip
 
-COPY . .
+COPY download.py .
 
-ENV MODEL_ID=$MODEL_ID
-ENV DEVICE=auto
-
-CMD python3 main.py
+RUN python3 download.py --model $MODEL_ID
