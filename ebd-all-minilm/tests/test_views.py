@@ -6,7 +6,7 @@ def test_compute_embeddings() -> None:
     app = get_application()
     with TestClient(app) as client:
         response = client.post(
-            "/api/v1/engines/text-embedding-ada-002/embeddings",
+            "/v1/engines/text-embedding-ada-002/embeddings",
             json={
                 "model": "all-MiniLM-L6-v2",
                 "input": [
@@ -29,7 +29,7 @@ def test_compute_embeddings() -> None:
         assert response.status_code == 200
 
         response = client.post(
-            "/api/v1/engines/text-embedding-ada-002/embeddings",
+            "/v1/engines/text-embedding-ada-002/embeddings",
             json={
                 "model": "all-MiniLM-L6-v2",
                 "input": ["Hello!"],

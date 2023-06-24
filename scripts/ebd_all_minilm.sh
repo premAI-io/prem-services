@@ -2,7 +2,7 @@
 
 set -e
 
-export VERSION=1.0.0
+export VERSION=1.0.2
 
 docker buildx build --push \
     --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
@@ -20,5 +20,5 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:$VERSION \
     ./ebd-all-minilm
 
-docker run --rm ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest pytest
-docker run --rm --gpus all ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest pytest
+docker run --rm ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:$VERSION pytest
+docker run --rm --gpus all ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:$VERSION pytest

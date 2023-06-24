@@ -11,7 +11,7 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/text-to-audio-bark-gpu:$VERSION \
     ./t2a-bark
 
-docker run --rm --gpus all ghcr.io/premai-io/text-to-audio-bark-gpu:latest pytest
+docker run --rm --gpus all ghcr.io/premai-io/text-to-audio-bark-gpu:$VERSION pytest
 
 docker buildx build --push \
     --cache-from=ghcr.io/premai-io/text-to-audio-bark-cpu:latest \
@@ -20,4 +20,4 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/text-to-audio-bark-cpu:$VERSION \
     --platform linux/arm64,linux/amd64 ./t2a-bark
 
-docker run --rm ghcr.io/premai-io/text-to-audio-bark-cpu:latest pytest
+docker run --rm ghcr.io/premai-io/text-to-audio-bark-cpu:$VERSION pytest
