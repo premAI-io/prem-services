@@ -6,7 +6,7 @@ def test_chat_llama_cpp() -> None:
     app = get_application()
     with TestClient(app) as client:
         response = client.post(
-            "/api/v1/chat/completions",
+            "/v1/chat/completions",
             json={
                 "model": "vicuna-7b-q4",
                 "messages": [{"role": "user", "content": "Hello!"}],
@@ -15,7 +15,7 @@ def test_chat_llama_cpp() -> None:
         assert response.status_code == 200
 
         response = client.post(
-            "/api/v1/chat/completions",
+            "/v1/chat/completions",
             json={
                 "stream": True,
                 "model": "vicuna-7b-q4",
@@ -25,7 +25,7 @@ def test_chat_llama_cpp() -> None:
         assert response.status_code == 200
 
         response = client.post(
-            "/api/v1/embeddings",
+            "/v1/embeddings",
             json={
                 "model": "vicuna-7b-q4",
                 "input": "Hello!",
