@@ -2,8 +2,6 @@ FROM huggingface/transformers-pytorch-gpu:4.28.1
 
 ARG MODEL_ID
 
-RUN pip install "accelerate>=0.16.0,<1" xformers
-
 WORKDIR /usr/src/app/
 
 COPY requirements.txt ./
