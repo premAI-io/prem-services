@@ -12,4 +12,4 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/coder-codet5p-220m-py-cpu:$VERSION \
     --platform linux/amd64 ./cdr-t5
 
-docker run --rm ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest pytest
+docker run --rm ghcr.io/premai-io/coder-codet5p-220m-py-cpu:$VERSION pytest

@@ -2,7 +2,7 @@
 
 set -e
 
-export VERSION=1.0.0
+export VERSION=1.0.2
 
 docker buildx build --push \
     --cache-from ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest \
@@ -11,4 +11,5 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest \
     --tag ghcr.io/premai-io/chat-dolly-v2-12b-gpu:$VERSION \
     ./cht-dolly-v2
-docker run --gpus all ghcr.io/premai-io/chat-dolly-v2-12b-gpu:latest pytest
+
+docker run --gpus all ghcr.io/premai-io/chat-dolly-v2-12b-gpu:$VERSION pytest

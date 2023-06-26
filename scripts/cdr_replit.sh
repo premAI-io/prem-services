@@ -12,4 +12,4 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:$VERSION \
     ./cdr-replit
 
-docker run --rm --gpus all ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:latest pytest
+docker run --rm --gpus all ghcr.io/premai-io/coder-replit-code-v1-3b-gpu:$VERSION pytest

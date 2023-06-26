@@ -12,7 +12,7 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:$VERSION \
     ./a2t-whisper
 
-docker run --rm ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:latest pytest
+docker run --rm ghcr.io/premai-io/audio-to-text-whisper-large-v2-gpu:$VERSION pytest
 
 docker buildx build --push \
     --cache-from ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest \
@@ -21,4 +21,5 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest \
     --tag ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:$VERSION \
     --platform linux/arm64,linux/amd64 ./a2t-whisper
-docker run --rm ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:latest pytest
+
+docker run --rm ghcr.io/premai-io/audio-to-text-whisper-tiny-cpu:$VERSION pytest
