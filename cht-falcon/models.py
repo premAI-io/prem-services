@@ -1,9 +1,9 @@
 import os
-
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, Pipeline
-import torch
 from abc import ABC, abstractmethod
 from typing import List
+
+import torch
+from transformers import AutoTokenizer, Pipeline, pipeline
 
 
 class ChatModel(ABC):
@@ -46,7 +46,14 @@ class FalconBasedModel(ChatModel):
         **kwargs,
     ) -> List:
         message = messages[-1]["content"]
-        return [cls.model(message, max_length=max_tokens, num_return_sequences=1, eos_token_id=cls.tokenizer.eos_token_id)[0]["generated_text"]]
+        return [
+            cls.model(
+                message,
+                max_length=max_tokens,
+                num_return_sequences=1,
+                eos_token_id=cls.tokenizer.eos_token_id,
+            )[0]["generated_text"]
+        ]
 
     @classmethod
     def get_model(cls) -> Pipeline:

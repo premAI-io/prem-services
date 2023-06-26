@@ -1,12 +1,11 @@
 import os
 import uuid
 from datetime import datetime as dt
-from typing import List, Optional, Union, Dict, Any
+from typing import Any, Dict, List, Optional, Union
 
 from fastapi import APIRouter, HTTPException
 from models import FalconBasedModel as model
 from pydantic import BaseModel
-
 
 
 class ChatCompletionInput(BaseModel):
@@ -71,7 +70,7 @@ async def chat_completions(body: ChatCompletionInput) -> Dict[str, Any]:
                 }
                 for idx, text in enumerate(predictions)
             ],
-            usage={"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+            usage={"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
         )
     except ValueError as error:
         raise HTTPException(

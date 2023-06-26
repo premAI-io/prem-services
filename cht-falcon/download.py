@@ -1,10 +1,10 @@
-import os
 import argparse
+import os
 
-from tenacity import retry, stop_after_attempt, wait_fixed
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import transformers
 import torch
+import transformers
+from tenacity import retry, stop_after_attempt, wait_fixed
+from transformers import AutoTokenizer
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model", help="Model to download")
@@ -20,7 +20,7 @@ def download_model() -> None:
         model=args.model,
         torch_dtype=torch.bfloat16,
         trust_remote_code=True,
-        device_map=os.getenv("DEVICE", "auto")
+        device_map=os.getenv("DEVICE", "auto"),
     )
 
 
