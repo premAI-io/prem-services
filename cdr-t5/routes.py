@@ -83,14 +83,13 @@ async def health_tabby():
 
 @router.post("/completions")
 async def chat_completions_tabby(body: CodeCompletionInput):
-    predictions = model.generate(prompt=f"{body.segments.prefix}{body.segments.suffix}")
+    text = model.generate(prompt=f"{body.segments.prefix}{body.segments.suffix}")
     return {
         "id": str(uuid.uuid4()),
         "choices": [
             {
-                "index": idx,
+                "index": 0,
                 "text": text,
             }
-            for idx, text in enumerate(predictions)
         ],
     }
