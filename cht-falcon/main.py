@@ -26,7 +26,7 @@ def create_start_app_handler(app: FastAPI) -> Callable[[], None]:
 
 def get_application() -> FastAPI:
     application = FastAPI(title="prem-chat", debug=True, version="0.0.1")
-    application.include_router(api_router, prefix="/api/v1")
+    application.include_router(api_router, prefix="/v1")
     application.add_event_handler("startup", create_start_app_handler(application))
     application.add_middleware(
         CORSMiddleware,
@@ -42,4 +42,4 @@ app = get_application()
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8001)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
