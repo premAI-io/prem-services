@@ -6,7 +6,7 @@ def test_chat_falcon() -> None:
     app = get_application()
     with TestClient(app) as client:
         response = client.post(
-            "/api/v1/chat/completions",
+            "/v1/chat/completions",
             json={
                 "model": "falcon-7b",
                 "messages": [{"role": "user", "content": "Hello!"}],
