@@ -1,9 +1,11 @@
+import json
 import os
 import uuid
 from datetime import datetime as dt
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Generator, List, Optional, Union
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 from models import FalconBasedModel as model
 from pydantic import BaseModel
 
@@ -44,6 +46,26 @@ async def health() -> HealthResponse:
     return HealthResponse(status=True)
 
 
+async def generate_chunk_based_response(body, text) -> Generator[str, Any, None]:
+    yield "event: completion\ndata: " + json.dumps(
+        {
+            "id": str(uuid.uuid4()),
+            "model": body.model,
+            "object": "chat.completion",
+            "choices": [
+                {
+                    "role": "assistant",
+                    "index": 1,
+                    "delta": {"role": "assistant", "content": text},
+                    "finish_reason": "stop",
+                }
+            ],
+            "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
+        }
+    ) + "\n\n"
+    yield "event: done\ndata: [DONE]\n\n"
+
+
 @router.post("/chat/completions", response_model=ChatCompletionResponse)
 async def chat_completions(body: ChatCompletionInput) -> Dict[str, Any]:
     try:
@@ -56,6 +78,11 @@ async def chat_completions(body: ChatCompletionInput) -> Dict[str, Any]:
             max_tokens=body.max_tokens,
             stop=body.stop,
         )
+        if body.stream:
+            return StreamingResponse(
+                generate_chunk_based_response(body, predictions[0]),
+                media_type="text/event-stream",
+            )
         return ChatCompletionResponse(
             id=str(uuid.uuid4()),
             model=os.getenv("MODEL_ID", "tiiuae/falcon-7b"),
