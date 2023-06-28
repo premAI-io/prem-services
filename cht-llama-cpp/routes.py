@@ -1,6 +1,7 @@
 import json
 import uuid
 from datetime import datetime as dt
+from typing import List, Optional, Union
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
@@ -15,12 +16,13 @@ class ChatCompletionInput(BaseModel):
     top_p: float = 0.95
     n: int = 1
     stream: bool = False
-    stop: str | list | None = []
+    stop: Optional[Union[str, List[str]]] = []
     max_tokens: int = 256
     presence_penalty: float = 0.0
     frequence_penalty: float = 0.0
-    logit_bias: dict | None = {}
+    logit_bias: Optional[dict] = {}
     user: str = ""
+    n_threads: int = None
 
 
 class ChatCompletionResponse(BaseModel):
@@ -80,6 +82,7 @@ async def generate_chunk_based_response(body):
         presence_penalty=body.presence_penalty,
         frequence_penalty=body.frequence_penalty,
         logit_bias=body.logit_bias,
+        n_threads=body.n_threads,
     )
     for chunk in chunks:
         yield f"event: completion\ndata: {json.dumps(chunk)}\n\n"
@@ -104,6 +107,7 @@ async def chat_completions(body: ChatCompletionInput):
             presence_penalty=body.presence_penalty,
             frequence_penalty=body.frequence_penalty,
             logit_bias=body.logit_bias,
+            n_threads=body.n_threads,
         )
     except ValueError as error:
         raise HTTPException(
