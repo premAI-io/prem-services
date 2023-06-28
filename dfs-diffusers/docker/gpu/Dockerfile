@@ -15,6 +15,6 @@ RUN python3 download.py --model $MODEL_ID
 COPY . .
 
 ENV MODEL_ID=$MODEL_ID
-ENV DEVICE=gpu
+ENV DEVICE=cuda
 
 CMD python3 main.py

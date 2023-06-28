@@ -2,7 +2,7 @@
 
 set -e
 
-export VERSION=1.0.0
+export VERSION=1.0.1
 
 docker buildx build --push \
     --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-2-1-base-gpu:latest \

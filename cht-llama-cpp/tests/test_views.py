@@ -10,6 +10,7 @@ def test_chat_llama_cpp() -> None:
             json={
                 "model": "vicuna-7b-q4",
                 "messages": [{"role": "user", "content": "Hello!"}],
+                "n_threads": 10,
             },
         )
         assert response.status_code == 200
