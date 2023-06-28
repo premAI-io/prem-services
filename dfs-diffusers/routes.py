@@ -12,6 +12,8 @@ class ImageGenerationInput(BaseModel):
     size: str = ""
     response_format: str = "b64_json"
     user: str = ""
+    negative_prompt: str = None
+    seed: int = None
 
 
 class ImageObjectUrl(BaseModel):
@@ -46,5 +48,7 @@ async def images_generations(body: ImageGenerationInput):
         n=body.n,
         size=body.size,
         response_format=body.response_format,
+        negative_prompt=body.negative_prompt,
+        seed=body.seed,
     )
     return ImageGenerationResponse(created=int(dt.now().timestamp()), data=images)

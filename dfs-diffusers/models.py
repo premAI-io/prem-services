@@ -17,12 +17,14 @@ class DiffuserBasedModel(object):
         response_format: str,
         step_count: int = 25,
         negative_prompt: str = None,
+        seed: int = None,
     ):
         images = cls.model(
             prompt,
             num_inference_steps=step_count,
             negative_prompt=negative_prompt,
             num_images_per_prompt=n,
+            seed=seed,
         ).images
         data = []
         for image in images:
