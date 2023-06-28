@@ -17,7 +17,7 @@ class ChatCompletionInput(BaseModel):
     top_p: float = 1.0
     n: int = 1
     stream: bool = False
-    stop: Optional[Union[str, List[str]]] = ""
+    stop: Optional[Union[str, List[str]]] = ["\nUser:", "User:"]
     max_tokens: int = 64
     presence_penalty: float = 0.0
     frequence_penalty: float = 0.0
