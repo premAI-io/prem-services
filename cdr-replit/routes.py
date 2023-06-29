@@ -4,8 +4,9 @@ from datetime import datetime as dt
 from typing import List, Optional, Union
 
 from fastapi import APIRouter
-from models import ReplitBasedModel as model
 from pydantic import BaseModel
+
+from models import ReplitBasedModel as model
 
 
 class ChatCompletionInput(BaseModel):

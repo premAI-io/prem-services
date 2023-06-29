@@ -2,8 +2,9 @@ from datetime import datetime as dt
 from typing import List, Union
 
 from fastapi import APIRouter
-from models import DiffuserBasedModel as model
 from pydantic import BaseModel
+
+from models import DiffuserBasedModel as model
 
 
 class ImageGenerationInput(BaseModel):

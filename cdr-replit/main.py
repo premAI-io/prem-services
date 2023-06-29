@@ -4,8 +4,9 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models import ReplitBasedModel
 from routes import router as api_router
+
+from models import ReplitBasedModel
 
 load_dotenv()
 

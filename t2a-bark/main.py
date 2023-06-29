@@ -5,8 +5,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from models import BarkBasedModel
 from routes import router as api_router
+
+from models import BarkBasedModel
 
 load_dotenv()
 

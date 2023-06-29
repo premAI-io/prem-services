@@ -4,8 +4,9 @@ from datetime import datetime as dt
 from typing import List, Optional, Union
 
 from fastapi import APIRouter
-from models import T5BasedModel as model
 from pydantic import BaseModel
+
+from models import T5BasedModel as model
 
 
 class ChatCompletionInput(BaseModel):
