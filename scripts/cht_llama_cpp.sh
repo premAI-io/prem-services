@@ -2,7 +2,7 @@
 
 set -e
 
-export VERSION=1.0.3
+export VERSION=1.0.4
 
 docker buildx build --push \
     --cache-from ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu:latest \
