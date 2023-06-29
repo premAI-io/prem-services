@@ -1,3 +1,4 @@
+import multiprocessing
 import os
 
 from llama_cpp import Llama
@@ -43,12 +44,11 @@ class LLaMACPPBasedModel(object):
         stream: bool = False,
         max_tokens: int = 256,
         stop: list = [],
-        n_threads: int = None,
+        n_threads: int = max(multiprocessing.cpu_count() // 2, 1),
         **kwargs,
     ):
         messages = cls.reduce_number_of_messages(messages[::-1], max_tokens)[::-1]
-        if n_threads is not None:
-            cls.model.n_threads = n_threads
+        cls.model.n_threads = n_threads
         return cls.model.create_chat_completion(
             messages,
             temperature=temperature,

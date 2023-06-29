@@ -1,12 +1,14 @@
 import json
+import multiprocessing
 import uuid
 from datetime import datetime as dt
 from typing import List, Optional, Union
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
-from models import LLaMACPPBasedModel as model
 from pydantic import BaseModel
+
+from models import LLaMACPPBasedModel as model
 
 
 class ChatCompletionInput(BaseModel):
@@ -22,7 +24,7 @@ class ChatCompletionInput(BaseModel):
     frequence_penalty: float = 0.0
     logit_bias: Optional[dict] = {}
     user: str = ""
-    n_threads: int = None
+    n_threads: int = max(multiprocessing.cpu_count() // 2, 1)
 
 
 class ChatCompletionResponse(BaseModel):
