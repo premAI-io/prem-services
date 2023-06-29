@@ -1,6 +1,6 @@
 # 🤖 Prem Services
 
-## Contributing 
+## Contributing
 
 Each folder represents one or more Prem services. All the current services have been built with Python and FastAPI. In order to create a new service you need to create a new folder or extend an existing one.
 

@@ -17,8 +17,8 @@ class ChatCompletionInput(BaseModel):
     top_p: float = 1.0
     n: int = 1
     stream: bool = False
-    stop: Optional[Union[str, List[str]]] = ""
-    max_tokens: int = 32
+    stop: Optional[Union[str, List[str]]] = ["User:"]
+    max_tokens: int = 64
     presence_penalty: float = 0.0
     frequence_penalty: float = 0.0
     logit_bias: Optional[dict] = {}
@@ -85,7 +85,7 @@ async def chat_completions(body: ChatCompletionInput) -> Dict[str, Any]:
             )
         return ChatCompletionResponse(
             id=str(uuid.uuid4()),
-            model=os.getenv("MODEL_ID", "tiiuae/falcon-7b"),
+            model=os.getenv("MODEL_ID", "tiiuae/falcon-7b-instruct"),
             object="chat.completion",
             created=int(dt.now().timestamp()),
             choices=[

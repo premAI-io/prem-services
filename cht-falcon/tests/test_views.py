@@ -8,7 +8,7 @@ def test_chat_falcon() -> None:
         response = client.post(
             "/v1/chat/completions",
             json={
-                "model": "falcon-7b",
+                "model": "falcon-7b-instruct",
                 "messages": [{"role": "user", "content": "Hello!"}],
             },
         )
