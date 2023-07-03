@@ -1,9 +1,8 @@
 import os
 
 from fastapi import APIRouter, UploadFile
-from pydantic import BaseModel
-
 from models import WhisperBasedModel as inference_model
+from pydantic import BaseModel
 
 
 class AudioTranscriptionResponse(BaseModel):

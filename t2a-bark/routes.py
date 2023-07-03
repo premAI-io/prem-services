@@ -2,10 +2,9 @@ import uuid
 
 from bark import SAMPLE_RATE
 from fastapi import APIRouter
+from models import BarkBasedModel as model
 from pydantic import BaseModel
 from scipy.io.wavfile import write as write_wav
-
-from models import BarkBasedModel as model
 
 
 class AudioGenerationInput(BaseModel):

@@ -5,9 +5,8 @@ from typing import List, Optional, Union
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
-
 from models import DollyBasedModel as model
+from pydantic import BaseModel
 
 
 class ChatCompletionInput(BaseModel):

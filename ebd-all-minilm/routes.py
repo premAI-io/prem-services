@@ -2,9 +2,8 @@ from typing import List, Union
 
 import tiktoken
 from fastapi import APIRouter
-from pydantic import BaseModel
-
 from models import SentenceTransformerBasedModel as model
+from pydantic import BaseModel
 
 
 class EmbeddingsInput(BaseModel):
