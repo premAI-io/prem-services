@@ -1,10 +1,11 @@
 import logging
+from typing import Callable
 
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models import ReplitBasedModel
+from models import XGenBasedModel
 from routes import router as api_router
 
 load_dotenv()
@@ -16,9 +17,9 @@ logging.basicConfig(
 )
 
 
-def create_start_app_handler(app: FastAPI):
+def create_start_app_handler(app: FastAPI) -> Callable[[], None]:
     def start_app() -> None:
-        ReplitBasedModel.get_model()
+        XGenBasedModel.get_model()
 
     return start_app
 

@@ -1,23 +1,24 @@
 import json
+import os
 import uuid
 from datetime import datetime as dt
-from typing import List, Optional, Union
+from typing import Any, Dict, Generator, List, Optional, Union
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
-from models import DollyBasedModel as model
+from models import XGenBasedModel as model
 from pydantic import BaseModel
 
 
 class ChatCompletionInput(BaseModel):
     model: str
     messages: List[dict]
-    temperature: float = 1.0
-    top_p: float = 1.0
+    temperature: float = 0.7
+    top_p: float = 0.75
     n: int = 1
     stream: bool = False
-    stop: Optional[Union[str, List[str]]] = ""
-    max_tokens: int = 7
+    stop: Optional[Union[str, List[str]]] = ["User:"]
+    max_tokens: int = 64
     presence_penalty: float = 0.0
     frequence_penalty: float = 0.0
     logit_bias: Optional[dict] = {}
@@ -41,11 +42,11 @@ router = APIRouter()
 
 
 @router.get("/", response_model=HealthResponse)
-async def health():
+async def health() -> HealthResponse:
     return HealthResponse(status=True)
 
 
-async def generate_chunk_based_response(body, text):
+async def generate_chunk_based_response(body, text) -> Generator[str, Any, None]:
     yield "event: completion\ndata: " + json.dumps(
         {
             "id": str(uuid.uuid4()),
@@ -66,7 +67,7 @@ async def generate_chunk_based_response(body, text):
 
 
 @router.post("/chat/completions", response_model=ChatCompletionResponse)
-async def chat_completions(body: ChatCompletionInput):
+async def chat_completions(body: ChatCompletionInput) -> Dict[str, Any]:
     try:
         predictions = model.generate(
             messages=body.messages,
@@ -76,9 +77,6 @@ async def chat_completions(body: ChatCompletionInput):
             stream=body.stream,
             max_tokens=body.max_tokens,
             stop=body.stop,
-            presence_penalty=body.presence_penalty,
-            frequence_penalty=body.frequence_penalty,
-            logit_bias=body.logit_bias,
         )
         if body.stream:
             return StreamingResponse(
@@ -87,8 +85,9 @@ async def chat_completions(body: ChatCompletionInput):
             )
         return ChatCompletionResponse(
             id=str(uuid.uuid4()),
-            model=body.model,
+            model=os.getenv("MODEL_ID", "Salesforce/xgen-7b-8k-inst"),
             object="chat.completion",
+            created=int(dt.now().timestamp()),
             choices=[
                 {
                     "role": "assistant",
