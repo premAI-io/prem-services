@@ -4,7 +4,7 @@ set -e
 
 export VERSION=1.0.0
 
-docker buildx build \
+docker buildx build --push \
     --cache-from ghcr.io/premai-io/chat-xgen-7b-8k-inst-gpu:latest \
     --file ./cht-xgen/docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=Salesforce/xgen-7b-8k-inst" \
