@@ -2,7 +2,7 @@ from fastapi.testclient import TestClient
 from main import get_application
 
 
-def test_chat_falcon() -> None:
+def test_chat_mpt() -> None:
     app = get_application()
     with TestClient(app) as client:
         response = client.post(
