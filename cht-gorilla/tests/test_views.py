@@ -9,7 +9,9 @@ def test_chat_gorilla() -> None:
             "/v1/chat/completions",
             json={
                 "model": "gorilla-llm/gorilla-falcon-7b-hf-v0",
-                "messages": [{"role": "user", "content": "Generate an image of  a cat"}],
+                "messages": [
+                    {"role": "user", "content": "Generate an image of  a cat"}
+                ],
             },
         )
         assert response.status_code == 200, response.content

@@ -3,10 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 import torch
-from transformers import (
-    AutoModelForCausalLM,
-    AutoTokenizer
-)
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 class ChatModel(ABC):
@@ -35,7 +32,7 @@ class ChatModel(ABC):
 
 class Gorilla(ChatModel):
     model = None
-    tokenizer = None 
+    tokenizer = None
 
     @classmethod
     def generate(
@@ -55,30 +52,31 @@ class Gorilla(ChatModel):
         """
         input_ids = cls.tokenizer([message]).input_ids
         output_ids = cls.model.generate(
-            torch.as_tensor(input_ids).to('cuda'),
+            torch.as_tensor(input_ids).to("cuda"),
             temperature=temperature,
             top_p=top_p,
             num_return_sequences=n,
             eos_token_id=cls.tokenizer.eos_token_id,
             max_new_tokens=max_tokens,
             do_sample=kwargs.get("do_sample", True),
-            **kwargs
+            **kwargs,
         )
-        output_ids = output_ids[0][len(input_ids[0]) :]
-        return [
-            cls.tokenizer.decode(output_ids, skip_special_tokens=True).strip()
-        ]
+        output_ids = output_ids[0][len(input_ids[0]) :]  # noqa E203
+        return [cls.tokenizer.decode(output_ids, skip_special_tokens=True).strip()]
 
     @classmethod
     def get_model(cls) -> AutoModelForCausalLM:
         if cls.model is None:
-            cls.tokenizer = AutoTokenizer.from_pretrained(os.getenv("MODEL_ID", 'gorilla-llm/gorilla-falcon-7b-hf-v0'), trust_remote_code=True)
+            cls.tokenizer = AutoTokenizer.from_pretrained(
+                os.getenv("MODEL_ID", "gorilla-llm/gorilla-falcon-7b-hf-v0"),
+                trust_remote_code=True,
+            )
             cls.tokenizer.pad_token = cls.tokenizer.eos_token
             cls.tokenizer.pad_token_id = 11
             cls.model = AutoModelForCausalLM.from_pretrained(
-                os.getenv("MODEL_ID", 'gorilla-llm/gorilla-falcon-7b-hf-v0'),
+                os.getenv("MODEL_ID", "gorilla-llm/gorilla-falcon-7b-hf-v0"),
                 trust_remote_code=True,
                 torch_dtype=torch.float16,
-                device_map=os.getenv("DEVICE", "auto")
-        )
+                device_map=os.getenv("DEVICE", "auto"),
+            )
         return cls.model

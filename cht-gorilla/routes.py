@@ -85,7 +85,7 @@ async def chat_completions(body: ChatCompletionInput) -> Dict[str, Any]:
             )
         return ChatCompletionResponse(
             id=str(uuid.uuid4()),
-            model=os.getenv("MODEL_ID", 'gorilla-llm/gorilla-falcon-7b-hf-v0'),
+            model=os.getenv("MODEL_ID", "gorilla-llm/gorilla-falcon-7b-hf-v0"),
             object="chat.completion",
             created=int(dt.now().timestamp()),
             choices=[
