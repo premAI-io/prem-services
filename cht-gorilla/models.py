@@ -46,10 +46,7 @@ class Gorilla(ChatModel):
         stop: str = "",
         **kwargs,
     ) -> List:
-        message = f"""
-        User: {messages[-1]["content"]}
-        Assistant:
-        """
+        message = messages[-1]["content"]
         input_ids = cls.tokenizer([message]).input_ids
         output_ids = cls.model.generate(
             torch.as_tensor(input_ids).to("cuda"),
