@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 
 
 class ChatModel(ABC):
@@ -66,17 +66,36 @@ class Gorilla(ChatModel):
 
     @classmethod
     def get_model(cls) -> AutoModelForCausalLM:
+        model = os.getenv("MODEL_ID", "gorilla-llm/gorilla-falcon-7b-hf-v0")
         if cls.model is None:
-            cls.tokenizer = AutoTokenizer.from_pretrained(
-                os.getenv("MODEL_ID", "gorilla-llm/gorilla-falcon-7b-hf-v0"),
-                trust_remote_code=True,
-            )
-            cls.tokenizer.pad_token = cls.tokenizer.eos_token
-            cls.tokenizer.pad_token_id = 11
-            cls.model = AutoModelForCausalLM.from_pretrained(
-                os.getenv("MODEL_ID", "gorilla-llm/gorilla-falcon-7b-hf-v0"),
-                trust_remote_code=True,
-                torch_dtype=torch.float16,
-                device_map=os.getenv("DEVICE", "auto"),
-            )
+            if 'falcon' in model:
+                cls.tokenizer = AutoTokenizer.from_pretrained(
+                    model,
+                    trust_remote_code=True,
+                )
+                cls.tokenizer.pad_token = cls.tokenizer.eos_token
+                cls.tokenizer.pad_token_id = 11
+                cls.model = AutoModelForCausalLM.from_pretrained(
+                    model,
+                    trust_remote_code=True,
+                    torch_dtype=torch.float16,
+                    device_map=os.getenv("DEVICE", "auto"),
+                )
+            else:
+                config = AutoConfig.from_pretrained(
+                    model,
+                    trust_remote_code=True,
+                    init_device=os.getenv("DEVICE", "cuda:0"),
+                )
+                cls.tokenizer = AutoTokenizer.from_pretrained(
+                    model,
+                    config=config,
+                    trust_remote_code=True,
+                )
+                cls.model = AutoModelForCausalLM.from_pretrained(
+                    model,
+                    config=config,
+                    trust_remote_code=True,
+                    torch_dtype=torch.bfloat16,
+                )
         return cls.model

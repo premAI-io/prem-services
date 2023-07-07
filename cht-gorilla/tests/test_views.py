@@ -1,3 +1,6 @@
+import os
+
+
 from fastapi.testclient import TestClient
 from main import get_application
 
@@ -8,7 +11,7 @@ def test_chat_gorilla() -> None:
         response = client.post(
             "/v1/chat/completions",
             json={
-                "model": "gorilla-llm/gorilla-falcon-7b-hf-v0",
+                "model": os.getenv("MODEL_ID", "gorilla-llm/gorilla-falcon-7b-hf-v0"),
                 "messages": [
                     {"role": "user", "content": "Generate an image of  a cat"}
                 ],
