@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import List
 
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
+from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 
 
 class ChatModel(ABC):
@@ -65,7 +65,7 @@ class Gorilla(ChatModel):
     def get_model(cls) -> AutoModelForCausalLM:
         model = os.getenv("MODEL_ID", "gorilla-llm/gorilla-falcon-7b-hf-v0")
         if cls.model is None:
-            if 'falcon' in model:
+            if "falcon" in model:
                 cls.tokenizer = AutoTokenizer.from_pretrained(
                     model,
                     trust_remote_code=True,

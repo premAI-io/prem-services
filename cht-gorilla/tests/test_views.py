@@ -1,6 +1,5 @@
 import os
 
-
 from fastapi.testclient import TestClient
 from main import get_application
 
