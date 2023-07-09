@@ -7,7 +7,7 @@ def test_audio_to_text() -> None:
     with TestClient(app) as client:
         with open("./tests/audio.mp3", "rb") as file:
             response = client.post(
-                "/api/v1/audio/transcriptions",
+                "/v1/audio/transcriptions",
                 files={"file": ("audio.mp3", file, "audio/mp3")},
                 data={"model": "v2-large"},
             )

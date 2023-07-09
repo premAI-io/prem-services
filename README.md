@@ -4,6 +4,16 @@
 
 Each folder represents one or more Prem services. All the current services have been built with Python and FastAPI. In order to create a new service you need to create a new folder or extend an existing one.
 
+### Running in your env
+
+```bash
+# install pre-commit
+pip install pre-commit
+
+# configure pre-commit to run on commit
+pre-commit install
+```
+
 ### Release Process
 
 1. Extend or create a new folder with the model you wanna serve.
