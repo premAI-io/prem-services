@@ -3,7 +3,9 @@ from abc import ABC, abstractmethod
 from typing import List
 
 import torch
-from transformers import pipeline
+from transformers import logging, pipeline
+
+logging.set_verbosity_error()
 
 
 class ChatModel(ABC):
@@ -47,18 +49,16 @@ class DollyBasedModel(ChatModel):
         **kwargs,
     ) -> List:
         message = messages[-1]["content"]
-        input_tokens = len(message) // 4
         return [
             cls.model(
                 message,
-                max_new_tokens=max_tokens - input_tokens,
+                max_length=max_tokens,
                 temperature=temperature,
                 top_p=top_p,
                 num_return_sequences=n,
                 return_full_text=kwargs.get("return_full_text", False),
                 do_sample=kwargs.get("do_sample", True),
                 stop_sequence=stop[0] if stop else None,
-                **kwargs,
             )[0]["generated_text"]
         ]
 
