@@ -46,15 +46,19 @@ class DollyBasedModel(ChatModel):
         stop: str = "",
         **kwargs,
     ) -> List:
-        print(kwargs)
         message = messages[-1]["content"]
+        input_tokens = len(message) // 4
         return [
             cls.model(
                 message,
-                # max_length=max_tokens,
+                max_new_tokens=max_tokens - input_tokens,
                 temperature=temperature,
                 top_p=top_p,
                 num_return_sequences=n,
+                return_full_text=kwargs.get("return_full_text", False),
+                do_sample=kwargs.get("do_sample", True),
+                stop_sequence=stop[0] if stop else None,
+                **kwargs,
             )[0]["generated_text"]
         ]
 
