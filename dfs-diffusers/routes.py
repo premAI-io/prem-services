@@ -41,7 +41,7 @@ async def health():
     return HealthResponse(status=True)
 
 
-@router.post("/images/generations")
+@router.post("/images/generations", response_model=ImageGenerationResponse)
 async def images_generations(body: ImageGenerationInput):
     images = model.generate(
         prompt=body.prompt,
