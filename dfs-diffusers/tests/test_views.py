@@ -10,8 +10,8 @@ def test_generate_image() -> None:
             json={
                 "prompt": "Hello World",
                 "negative_prompt": "Goodbye World",
-                "n": 4,
-                "step_count": 25,
+                "n": 1,
+                "num_inference_steps": 25,
             },
         )
         assert response.status_code == 200
