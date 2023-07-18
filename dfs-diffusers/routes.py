@@ -1,17 +1,12 @@
+import inspect
 from datetime import datetime as dt
-from typing import List, Union
+from typing import List, Type, Union
 
-from fastapi import APIRouter, UploadFile, File, Request, Form, Depends
+from fastapi import APIRouter, Depends, File, Form, UploadFile
 from models import DiffuserBasedModel as model
 from pydantic import BaseModel
-
-
-import inspect
-from typing import Type
-
-from fastapi import Form
-from pydantic import BaseModel
 from pydantic.fields import ModelField
+
 
 def as_form(cls: Type[BaseModel]):
     """
@@ -24,13 +19,15 @@ def as_form(cls: Type[BaseModel]):
         model_field: ModelField  # type: ignore
 
         new_parameters.append(
-             inspect.Parameter(
-                 model_field.alias,
-                 inspect.Parameter.POSITIONAL_ONLY,
-                 default=Form(...) if model_field.required else Form(model_field.default),
-                 annotation=model_field.outer_type_,
-             )
-         )
+            inspect.Parameter(
+                model_field.alias,
+                inspect.Parameter.POSITIONAL_ONLY,
+                default=Form(...)
+                if model_field.required
+                else Form(model_field.default),
+                annotation=model_field.outer_type_,
+            )
+        )
 
     async def as_form_func(**data):
         return cls(**data)
@@ -38,8 +35,9 @@ def as_form(cls: Type[BaseModel]):
     sig = inspect.signature(as_form_func)
     sig = sig.replace(parameters=new_parameters)
     as_form_func.__signature__ = sig  # type: ignore
-    setattr(cls, 'as_form', as_form_func)
+    setattr(cls, "as_form", as_form_func)
     return cls
+
 
 class ImageGenerationInput(BaseModel):
     prompt: str
@@ -52,9 +50,11 @@ class ImageGenerationInput(BaseModel):
     guidance_scale: float = 7.5
     num_inference_steps: int = 25
 
+
 @as_form
 class ImageEditInput(ImageGenerationInput):
     ...
+
 
 class ImageObjectUrl(BaseModel):
     url: str
@@ -97,7 +97,10 @@ async def images_generations(body: ImageGenerationInput):
 
 
 @router.post("/images/edits", response_model=ImageGenerationResponse)
-async def images_edits(image: UploadFile = File(...), body: ImageEditInput = Depends(ImageEditInput.as_form)):
+async def images_edits(
+    image: UploadFile = File(...),
+    body: ImageEditInput = Depends(ImageEditInput.as_form),
+):
     images = model.generate(
         prompt=body.prompt,
         image=image,
@@ -111,8 +114,12 @@ async def images_edits(image: UploadFile = File(...), body: ImageEditInput = Dep
     )
     return ImageGenerationResponse(created=int(dt.now().timestamp()), data=images)
 
+
 @router.post("/images/upscale", response_model=ImageGenerationResponse)
-async def images_upscale(image: UploadFile = File(...), body: ImageEditInput = Depends(ImageEditInput.as_form)):
+async def images_upscale(
+    image: UploadFile = File(...),
+    body: ImageEditInput = Depends(ImageEditInput.as_form),
+):
     images = model.upscale(
         prompt=body.prompt,
         image=image,
