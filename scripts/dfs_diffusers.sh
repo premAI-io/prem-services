@@ -2,7 +2,7 @@
 
 set -e
 
-export VERSION=1.0.2
+export VERSION=1.0.3
 
 docker buildx build --push \
     --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-2-1-gpu:latest \
@@ -28,4 +28,22 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/diffuser-stable-diffusion-2-gpu:$VERSION \
     ./dfs-diffusers
 
-docker run --rm --gpus all ghcr.io/premai-io/diffuser-stable-diffusion-2-gpu:$VERSION pytest
+# docker system prune --all --force --volumes
+
+docker buildx build --push \
+    --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-x4-upscaler-gpu:latest \
+    --file ./dfs-diffusers/docker/gpu/Dockerfile \
+    --build-arg="MODEL_ID=stabilityai/stable-diffusion-x4-upscaler" \
+    --tag ghcr.io/premai-io/diffuser-stable-diffusion-x4-upscaler-gpu:latest \
+    --tag ghcr.io/premai-io/diffuser-stable-diffusion-x4-upscaler-gpu:$VERSION \
+    ./dfs-diffusers
+
+docker buildx build --push \
+    --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-x2-latent-upscaler-gpu:latest \
+    --file ./dfs-diffusers/docker/gpu/Dockerfile \
+    --build-arg="MODEL_ID=stabilityai/sd-x2-latent-upscaler" \
+    --tag ghcr.io/premai-io/diffuser-stable-diffusion-x2-latent-upscaler-gpu:latest \
+    --tag ghcr.io/premai-io/diffuser-stable-diffusion-x2-latent-upscaler-gpu:$VERSION \
+    ./dfs-diffusers
+
+# docker run --rm --gpus all ghcr.io/premai-io/diffuser-stable-diffusion-2-gpu:$VERSION pytest
