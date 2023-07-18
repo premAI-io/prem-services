@@ -9,3 +9,5 @@ tenacity==8.2.2
 diffusers==0.18.2
 torch==2.0.1
 accelerate==0.21.0
+pydantic==1.10.11
+python-multipart==0.0.6
