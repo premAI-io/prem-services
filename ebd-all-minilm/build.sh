@@ -11,6 +11,7 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:latest \
     --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:$VERSION \
     --platform linux/arm64,linux/amd64 .
+docker run --rm ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:$VERSION pytest
 
 docker buildx build --push \
     --cache-from ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest \
@@ -19,6 +20,4 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:latest \
     --tag ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:$VERSION \
     .
-
-docker run --rm ghcr.io/premai-io/embeddings-all-minilm-l6-v2-cpu:$VERSION pytest
 docker run --rm --gpus all ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu:$VERSION pytest
