@@ -6,7 +6,7 @@ export VERSION=1.0.0
 
 echo "Build, push and test gorilla falcon"
 
-docker buildx build --push \
+docker buildx build ${@:1} \
     --cache-from ghcr.io/premai-io/chat-gorilla-falcon-7b-gpu:latest \
     --file ./docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=gorilla-llm/gorilla-falcon-7b-hf-v0" \
@@ -18,7 +18,7 @@ docker run -e MODEL_ID=gorilla-llm/gorilla-falcon-7b-hf-v0 --gpus all ghcr.io/pr
 
 echo "Build, push and test gorilla mpt"
 
-docker buildx build --push \
+docker buildx build ${@:1} \
     --cache-from ghcr.io/premai-io/chat-gorilla-mpt-7b-gpu:latest \
     --file ./docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=gorilla-llm/gorilla-mpt-7b-hf-v0" \

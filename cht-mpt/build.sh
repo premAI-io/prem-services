@@ -4,7 +4,7 @@ set -e
 
 export VERSION=1.0.0
 
-docker buildx build --push \
+docker buildx build ${@:1} \
     --cache-from ghcr.io/premai-io/chat-mpt-7b-gpu:latest \
     --file ./docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=mosaicml/mpt-7b-chat" \
@@ -12,7 +12,7 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/chat-mpt-7b-gpu:$VERSION \
     .
 
-docker buildx build --push \
+docker buildx build ${@:1} \
     --cache-from ghcr.io/premai-io/mpt-7b-gpu:latest \
     --file ./docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=mosaicml/mpt-7b" \
@@ -20,7 +20,7 @@ docker buildx build --push \
     --tag ghcr.io/premai-io/mpt-7b-gpu:$VERSION \
     .
 
-docker buildx build --push \
+docker buildx build ${@:1} \
     --cache-from ghcr.io/premai-io/mpt-7b-instruct-gpu:latest \
     --file ./docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=mosaicml/mpt-7b-instruct" \

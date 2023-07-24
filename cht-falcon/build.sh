@@ -4,7 +4,7 @@ set -e
 
 export VERSION=1.0.0
 
-docker buildx build --push \
+docker buildx build ${@:1} \
     --cache-from ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest \
     --file ./docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=tiiuae/falcon-7b-instruct" \

@@ -4,7 +4,7 @@ set -e
 
 export VERSION=1.0.0
 
-docker buildx build --push \
+docker buildx build ${@:1} \
     --cache-from ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest \
     --file ./docker/cpu/Dockerfile \
     --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \

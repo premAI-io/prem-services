@@ -4,7 +4,7 @@ set -e
 
 export VERSION=1.0.0
 
-docker buildx build --push \
+docker buildx build ${@:1} \
     --cache-from=ghcr.io/premai-io/text-to-audio-bark-gpu:latest \
     --file ./docker/gpu/Dockerfile \
     --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest \
@@ -13,7 +13,7 @@ docker buildx build --push \
 
 docker run --rm --gpus all ghcr.io/premai-io/text-to-audio-bark-gpu:$VERSION pytest
 
-docker buildx build --push \
+docker buildx build ${@:1} \
     --cache-from=ghcr.io/premai-io/text-to-audio-bark-cpu:latest \
     --file ./docker/cpu/Dockerfile \
     --tag ghcr.io/premai-io/text-to-audio-bark-cpu:latest \
