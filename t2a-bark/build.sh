@@ -9,7 +9,9 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-docker run --rm --gpus all $IMAGE:$VERSION pytest
+if test -z ${TESTS_SKIP_GPU+x}; then
+  docker run --rm --gpus all $IMAGE:$VERSION pytest
+fi
 
 IMAGE=ghcr.io/premai-io/text-to-audio-bark-cpu
 docker buildx build ${@:1} \

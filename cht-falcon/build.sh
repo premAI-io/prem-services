@@ -9,4 +9,6 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-docker run --gpus all $IMAGE:$VERSION pytest
+if test -z ${TESTS_SKIP_GPU+x}; then
+  docker run --gpus all $IMAGE:$VERSION pytest
+fi
