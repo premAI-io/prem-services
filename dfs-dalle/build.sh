@@ -1,11 +1,8 @@
 #!/bin/bash
-
 set -e
-
 export VERSION=1.0.0
 
 docker buildx build ${@:1} \
-    --cache-from=ghcr.io/premai-io/diffuser-dalle-mini-gpu:latest \
     --file ./docker/gpu/Dockerfile \
     --build-arg="DALLE_MODEL_ID=dalle-mini/dalle-mini" \
     --build-arg="DALLE_REVISION_ID=''" \
@@ -14,5 +11,4 @@ docker buildx build ${@:1} \
     --tag ghcr.io/premai-io/diffuser-dalle-mini-gpu:latest \
     --tag ghcr.io/premai-io/diffuser-dalle-mini-gpu:$VERSION \
     .
-
-docker run --rm --gpus all ghcr.io/premai-io/diffuser-dalle-mini-gpu:latest pytest
+docker run --rm --gpus all ghcr.io/premai-io/diffuser-dalle-mini-gpu:$VERSION pytest
