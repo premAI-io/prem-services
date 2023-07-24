@@ -7,6 +7,7 @@ MODEL_ZOO = {
     "gpt4all-lora-q4": {"modelWeightsName": "gpt4all-lora-q4.bin", "ctxMaxTokens": 512},
     "vicuna-7b-q4": {"modelWeightsName": "vicuna-7b-q4.bin", "ctxMaxTokens": 512},
 }
+DEFAULT_N_THREADS = max(multiprocessing.cpu_count() // 2, 1)
 
 
 def get_model_info() -> dict:
@@ -43,10 +44,12 @@ class LLaMACPPBasedModel(object):
         n: int = 1,
         stream: bool = False,
         max_tokens: int = 256,
-        stop: list = [],
-        n_threads: int = max(multiprocessing.cpu_count() // 2, 1),
+        stop: list = None,
+        n_threads: int = DEFAULT_N_THREADS,
         **kwargs,
     ):
+        if stop is None:
+            stop = []
         messages = cls.reduce_number_of_messages(messages[::-1], max_tokens)[::-1]
         cls.model.n_threads = n_threads
         return cls.model.create_chat_completion(
