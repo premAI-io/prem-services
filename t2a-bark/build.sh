@@ -2,17 +2,21 @@
 set -e
 export VERSION=1.0.0
 
+IMAGE=ghcr.io/premai-io/text-to-audio-bark-gpu
 docker buildx build ${@:1} \
     --file ./docker/gpu/Dockerfile \
-    --tag ghcr.io/premai-io/text-to-audio-bark-gpu:latest \
-    --tag ghcr.io/premai-io/text-to-audio-bark-gpu:$VERSION \
+    --build-arg="MODEL_ID=bark/t2a-bark" \
+    --tag $IMAGE:latest \
+    --tag $IMAGE:$VERSION \
     .
-docker run --rm --gpus all ghcr.io/premai-io/text-to-audio-bark-gpu:$VERSION pytest
+docker run --rm --gpus all $IMAGE:$VERSION pytest
 
+IMAGE=ghcr.io/premai-io/text-to-audio-bark-cpu
 docker buildx build ${@:1} \
     --file ./docker/cpu/Dockerfile \
-    --tag ghcr.io/premai-io/text-to-audio-bark-cpu:latest \
-    --tag ghcr.io/premai-io/text-to-audio-bark-cpu:$VERSION \
+    --build-arg="MODEL_ID=bark/t2a-bark" \
+    --tag $IMAGE:latest \
+    --tag $IMAGE:$VERSION \
     --platform linux/arm64,linux/amd64 \
     .
-docker run --rm ghcr.io/premai-io/text-to-audio-bark-cpu:$VERSION pytest
+docker run --rm $IMAGE:$VERSION pytest

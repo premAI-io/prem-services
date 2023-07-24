@@ -2,10 +2,11 @@
 set -e
 export VERSION=1.0.0
 
+IMAGE=ghcr.io/premai-io/chat-falcon-7b-instruct-gpu
 docker buildx build ${@:1} \
     --file ./docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=tiiuae/falcon-7b-instruct" \
-    --tag ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:latest \
-    --tag ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:$VERSION \
+    --tag $IMAGE:latest \
+    --tag $IMAGE:$VERSION \
     .
-docker run --gpus all ghcr.io/premai-io/chat-falcon-7b-instruct-gpu:$VERSION pytest
+docker run --gpus all $IMAGE:$VERSION pytest

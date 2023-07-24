@@ -2,11 +2,12 @@
 set -e
 export VERSION=1.0.0
 
+IMAGE=ghcr.io/premai-io/coder-codet5p-220m-py-cpu
 docker buildx build ${@:1} \
     --file ./docker/cpu/Dockerfile \
     --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \
-    --tag ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest \
-    --tag ghcr.io/premai-io/coder-codet5p-220m-py-cpu:$VERSION \
+    --tag $IMAGE:latest \
+    --tag $IMAGE:$VERSION \
     --platform linux/amd64 \
     .
-docker run --rm ghcr.io/premai-io/coder-codet5p-220m-py-cpu:$VERSION pytest
+docker run --rm $IMAGE:$VERSION pytest
