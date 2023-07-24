@@ -10,6 +10,6 @@ docker buildx build --push \
     --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \
     --tag ghcr.io/premai-io/coder-codet5p-220m-py-cpu:latest \
     --tag ghcr.io/premai-io/coder-codet5p-220m-py-cpu:$VERSION \
-    --platform linux/amd64 ./cdr-t5
+    --platform linux/amd64 .
 
 docker run --rm ghcr.io/premai-io/coder-codet5p-220m-py-cpu:$VERSION pytest
