@@ -10,6 +10,7 @@ docker buildx build ${@:1} \
     --tag $IMAGE:$VERSION \
     --platform linux/arm64,linux/amd64 \
     .
+docker run --rm $IMAGE:$VERSION pytest
 
 IMAGE=ghcr.io/premai-io/chat-vicuna-7b-q4-cpu
 docker buildx build ${@:1} \

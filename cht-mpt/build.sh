@@ -20,6 +20,9 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
+if test -z ${TESTS_SKIP_GPU+x}; then
+  docker run --rm --gpus all ghcr.io/premai-io/mpt-7b-gpu:$VERSION pytest
+fi
 
 IMAGE=ghcr.io/premai-io/mpt-7b-instruct-gpu
 docker buildx build ${@:1} \
@@ -28,3 +31,6 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
+if test -z ${TESTS_SKIP_GPU+x}; then
+  docker run --rm --gpus all ghcr.io/premai-io/mpt-7b-instruct-gpu:$VERSION pytest
+fi

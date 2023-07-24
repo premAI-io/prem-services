@@ -9,6 +9,9 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
+if test -z ${TESTS_SKIP_GPU+x}; then
+  docker run --rm --gpus all $IMAGE:$VERSION pytest
+fi
 
 IMAGE=ghcr.io/premai-io/diffuser-stable-diffusion-1-5-gpu
 docker buildx build ${@:1} \
@@ -17,6 +20,9 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
+if test -z ${TESTS_SKIP_GPU+x}; then
+  docker run --rm --gpus all $IMAGE:$VERSION pytest
+fi
 
 IMAGE=ghcr.io/premai-io/diffuser-stable-diffusion-2-gpu
 docker buildx build ${@:1} \
@@ -25,8 +31,9 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-
-# docker system prune --all --force --volumes
+if test -z ${TESTS_SKIP_GPU+x}; then
+  docker run --rm --gpus all $IMAGE:$VERSION pytest
+fi
 
 IMAGE=ghcr.io/premai-io/upscaler-stable-diffusion-x4-gpu
 docker buildx build ${@:1} \
@@ -35,6 +42,9 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
+if test -z ${TESTS_SKIP_GPU+x}; then
+  docker run --rm --gpus all $IMAGE:$VERSION pytest
+fi
 
 IMAGE=ghcr.io/premai-io/upscaler-stable-diffusion-x2-latent-gpu
 docker buildx build ${@:1} \
@@ -43,5 +53,6 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-
-# docker run --rm --gpus all ghcr.io/premai-io/diffuser-stable-diffusion-2-gpu:$VERSION pytest
+if test -z ${TESTS_SKIP_GPU+x}; then
+  docker run --rm --gpus all $IMAGE:$VERSION pytest
+fi

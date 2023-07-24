@@ -8,6 +8,6 @@ docker buildx build ${@:1} \
     --build-arg="MODEL_ID=Salesforce/codet5p-220m-py" \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
-    --platform linux/amd64 \
+    --platform linux/arm64,linux/amd64 \
     .
 docker run --rm $IMAGE:$VERSION pytest
