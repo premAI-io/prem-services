@@ -17,15 +17,6 @@ jobs:
             git diff --quiet HEAD~1 -- $model || echo $model
           done | jq -Rsc 'split("\n")[:-1]'
         )" >> $GITHUB_OUTPUT
-    - name: Launch self-hosted runners
-      run: |
-        curl -sSL -X POST -H "X-Api-Key: $API_KEY" https://api.paperspace.io/machines/$MACHINE/start
-        while test $(curl -fsSL -X GET -H "X-Api-Key: $API_KEY" https://api.paperspace.io/machines/getMachinePublic?machineId=$MACHINE | jq -r .state) != ready; do
-          sleep 5
-        done
-      env:
-        API_KEY: ${{ secrets.PAPERSPACE_API_KEY }}
-        MACHINE: ${{ secrets.PAPERSPACE_MACHINE }}
     outputs:
       models: ${{ steps.list.outputs.modified }}
   build-test-push:
@@ -51,17 +42,7 @@ jobs:
     - run: ./build.sh $BUILDX_ARGS
       working-directory: ${{ matrix.model }}
       env:
+        # can't load/test cross-CPU-platform, hence the mess below
         BUILDX_ARGS: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') && '--push' || '--load' }}
         BUILDX_PLATFORM: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') && 'linux/arm64,linux/amd64' || 'linux/amd64' }}
         TESTS_SKIP_CPU: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') && '1' || '' }}
-  teardown:
-    needs: build-test-push
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    steps:
-    - name: Terminate self-hosted runners
-      run: |
-        curl -sSL -X POST -H "X-Api-Key: $API_KEY" https://api.paperspace.io/machines/$MACHINE/stop
-      env:
-        API_KEY: ${{ secrets.PAPERSPACE_API_KEY }}
-        MACHINE: ${{ secrets.PAPERSPACE_MACHINE }}
