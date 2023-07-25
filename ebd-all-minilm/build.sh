@@ -8,7 +8,7 @@ docker buildx build ${@:1} \
     --build-arg="MODEL_ID=all-MiniLM-L6-v2" \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
-    --platform linux/arm64,linux/amd64 \
+    --platform ${BUILDX_PLATFORM:-linux/arm64,linux/amd64} \
     .
 docker run --rm $IMAGE:$VERSION pytest
 

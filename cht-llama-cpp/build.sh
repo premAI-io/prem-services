@@ -8,7 +8,7 @@ docker buildx build ${@:1} \
     --build-arg="MODEL_ID=gpt4all-lora-q4" \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
-    --platform linux/arm64,linux/amd64 \
+    --platform ${BUILDX_PLATFORM:-linux/arm64,linux/amd64} \
     .
 docker run --rm $IMAGE:$VERSION pytest
 
@@ -18,6 +18,6 @@ docker buildx build ${@:1} \
     --build-arg="MODEL_ID=vicuna-7b-q4" \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
-    --platform linux/arm64,linux/amd64 \
+    --platform ${BUILDX_PLATFORM:-linux/arm64,linux/amd64} \
     .
 docker run --rm $IMAGE:$VERSION pytest
