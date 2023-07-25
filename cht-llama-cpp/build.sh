@@ -10,7 +10,9 @@ docker buildx build ${@:1} \
     --tag $IMAGE:$VERSION \
     --platform ${BUILDX_PLATFORM:-linux/arm64,linux/amd64} \
     .
-docker run --rm $IMAGE:$VERSION pytest
+if test -z $TESTS_SKIP_CPU; then
+  docker run --rm $IMAGE:$VERSION pytest
+fi
 
 IMAGE=ghcr.io/premai-io/chat-vicuna-7b-q4-cpu
 docker buildx build ${@:1} \
@@ -20,4 +22,6 @@ docker buildx build ${@:1} \
     --tag $IMAGE:$VERSION \
     --platform ${BUILDX_PLATFORM:-linux/arm64,linux/amd64} \
     .
-docker run --rm $IMAGE:$VERSION pytest
+if test -z $TESTS_SKIP_CPU; then
+  docker run --rm $IMAGE:$VERSION pytest
+fi

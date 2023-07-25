@@ -10,7 +10,9 @@ docker buildx build ${@:1} \
     --tag $IMAGE:$VERSION \
     --platform ${BUILDX_PLATFORM:-linux/arm64,linux/amd64} \
     .
-docker run --rm $IMAGE:$VERSION pytest
+if test -z $TESTS_SKIP_CPU; then
+  docker run --rm $IMAGE:$VERSION pytest
+fi
 
 IMAGE=ghcr.io/premai-io/embeddings-all-minilm-l6-v2-gpu
 docker buildx build ${@:1} \
@@ -19,6 +21,6 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-if test -z ${TESTS_SKIP_GPU+x}; then
+if test -z $TESTS_SKIP_GPU; then
   docker run --rm --gpus all $IMAGE:$VERSION pytest
 fi

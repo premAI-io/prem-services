@@ -9,7 +9,7 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-if test -z ${TESTS_SKIP_GPU+x}; then
+if test -z $TESTS_SKIP_GPU; then
   docker run --rm --gpus all $IMAGE:$VERSION pytest
 fi
 
@@ -20,7 +20,7 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-if test -z ${TESTS_SKIP_GPU+x}; then
+if test -z $TESTS_SKIP_GPU; then
   docker run --rm --gpus all $IMAGE:$VERSION pytest
 fi
 
@@ -31,7 +31,7 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-if test -z ${TESTS_SKIP_GPU+x}; then
+if test -z $TESTS_SKIP_GPU; then
   docker run --rm --gpus all $IMAGE:$VERSION pytest
 fi
 
@@ -42,7 +42,7 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-if test -z ${TESTS_SKIP_GPU+x}; then
+if test -z $TESTS_SKIP_GPU; then
   docker run --rm --gpus all $IMAGE:$VERSION pytest
 fi
 
@@ -53,6 +53,6 @@ docker buildx build ${@:1} \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
-if test -z ${TESTS_SKIP_GPU+x}; then
+if test -z $TESTS_SKIP_GPU; then
   docker run --rm --gpus all $IMAGE:$VERSION pytest
 fi
