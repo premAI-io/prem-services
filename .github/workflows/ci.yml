@@ -12,6 +12,7 @@ jobs:
     - id: list
       name: List modified models
       run: |
+        git diff --stat HEAD~1
         echo "modified=$(
           for model in $(ls -d *-*); do
             git diff --quiet HEAD~1 -- $model || echo $model
