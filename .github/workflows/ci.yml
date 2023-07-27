@@ -40,12 +40,12 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - run: ./build.sh $BUILDX_ARGS
+    - run: ./build.sh ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') && '--push' || '--load' }}
       working-directory: ${{ matrix.model }}
       env:
-        # can't load/test cross-CPU-platform, hence the mess below
-        BUILDX_ARGS: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') && '--push' || '--load' }}
+        # can't load cross-CPU-platform
         BUILDX_PLATFORM: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') && 'linux/arm64,linux/amd64' || 'linux/amd64' }}
+        # can't test cross-CPU-platform
         TESTS_SKIP_CPU: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') && '1' || '' }}
         # avoid OoM errors (TODO: remove when using larger GPU)
         TESTS_SKIP_GPU: ${{ contains(fromJSON('["a2t-whisper","cht-dolly-v2","cht-gorilla","cht-llama-v2","cht-mpt","cht-xgen","dfs-dalle","dfs-diffusers"]'), matrix.model) && '1' || '' }}
