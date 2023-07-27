@@ -15,7 +15,7 @@ def as_form(cls: Type[BaseModel]):
     """
     new_parameters = []
 
-    for field_name, model_field in cls.__fields__.items():
+    for model_field in cls.__fields__.values():
         model_field: ModelField  # type: ignore
 
         new_parameters.append(
@@ -35,7 +35,7 @@ def as_form(cls: Type[BaseModel]):
     sig = inspect.signature(as_form_func)
     sig = sig.replace(parameters=new_parameters)
     as_form_func.__signature__ = sig  # type: ignore
-    setattr(cls, "as_form", as_form_func)
+    cls.as_form = as_form_func
     return cls
 
 
@@ -98,8 +98,8 @@ async def images_generations(body: ImageGenerationInput):
 
 @router.post("/images/edits", response_model=ImageGenerationResponse)
 async def images_edits(
-    image: UploadFile = File(...),
-    body: ImageEditInput = Depends(ImageEditInput.as_form),
+    image: UploadFile = File(...),  # noqa:B008
+    body: ImageEditInput = Depends(ImageEditInput.as_form),  # noqa:B008
 ):
     images = model.generate(
         prompt=body.prompt,
@@ -117,8 +117,8 @@ async def images_edits(
 
 @router.post("/images/upscale", response_model=ImageGenerationResponse)
 async def images_upscale(
-    image: UploadFile = File(...),
-    body: ImageEditInput = Depends(ImageEditInput.as_form),
+    image: UploadFile = File(...),  # noqa:B008
+    body: ImageEditInput = Depends(ImageEditInput.as_form),  # noqa:B008
 ):
     images = model.upscale(
         prompt=body.prompt,
