@@ -21,11 +21,28 @@ docker buildx build --push \
     ./dfs-diffusers
 
 docker buildx build --push \
-    --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-2-base-gpu:latest \
+    --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-2-gpu:latest \
     --file ./dfs-diffusers/docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=stabilityai/stable-diffusion-2" \
     --tag ghcr.io/premai-io/diffuser-stable-diffusion-2-gpu:latest \
     --tag ghcr.io/premai-io/diffuser-stable-diffusion-2-gpu:$VERSION \
+    ./dfs-diffusers
+
+docker buildx build --push \
+    --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-xl-gpu:latest \
+    --file ./dfs-diffusers/docker/gpu/Dockerfile \
+    --build-arg="MODEL_ID=stabilityai/stable-diffusion-xl-base-1.0" \
+    --tag ghcr.io/premai-io/diffuser-stable-diffusion-xl-gpu:latest \
+    --tag ghcr.io/premai-io/diffuser-stable-diffusion-xl-gpu:$VERSION \
+    ./dfs-diffusers
+
+docker buildx build --push \
+    --cache-from=ghcr.io/premai-io/diffuser-stable-diffusion-xl-with-refiner-gpu:latest \
+    --file ./dfs-diffusers/docker/gpu/Dockerfile \
+    --build-arg="MODEL_ID=stabilityai/stable-diffusion-xl-base-1.0" \
+    --build-arg="REFINER_ID=stabilityai/stable-diffusion-xl-refiner-1.0" \
+    --tag ghcr.io/premai-io/diffuser-stable-diffusion-xl-with-refiner-gpu:latest \
+    --tag ghcr.io/premai-io/diffuser-stable-diffusion-xl-with-refiner-gpu:$VERSION \
     ./dfs-diffusers
 
 # docker system prune --all --force --volumes
