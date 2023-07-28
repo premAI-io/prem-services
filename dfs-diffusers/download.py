@@ -1,4 +1,5 @@
 import argparse
+import os
 
 import torch
 from diffusers import (
@@ -10,7 +11,7 @@ from tenacity import retry, stop_after_attempt, wait_fixed
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model", help="Model to download")
-parser.add_argument("--refiner", required=False, help="Refiner model to download")
+REFINER_ID = os.environ.get("REFINER_ID", "")
 args = parser.parse_args()
 
 print(f"Downloading model {args.model}")
@@ -25,8 +26,8 @@ def download_model():
     _ = StableDiffusionLatentUpscalePipeline.from_pretrained(
         args.model, torch_dtype=torch.float16
     )
-    if args.refiner:
-        _ = DiffusionPipeline.from_pretrained(args.refiner, torch_dtype=torch.float16)
+    if REFINER_ID:
+        _ = DiffusionPipeline.from_pretrained(REFINER_ID, torch_dtype=torch.float16)
 
 
 download_model()
