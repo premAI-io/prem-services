@@ -43,9 +43,11 @@ jobs:
     needs: setup
     runs-on: [self-hosted, gpu]
     strategy:
-      fail-fast: false  # TODO: remove
+      fail-fast: false
       matrix:
         model: ${{ fromJson(needs.setup.outputs.models) }}
+    # if nothing to do, skip without failing
+    if: needs.setup.outputs.models != '[]'
     env:
       VERSION: '1.0.0'
       DOCKER_BUILDKIT: 1
