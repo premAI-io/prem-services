@@ -10,6 +10,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
+        ref: ${{ github.event.pull_request.head.sha || github.ref }}
     - id: list
       name: List modified models
       run: |
@@ -20,14 +21,14 @@ jobs:
           done | sort | jq -Rsc 'split("\n")[:-1]'
         )" >> $GITHUB_OUTPUT
     - name: Launch self-hosted runners
-      if: steps.list.outputs.modified != 'modified=[]'
+      if: steps.list.outputs.modified != '[]'
       run: |
         curl -sSL -X POST -H "X-Api-Key: $API_KEY" https://api.paperspace.io/machines/$MACHINE/start
         while test $(curl -fsSL -X GET -H "X-Api-Key: $API_KEY" https://api.paperspace.io/machines/getMachinePublic?machineId=$MACHINE | jq -r .state) != ready; do
           sleep 5
         done
-        IP=$(curl -fsSL -X GET -H "X-Api-Key: $API_KEY" $API_INFO?machineId=$MACHINE_ID | jq -r .publicIpAddress)
-        echo "$SSH_KEY" > key
+        IP=$(curl -fsSL -X GET -H "X-Api-Key: $API_KEY" https://api.paperspace.io/machines/getMachinePublic?machineId=$MACHINE | jq -r .publicIpAddress)
+        echo "$SSH_KEY" > key; chmod 600 key
         ssh -o "StrictHostKeyChecking no" -i key paperspace@$IP 'touch "gha-run-${{ github.run_id }}.lock"'
       env:
         SSH_KEY: ${{ secrets.PAPERSPACE_SSH_KEY }}
@@ -80,8 +81,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Stop self-hosted runners
       run: |
-        IP=$(curl -fsSL -X GET -H "X-Api-Key: $API_KEY" $API_INFO?machineId=$MACHINE_ID | jq -r .publicIpAddress)
-        echo "$SSH_KEY" > key
+        IP=$(curl -fsSL -X GET -H "X-Api-Key: $API_KEY" https://api.paperspace.io/machines/getMachinePublic?machineId=$MACHINE | jq -r .publicIpAddress)
+        echo "$SSH_KEY" > key; chmod 600 key
         ssh -o "StrictHostKeyChecking no" -i key paperspace@$IP \
           'rm -f "gha-run-${{ github.run_id }}.lock"; sleep 10; ls gha-run-*.lock' || \
           curl -sSL -X POST -H "X-Api-Key: $API_KEY" https://api.paperspace.io/machines/$MACHINE/stop
