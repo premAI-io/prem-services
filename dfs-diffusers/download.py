@@ -10,7 +10,7 @@ from tenacity import retry, stop_after_attempt, wait_fixed
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model", help="Model to download")
-parser.add_argument("--refiner", required=False, help="Refiner model to download")
+parser.add_argument("--refiner", help="Refiner model to download")
 args = parser.parse_args()
 
 print(f"Downloading model {args.model}")
