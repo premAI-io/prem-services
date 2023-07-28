@@ -32,7 +32,6 @@ class ChatModel(ABC):
         pass
 
     @abstractmethod
-    @staticmethod
     def stitch_prompt(messages: list) -> str:
         pass
 
@@ -68,7 +67,10 @@ class LlamaBasedModel(ChatModel):
                 do_sample=kwargs.get("do_sample", True),
                 stop_sequence=stop[0] if stop else None,
                 stopping_criteria=cls.stopping_criteria(stop, prompt, cls.tokenizer),
-            )[0]["generated_text"].rstrip(stop[0] if stop else "")
+            )[0]["generated_text"]
+            .rstrip(stop[0] if stop else "")
+            .rsplit(".", 1)[0]
+            .strip()
         ]
 
     @classmethod
