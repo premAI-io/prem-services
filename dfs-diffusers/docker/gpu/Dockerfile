@@ -11,7 +11,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY download.py .
 
-RUN python3 download.py --model $MODEL_ID
+RUN python3 download.py --model $MODEL_ID --refiner $REFINER_ID
 
 COPY . .
 
