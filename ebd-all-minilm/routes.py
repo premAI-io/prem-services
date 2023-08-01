@@ -57,7 +57,7 @@ async def embeddings(body: EmbeddingsInput):
     "/engines/text-embedding-ada-002/embeddings", response_model=EmbeddingsResponse
 )
 async def embeddings_openai(body: EmbeddingsInput):
-    if len(body.input) > 0 and type(body.input[0]) == list:
+    if len(body.input) > 0 and isinstance(body.input[0], list):
         encoding = tiktoken.model.encoding_for_model("text-embedding-ada-002")
         texts = encoding.decode_batch(body.input)
     else:
