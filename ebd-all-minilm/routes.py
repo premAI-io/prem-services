@@ -2,13 +2,14 @@ from typing import List, Union
 
 import tiktoken
 from fastapi import APIRouter
-from models import SentenceTransformerBasedModel as model
 from pydantic import BaseModel
+
+from models import SentenceTransformerBasedModel as model
 
 
 class EmbeddingsInput(BaseModel):
     model: str = None
-    input: Union[List[str], List[List[int]]]
+    input: Union[List[str], List[List[int]], str]
     user: str = ""
 
 
@@ -44,7 +45,10 @@ async def health():
 
 @router.post("/embeddings", response_model=EmbeddingsResponse)
 async def embeddings(body: EmbeddingsInput):
-    values = model.embeddings(texts=body.input)
+    if isinstance(body.input, str):
+        values = model.embeddings(texts=[body.input])
+    else:
+        values = model.embeddings(texts=body.input)
     return EmbeddingsResponse(
         object="list",
         data=[EmbeddingObject(embedding=value) for value in values],
