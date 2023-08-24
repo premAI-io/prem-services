@@ -2,6 +2,7 @@ name: CI
 on:
   push: {branches: [main]}
   pull_request_target:
+  schedule: [{cron: '0 11 * * 7'}]  # M H d m w (Sun 11:00)
 jobs:
   setup:
     environment: ${{ github.event_name == 'pull_request_target' && !contains('OWNER,MEMBER,COLLABORATOR', github.event.pull_request.author_association) && 'external' || 'internal' }}
