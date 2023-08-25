@@ -11,7 +11,7 @@ build_cpu(){
   docker buildx build ${@:3} \
     --file ./docker/cpu/Dockerfile \
     --build-arg="MODEL_ID=$MODEL_ID" \
-    --label="org.opencontainers.image.source=https://github.com/premAI-io/prem-services"
+    --label="org.opencontainers.image.source=https://github.com/premAI-io/prem-services" \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     --platform ${BUILDX_PLATFORM:-linux/arm64,linux/amd64} \
@@ -24,7 +24,7 @@ build_gpu(){
   docker buildx build ${@:3} \
     --file ./docker/gpu/Dockerfile \
     --build-arg="MODEL_ID=$MODEL_ID" \
-    --label="org.opencontainers.image.source=https://github.com/premAI-io/prem-services"
+    --label="org.opencontainers.image.source=https://github.com/premAI-io/prem-services" \
     --tag $IMAGE:latest \
     --tag $IMAGE:$VERSION \
     .
