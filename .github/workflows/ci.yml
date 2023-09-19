@@ -15,6 +15,7 @@ jobs:
     - id: list
       name: List modified models
       run: |
+        echo "debug:author_association:${{ github.event.pull_request.author_association }}"
         git diff --stat HEAD~1
         echo "modified=$(
           for model in $(ls -d *-*); do
