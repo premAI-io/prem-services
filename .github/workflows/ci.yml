@@ -10,18 +10,29 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        fetch-depth: 0
+        fetch-depth: 2
         ref: ${{ github.event.pull_request.head.sha || github.ref }}
     - id: list
       name: List modified models
       run: |
-        echo "debug:author_association:${{ github.event.pull_request.author_association }}"
-        git diff --stat HEAD~1
-        echo "modified=$(
-          for model in $(ls -d *-*); do
-            git diff --quiet HEAD~1 -- $model || echo $model
-          done | sort | jq -Rsc 'split("\n")[:-1]'
-        )" >> $GITHUB_OUTPUT
+        echo "debug: author_association: ${{ github.event.pull_request.author_association }}"
+        if test "${{ github.event_name }}" = schedule; then
+          "modified=$(ls -d *-* | sort | jq -Rsc 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+        else
+          if [[ "${{ github.event_name }}" == pull_request* ]]; then
+            git fetch origin --depth=2 "${{ github.base_ref }}"
+            BASE=FETCH_HEAD
+          else
+            BASE=HEAD~1
+          fi
+          echo "debug: base: $BASE"
+          git diff --stat $BASE
+          echo "modified=$(
+            for model in $(ls -d *-*); do
+              git diff --quiet $BASE -- $model || echo $model
+            done | sort | jq -Rsc 'split("\n")[:-1]'
+          )" >> $GITHUB_OUTPUT
+        fi
     - name: Launch self-hosted runners
       if: steps.list.outputs.modified != '[]'
       run: |
