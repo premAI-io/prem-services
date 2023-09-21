@@ -4,6 +4,7 @@ import torch
 from petals import AutoDistributedModelForCausalLM
 from tenacity import retry, stop_after_attempt, wait_fixed
 from transformers import AutoTokenizer, LlamaTokenizer
+from utils import get_cpu_architecture
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--model", help="Model to download")
@@ -18,9 +19,13 @@ def download_model() -> None:
         _ = LlamaTokenizer.from_pretrained(args.model)
     else:
         _ = AutoTokenizer.from_pretrained(args.model)
-    _ = AutoDistributedModelForCausalLM.from_pretrained(
-        args.model, torch_dtype=torch.float32
-    )
+
+    if get_cpu_architecture() == "AMD":
+        _ = AutoDistributedModelForCausalLM.from_pretrained(
+            args.model, torch_dtype=torch.float32
+        )
+    else:
+        _ = AutoDistributedModelForCausalLM.from_pretrained(args.model)
 
 
 download_model()

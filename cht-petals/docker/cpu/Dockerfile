@@ -11,6 +11,7 @@ COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r ./requirements.txt --upgrade pip
 
+COPY utils.py .
 COPY download.py .
 
 RUN python3 download.py --model $MODEL_ID

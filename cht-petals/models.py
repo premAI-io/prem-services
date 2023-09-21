@@ -2,8 +2,10 @@ import os
 from abc import ABC, abstractmethod
 from typing import List
 
+import torch
 from petals import AutoDistributedModelForCausalLM
 from transformers import AutoTokenizer, LlamaTokenizer, logging
+from utils import get_cpu_architecture
 
 logging.set_verbosity_error()
 
@@ -50,8 +52,7 @@ class PetalsBasedModel(ChatModel):
     ) -> List:
         message = messages[-1]["content"]
         inputs = cls.tokenizer(message, return_tensors="pt")["input_ids"]
-        outputs = cls.model.generate(inputs, max_new_tokens=5)
-        print(cls.tokenizer.decode(outputs[0]))
+        outputs = cls.model.generate(inputs, max_new_tokens=max_tokens)
         return [cls.tokenizer.decode(outputs[0])]
 
     @classmethod
@@ -61,7 +62,12 @@ class PetalsBasedModel(ChatModel):
                 cls.tokenizer = LlamaTokenizer.from_pretrained(os.getenv("MODEL_ID"))
             else:
                 cls.tokenizer = AutoTokenizer.from_pretrained(os.getenv("MODEL_ID"))
-            cls.model = AutoDistributedModelForCausalLM.from_pretrained(
-                os.getenv("MODEL_ID")
-            )
+            if get_cpu_architecture() == "AMD":
+                cls.model = AutoDistributedModelForCausalLM.from_pretrained(
+                    os.getenv("MODEL_ID"), torch_dtype=torch.float32
+                )
+            else:
+                cls.model = AutoDistributedModelForCausalLM.from_pretrained(
+                    os.getenv("MODEL_ID")
+                )
         return cls.model
