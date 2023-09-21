@@ -1,5 +1,6 @@
 import argparse
 
+import torch
 from petals import AutoDistributedModelForCausalLM
 from tenacity import retry, stop_after_attempt, wait_fixed
 from transformers import AutoTokenizer, LlamaTokenizer
@@ -17,7 +18,9 @@ def download_model() -> None:
         _ = LlamaTokenizer.from_pretrained(args.model)
     else:
         _ = AutoTokenizer.from_pretrained(args.model)
-    _ = AutoDistributedModelForCausalLM.from_pretrained(args.model)
+    _ = AutoDistributedModelForCausalLM.from_pretrained(
+        args.model, torch_dtype=torch.float32
+    )
 
 
 download_model()
