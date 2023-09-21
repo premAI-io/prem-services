@@ -1,11 +1,11 @@
 import os
 from abc import ABC, abstractmethod
+from platform import machine
 from typing import List
 
 import torch
 from petals import AutoDistributedModelForCausalLM
 from transformers import AutoTokenizer, LlamaTokenizer, logging
-from utils import get_cpu_architecture
 
 logging.set_verbosity_error()
 
@@ -58,16 +58,17 @@ class PetalsBasedModel(ChatModel):
     @classmethod
     def get_model(cls):
         if cls.model is None:
-            if "llama" in os.getenv("MODEL_ID").lower():
-                cls.tokenizer = LlamaTokenizer.from_pretrained(os.getenv("MODEL_ID"))
-            else:
-                cls.tokenizer = AutoTokenizer.from_pretrained(os.getenv("MODEL_ID"))
-            if get_cpu_architecture() == "AMD":
-                cls.model = AutoDistributedModelForCausalLM.from_pretrained(
-                    os.getenv("MODEL_ID"), torch_dtype=torch.float32
-                )
-            else:
-                cls.model = AutoDistributedModelForCausalLM.from_pretrained(
-                    os.getenv("MODEL_ID")
-                )
+            Tokenizer = (
+                LlamaTokenizer
+                if "llama" in os.getenv("MODEL_ID").lower()
+                else AutoTokenizer
+            )
+            cls.tokenizer = Tokenizer.from_pretrained(os.getenv("MODEL_ID"))
+
+            kwargs = {}
+            if "x86_64" in machine():
+                kwargs["torch_dtype"] = torch.float32
+            cls.model = AutoDistributedModelForCausalLM.from_pretrained(
+                os.getenv("MODEL_ID"), **kwargs
+            )
         return cls.model

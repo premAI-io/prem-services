@@ -1,5 +1,5 @@
 import argparse
-import platform
+from platform import machine
 
 import torch
 from petals import AutoDistributedModelForCausalLM
@@ -19,7 +19,7 @@ def download_model() -> None:
     _ = Tokenizer.from_pretrained(args.model)
 
     kwargs = {}
-    if "x86_64" in platform.machine():
+    if "x86_64" in machine():
         kwargs["torch_dtype"] = torch.float32
     _ = AutoDistributedModelForCausalLM.from_pretrained(args.model, **kwargs)
 
