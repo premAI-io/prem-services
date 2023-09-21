@@ -16,10 +16,7 @@ class MPTStoppingCriteria(StoppingCriteria):
         generated_text = self.tokenizer.decode(input_ids[0])
         generated_text = generated_text.replace(self.prompt, "")
         # Check if the target sequence appears in the generated text
-        return any(
-            target_sequence in generated_text
-            for target_sequence in self.target_sequences
-        )
+        return any(target_sequence in generated_text for target_sequence in self.target_sequences)
 
     def __len__(self) -> int:
         return len(self.target_sequences)

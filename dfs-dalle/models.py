@@ -67,9 +67,7 @@ class DalleBasedModel(object):
             img = Image.fromarray(np.asarray(decoded_images[0] * 255, dtype=np.uint8))
             buffered = io.BytesIO()
             img.save(buffered, format="PNG")
-            data.append(
-                {response_format: base64.b64encode(buffered.getvalue()).decode("utf-8")}
-            )
+            data.append({response_format: base64.b64encode(buffered.getvalue()).decode("utf-8")})
 
         return data
 
@@ -78,9 +76,7 @@ class DalleBasedModel(object):
         jax.local_device_count()
 
         @partial(jax.pmap, axis_name="batch", static_broadcasted_argnums=(3, 4, 5, 6))
-        def p_generate(
-            tokenized_prompt, key, params, top_k, top_p, temperature, condition_scale
-        ):
+        def p_generate(tokenized_prompt, key, params, top_k, top_p, temperature, condition_scale):
             return cls.model.generate(
                 **tokenized_prompt,
                 prng_key=key,
@@ -107,9 +103,7 @@ class DalleBasedModel(object):
             )
             cls.decoder, vqgan_params = VQModel.from_pretrained(
                 os.getenv("VQGAN_MODEL_ID", "dalle-mini/vqgan_imagenet_f16_16384"),
-                revision=os.getenv(
-                    "VQGAN_REVISION_ID", "e93a26e7707683d349bf5d5c41c5b0ef69b677a9"
-                ),
+                revision=os.getenv("VQGAN_REVISION_ID", "e93a26e7707683d349bf5d5c41c5b0ef69b677a9"),
                 _do_init=False,
             )
             cls.processor = DalleBartProcessor.from_pretrained(

@@ -94,9 +94,7 @@ async def generate_chunk_based_response(body):
 async def chat_completions(body: ChatCompletionInput):
     try:
         if body.stream:
-            return StreamingResponse(
-                generate_chunk_based_response(body), media_type="text/event-stream"
-            )
+            return StreamingResponse(generate_chunk_based_response(body), media_type="text/event-stream")
         return model.generate(
             messages=body.messages,
             temperature=body.temperature,

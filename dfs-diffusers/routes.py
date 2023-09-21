@@ -22,9 +22,7 @@ def as_form(cls: Type[BaseModel]):
             inspect.Parameter(
                 model_field.alias,
                 inspect.Parameter.POSITIONAL_ONLY,
-                default=Form(...)
-                if model_field.required
-                else Form(model_field.default),
+                default=Form(...) if model_field.required else Form(model_field.default),
                 annotation=model_field.outer_type_,
             )
         )

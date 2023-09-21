@@ -58,17 +58,11 @@ class PetalsBasedModel(ChatModel):
     @classmethod
     def get_model(cls):
         if cls.model is None:
-            Tokenizer = (
-                LlamaTokenizer
-                if "llama" in os.getenv("MODEL_ID").lower()
-                else AutoTokenizer
-            )
+            Tokenizer = LlamaTokenizer if "llama" in os.getenv("MODEL_ID").lower() else AutoTokenizer
             cls.tokenizer = Tokenizer.from_pretrained(os.getenv("MODEL_ID"))
 
             kwargs = {}
             if "x86_64" in machine():
                 kwargs["torch_dtype"] = torch.float32
-            cls.model = AutoDistributedModelForCausalLM.from_pretrained(
-                os.getenv("MODEL_ID"), **kwargs
-            )
+            cls.model = AutoDistributedModelForCausalLM.from_pretrained(os.getenv("MODEL_ID"), **kwargs)
         return cls.model
