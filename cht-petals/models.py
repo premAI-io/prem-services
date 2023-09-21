@@ -1,7 +1,9 @@
 import os
 from abc import ABC, abstractmethod
+from platform import machine
 from typing import List
 
+import torch
 from petals import AutoDistributedModelForCausalLM
 from transformers import AutoTokenizer, LlamaTokenizer, logging
 
@@ -50,18 +52,23 @@ class PetalsBasedModel(ChatModel):
     ) -> List:
         message = messages[-1]["content"]
         inputs = cls.tokenizer(message, return_tensors="pt")["input_ids"]
-        outputs = cls.model.generate(inputs, max_new_tokens=5)
-        print(cls.tokenizer.decode(outputs[0]))
+        outputs = cls.model.generate(inputs, max_new_tokens=max_tokens)
         return [cls.tokenizer.decode(outputs[0])]
 
     @classmethod
     def get_model(cls):
         if cls.model is None:
-            if "llama" in os.getenv("MODEL_ID").lower():
-                cls.tokenizer = LlamaTokenizer.from_pretrained(os.getenv("MODEL_ID"))
-            else:
-                cls.tokenizer = AutoTokenizer.from_pretrained(os.getenv("MODEL_ID"))
+            Tokenizer = (
+                LlamaTokenizer
+                if "llama" in os.getenv("MODEL_ID").lower()
+                else AutoTokenizer
+            )
+            cls.tokenizer = Tokenizer.from_pretrained(os.getenv("MODEL_ID"))
+
+            kwargs = {}
+            if "x86_64" in machine():
+                kwargs["torch_dtype"] = torch.float32
             cls.model = AutoDistributedModelForCausalLM.from_pretrained(
-                os.getenv("MODEL_ID")
+                os.getenv("MODEL_ID"), **kwargs
             )
         return cls.model
