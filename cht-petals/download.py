@@ -1,5 +1,4 @@
 import argparse
-from platform import machine
 
 import torch
 from petals import AutoDistributedModelForCausalLM
@@ -17,11 +16,9 @@ print(f"Downloading model {args.model}")
 def download_model() -> None:
     Tokenizer = LlamaTokenizer if "llama" in args.model.lower() else AutoTokenizer
     _ = Tokenizer.from_pretrained(args.model)
-
-    kwargs = {}
-    if "x86_64" in machine():
-        kwargs["torch_dtype"] = torch.float32
-    _ = AutoDistributedModelForCausalLM.from_pretrained(args.model, **kwargs)
+    _ = AutoDistributedModelForCausalLM.from_pretrained(
+        args.model, torch_dtype=torch.float32
+    )
 
 
 download_model()
