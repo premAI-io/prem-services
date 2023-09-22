@@ -15,7 +15,6 @@ jobs:
     - id: list
       name: List modified models
       run: |
-        echo "debug: author_association: ${{ github.event.pull_request.author_association }}"
         if test "${{ github.event_name }}" = schedule; then
           "modified=$(ls -d *-* | sort | jq -Rsc 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         else
