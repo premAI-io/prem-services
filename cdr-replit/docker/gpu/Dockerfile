@@ -7,8 +7,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 ARG MODEL_ID
 COPY download.py .
-RUN python3 download.py --model $MODEL_ID
+RUN python download.py --model $MODEL_ID
 
 COPY . .
 ENV MODEL_ID=$MODEL_ID
-CMD python3 main.py
+CMD python main.py
