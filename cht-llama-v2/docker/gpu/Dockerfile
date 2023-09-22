@@ -1,6 +1,7 @@
 FROM huggingface/transformers-pytorch-gpu:4.28.1
 WORKDIR /usr/src/app/
 
+RUN cd $(dirname $(which python3)) && ln -s python3 python
 RUN apt update -qq && apt install -yqq --no-install-recommends \
     wget unzip \
     && rm -rf /var/lib/apt/lists/*
