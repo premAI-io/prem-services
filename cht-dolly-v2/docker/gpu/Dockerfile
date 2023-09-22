@@ -11,5 +11,5 @@ RUN python download.py --model $MODEL_ID
 
 COPY . .
 ENV MODEL_ID=$MODEL_ID
-ENV DEVICE=auto
+#ENV DEVICE=auto
 CMD python main.py

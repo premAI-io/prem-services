@@ -1,8 +1,6 @@
 FROM python:3.10-slim-bullseye
 WORKDIR /usr/src/app/
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
 RUN apt update -qq && apt install -yqq --no-install-recommends \
     build-essential git wget libatlas-base-dev \
     && rm -rf /var/lib/apt/lists/*

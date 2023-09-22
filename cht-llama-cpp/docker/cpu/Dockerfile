@@ -5,7 +5,7 @@ RUN apt update -qq && apt install -yqq --no-install-recommends \
     libopenblas-dev ninja-build build-essential wget \
     && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt .
-RUN pip install pytest cmake scikit-build setuptools
+#RUN pip install pytest cmake scikit-build setuptools
 RUN pip install --no-cache-dir -r ./requirements.txt
 
 ARG MODEL_ID
