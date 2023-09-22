@@ -51,7 +51,7 @@ jobs:
       models: ${{ steps.list.outputs.modified }}
   build-test-push:
     concurrency: # terminate on new commits to PRs
-      group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+      group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-${{ matrix.model }}
       cancel-in-progress: true
     needs: setup
     runs-on: [self-hosted, gpu]
