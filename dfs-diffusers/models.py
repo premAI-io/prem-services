@@ -49,9 +49,7 @@ class DiffuserBasedModel(object):
         if image:
             init_image = Image.open(io.BytesIO(image.file.read())).convert("RGB")
             init_image = (
-                init_image.resize(tuple(map(int, (size.split("x")))))
-                if size
-                else init_image
+                init_image.resize(tuple(map(int, (size.split("x"))))) if size else init_image
             )  # breaks e.g 512x512 -> (512, 512)
             model_fn = partial(model_fn, image=init_image)
         images = model_fn(output_type="latent" if cls.refiner_model else "pil").images
@@ -63,9 +61,7 @@ class DiffuserBasedModel(object):
             buffered = io.BytesIO()
             img = img.resize(tuple(map(int, (size.split("x"))))) if size else img
             img.save(buffered, format="PNG")
-            data.append(
-                {response_format: base64.b64encode(buffered.getvalue()).decode()}
-            )
+            data.append({response_format: base64.b64encode(buffered.getvalue()).decode()})
         return data
 
     @classmethod
@@ -85,11 +81,7 @@ class DiffuserBasedModel(object):
         # size = "300x300"
         init_image = Image.open(io.BytesIO(image.file.read())).convert("RGB")
         # print("size found:", init_image.)
-        init_image = (
-            init_image.resize(tuple(map(int, (size.split("x")))))
-            if size
-            else init_image
-        )
+        init_image = init_image.resize(tuple(map(int, (size.split("x"))))) if size else init_image
         images = cls.upscaler_model(
             prompt=prompt,
             image=init_image,
@@ -105,9 +97,7 @@ class DiffuserBasedModel(object):
             buffered = io.BytesIO()
             img = img.resize(tuple(map(int, (size.split("x"))))) if size else img
             img.save(buffered, format="PNG")
-            data.append(
-                {response_format: base64.b64encode(buffered.getvalue()).decode()}
-            )
+            data.append({response_format: base64.b64encode(buffered.getvalue()).decode()})
         return data
 
     @classmethod
@@ -116,11 +106,9 @@ class DiffuserBasedModel(object):
             model_id = os.getenv("MODEL_ID", "stabilityai/stable-diffusion-2-1")
             print("set text img model: ", model_id)
             if "latent" in model_id:
-                cls.upscaler_model = (
-                    StableDiffusionLatentUpscalePipeline.from_pretrained(
-                        model_id, torch_dtype=torch.float16
-                    ).to(os.getenv("DEVICE", "cpu"))
-                )
+                cls.upscaler_model = StableDiffusionLatentUpscalePipeline.from_pretrained(
+                    model_id, torch_dtype=torch.float16
+                ).to(os.getenv("DEVICE", "cpu"))
                 cls.upscaler_model.enable_attention_slicing()
                 return cls.upscaler_model
             elif "xl" in model_id:
@@ -143,14 +131,10 @@ class DiffuserBasedModel(object):
             cls.text_img_model = cls.text_img_model.to(os.getenv("DEVICE", "cpu"))
             cls.text_img_model.enable_attention_slicing()
 
-            cls.img_img_model = StableDiffusionImg2ImgPipeline(
-                **cls.text_img_model.components
-            )
+            cls.img_img_model = StableDiffusionImg2ImgPipeline(**cls.text_img_model.components)
             cls.upscaler_model = StableDiffusionUpscalePipeline(
                 **cls.text_img_model.components,
-                low_res_scheduler=DDPMScheduler.from_config(
-                    cls.text_img_model.scheduler.config
-                ),
+                low_res_scheduler=DDPMScheduler.from_config(cls.text_img_model.scheduler.config),
             )
 
         return cls.text_img_model

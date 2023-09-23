@@ -15,18 +15,14 @@ class T5BasedModel(object):
         stop: str = "",
         **kwargs,
     ):
-        inputs = cls.tokenizer.encode(prompt, return_tensors="pt").to(
-            os.getenv("DEVICE", "cpu")
-        )
+        inputs = cls.tokenizer.encode(prompt, return_tensors="pt").to(os.getenv("DEVICE", "cpu"))
         outputs = cls.model.generate(inputs, max_length=max_tokens)
         return cls.tokenizer.decode(outputs[0], skip_special_tokens=True)
 
     @classmethod
     def get_model(cls):
         if cls.model is None:
-            cls.tokenizer = AutoTokenizer.from_pretrained(
-                os.getenv("MODEL_ID", "Salesforce/codet5p-220m-py")
-            )
+            cls.tokenizer = AutoTokenizer.from_pretrained(os.getenv("MODEL_ID", "Salesforce/codet5p-220m-py"))
             cls.model = T5ForConditionalGeneration.from_pretrained(
                 os.getenv("MODEL_ID", "Salesforce/codet5p-220m-py")
             ).to(os.getenv("DEVICE", "cpu"))

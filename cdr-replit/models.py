@@ -26,9 +26,7 @@ class ReplitBasedModel(object):
             num_return_sequences=1,
             eos_token_id=cls.tokenizer.eos_token_id,
         )
-        return cls.tokenizer.decode(
-            tokens[0], skip_special_tokens=True, clean_up_tokenization_spaces=False
-        )
+        return cls.tokenizer.decode(tokens[0], skip_special_tokens=True, clean_up_tokenization_spaces=False)
 
     @classmethod
     def get_model(cls):

@@ -56,9 +56,7 @@ async def embeddings(body: EmbeddingsInput):
     )
 
 
-@router.post(
-    "/engines/text-embedding-ada-002/embeddings", response_model=EmbeddingsResponse
-)
+@router.post("/engines/text-embedding-ada-002/embeddings", response_model=EmbeddingsResponse)
 async def embeddings_openai(body: EmbeddingsInput):
     if len(body.input) > 0 and isinstance(body.input[0], list):
         encoding = tiktoken.model.encoding_for_model("text-embedding-ada-002")

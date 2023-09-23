@@ -1,32 +1,19 @@
 FROM python:3.10-slim-bullseye
-
-ARG MODEL_ID
-
 WORKDIR /usr/src/app/
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+RUN apt update -qq && apt install -yqq --no-install-recommends \
+    build-essential git wget libatlas-base-dev \
+    && rm -rf /var/lib/apt/lists/*
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    wget \
-    libatlas-base-dev
-
-COPY requirements.txt /usr/src/app/
-
-RUN pip3 install --no-cache-dir -r requirements.txt
-
+ARG MODEL_ID
 COPY download.py .
-
-RUN python3 download.py
+RUN python download.py
 
 COPY . .
-
 ENV MODEL_ID=$MODEL_ID
 ENV DEVICE=cpu
 ENV SUNO_OFFLOAD_CPU=True
 ENV SUNO_USE_SMALL_MODELS=True
-
-CMD python3 main.py
+CMD python main.py

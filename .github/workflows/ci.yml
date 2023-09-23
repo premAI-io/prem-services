@@ -1,7 +1,7 @@
 name: CI
 on:
   push: {branches: [main]}
-  pull_request_target:
+  pull_request_target: {paths: ['*-*/**']}
   schedule: [{cron: '0 11 * * 6'}]  # M H d m w (Sat 11:00)
 jobs:
   setup:
@@ -15,7 +15,6 @@ jobs:
     - id: list
       name: List modified models
       run: |
-        echo "debug: author_association: ${{ github.event.pull_request.author_association }}"
         if test "${{ github.event_name }}" = schedule; then
           "modified=$(ls -d *-* | sort | jq -Rsc 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         else
