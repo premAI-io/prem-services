@@ -16,7 +16,7 @@ jobs:
       name: List modified models
       run: |
         if test "${{ github.event_name }}" = schedule; then
-          "modified=$(ls -d *-* | sort | jq -Rsc 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          echo "modified=$(ls -d *-* | sort | jq -Rsc 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
         else
           if [[ "${{ github.event_name }}" == pull_request* ]]; then
             git fetch origin --depth=2 "${{ github.base_ref }}"
