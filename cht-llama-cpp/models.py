@@ -3,14 +3,7 @@ import os
 
 from llama_cpp import Llama
 
-MODEL_ZOO = {
-    "mistral-7b-instruct-v0.1.Q5_0": {"modelWeightsName": "mistral-7b-instruct-v0.1.Q5_0.gguf", "ctxMaxTokens": 4096}
-}
 DEFAULT_N_THREADS = max(multiprocessing.cpu_count() // 2, 1)
-
-
-def get_model_info() -> dict:
-    return MODEL_ZOO[os.getenv("MODEL_ID", "mistral-7b-instruct-v0.1.Q5_0")]
 
 
 class LLaMACPPBasedModel(object):
@@ -23,7 +16,7 @@ class LLaMACPPBasedModel(object):
     @classmethod
     def reduce_number_of_messages(cls, messages, max_tokens):
         buffer_tokens = 32
-        ctx_max_tokens = get_model_info()["ctxMaxTokens"]
+        ctx_max_tokens = 4096
         num_messages = len(messages)
 
         tokens = [len(cls.tokenize(doc["content"])) for doc in messages]
@@ -63,10 +56,7 @@ class LLaMACPPBasedModel(object):
     @classmethod
     def get_model(cls):
         if cls.model is None:
-            cls.model = Llama(
-                model_path=f"./ml/models/{get_model_info()['modelWeightsName']}",
-                embedding=True,
-            )
+            cls.model = Llama(model_path=f"./ml/models/{os.getenv('MODEL_ID', 'mistral-7b-instruct-v0.1.Q5_0')}.gguf")
 
         return cls.model
 
