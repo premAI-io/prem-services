@@ -9,8 +9,9 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r ./requirements.txt
 
 ARG MODEL_ID
+ARG MODEL_DOWNLOAD_URL
 RUN mkdir -p ./ml/models/
-RUN wget -O ./ml/models/${MODEL_ID}.bin https://prem-models.s3.eu-central-1.amazonaws.com/${MODEL_ID}.bin
+RUN wget -O ./ml/models/${MODEL_ID}.gguf ${MODEL_DOWNLOAD_URL}
 
 COPY . .
 ENV MODEL_ID=$MODEL_ID

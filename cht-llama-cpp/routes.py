@@ -35,30 +35,6 @@ class ChatCompletionResponse(BaseModel):
     usage: dict = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
 
-class EmbeddingsInput(BaseModel):
-    model: str
-    input: str
-    user: str = ""
-
-
-class EmbeddingObject(BaseModel):
-    object: str = "embedding"
-    index: int = 0
-    embedding: list[float]
-
-
-class EmbeddingUsage(BaseModel):
-    prompt_tokens: int = 0
-    total_tokens: int = 0
-
-
-class EmbeddingsResponse(BaseModel):
-    object: str = "list"
-    data: list[EmbeddingObject]
-    model: str = ""
-    usage: EmbeddingUsage
-
-
 class HealthResponse(BaseModel):
     status: bool
 
@@ -108,17 +84,6 @@ async def chat_completions(body: ChatCompletionInput):
             logit_bias=body.logit_bias,
             n_threads=body.n_threads,
         )
-    except ValueError as error:
-        raise HTTPException(
-            status_code=400,
-            detail={"message": str(error)},
-        )
-
-
-@router.post("/embeddings", response_model=EmbeddingsResponse)
-async def embeddings(body: EmbeddingsInput):
-    try:
-        return model.embeddings(text=body.input)
     except ValueError as error:
         raise HTTPException(
             status_code=400,

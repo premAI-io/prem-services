@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
-export VERSION=1.0.5
+export VERSION=1.0.6
 source "$(dirname "${BASH_SOURCE[0]}")/../utils.sh"
 
-build_cpu ghcr.io/premai-io/chat-gpt4all-lora-q4-cpu gpt4all-lora-q4 ${@:1}
-build_cpu ghcr.io/premai-io/chat-vicuna-7b-q4-cpu    vicuna-7b-q4    ${@:1}
+build_cpu ghcr.io/premai-io/chat-mistral-7b-q5 mistral-7b-instruct-v0.1.Q5_0 --build-arg="MODEL_DOWNLOAD_URL=https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q5_0.gguf" ${@:1}

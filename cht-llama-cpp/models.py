@@ -4,14 +4,13 @@ import os
 from llama_cpp import Llama
 
 MODEL_ZOO = {
-    "gpt4all-lora-q4": {"modelWeightsName": "gpt4all-lora-q4.bin", "ctxMaxTokens": 512},
-    "vicuna-7b-q4": {"modelWeightsName": "vicuna-7b-q4.bin", "ctxMaxTokens": 512},
+    "mistral-7b-instruct-v0.1.Q5_0": {"modelWeightsName": "mistral-7b-instruct-v0.1.Q5_0.gguf", "ctxMaxTokens": 4096}
 }
 DEFAULT_N_THREADS = max(multiprocessing.cpu_count() // 2, 1)
 
 
 def get_model_info() -> dict:
-    return MODEL_ZOO[os.getenv("MODEL_ID", "vicuna-7b-q4")]
+    return MODEL_ZOO[os.getenv("MODEL_ID", "mistral-7b-instruct-v0.1.Q5_0")]
 
 
 class LLaMACPPBasedModel(object):
