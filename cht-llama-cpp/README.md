@@ -13,7 +13,7 @@ wget -P ./ml/models/ https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/re
 ## Compile the Backend
 
 ```bash
-virtualenv venv -p=3.10
+virtualenv venv -p=3.11
 source ./venv/bin/activate
 pip install -r requirements.txt pyinstaller
 LLAMA_CPP_PATH=$(python -c 'import llama_cpp; print(llama_cpp.__path__[0])')

@@ -1,5 +1,4 @@
 import multiprocessing
-import os
 
 from llama_cpp import Llama
 
@@ -54,9 +53,9 @@ class LLaMACPPBasedModel(object):
         )
 
     @classmethod
-    def get_model(cls):
+    def get_model(cls, model_path):
         if cls.model is None:
-            cls.model = Llama(model_path=f"./ml/models/{os.getenv('MODEL_ID', 'mistral-7b-instruct-v0.1.Q5_0')}.gguf")
+            cls.model = Llama(model_path)
 
         return cls.model
 
