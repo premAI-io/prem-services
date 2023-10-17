@@ -91,7 +91,7 @@ jobs:
       group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-${{ matrix.model }}-bin
       cancel-in-progress: true
     needs: setup
-    runs-on: macos-latest  # macos-latest-xlarge
+    runs-on: macos-latest-xlarge
     strategy:
       fail-fast: false
       matrix:
