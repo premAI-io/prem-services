@@ -1,6 +1,6 @@
 name: CI
 on:
-  push: {branches: [main]}
+  push: {branches: [main], tags: ['v**']}
   pull_request_target: {paths: ['*-*/**']}
   schedule: [{cron: '0 11 * * 6'}]  # M H d m w (Sat 11:00)
 jobs:
@@ -98,6 +98,8 @@ jobs:
         model: ${{ fromJson(needs.setup.outputs.models) }}
     # if nothing to do, skip without failing
     if: needs.setup.outputs.models != '[]'
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v3
       with:
@@ -117,6 +119,13 @@ jobs:
       with:
         name: ${{ steps.dist.outputs.bin_name }}
         path: ${{ steps.dist.outputs.bin_path }}
+    - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+      name: Draft Release
+      run: |
+        tag="${GITHUB_REF#refs/tags/}"
+        gh release create --draft "$tag" ${{ steps.dist.outputs.bin_path }}
+      env:
+        GH_TOKEN: ${{ github.token }}
   pass: # convenient single job to apply branch protection to
     needs: [build-test-push, build-bin]
     runs-on: ubuntu-latest
