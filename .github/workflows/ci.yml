@@ -117,13 +117,12 @@ jobs:
       working-directory: ${{ matrix.model }}
     - uses: actions/upload-artifact@v3
       with:
-        name: ${{ steps.dist.outputs.bin_name }}
-        path: ${{ steps.dist.outputs.bin_path }}
+        path: dist/*
     - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-      name: Draft Release
+      name: Update release assets
       run: |
         tag="${GITHUB_REF#refs/tags/}"
-        gh release create --draft "$tag" ${{ steps.dist.outputs.bin_path }}
+        gh release upload --clobber "${tag%%.*}" dist/*
       env:
         GH_TOKEN: ${{ github.token }}
   pass: # convenient single job to apply branch protection to
