@@ -16,7 +16,8 @@ jobs:
       name: List modified models
       run: |
         if test "${{ github.event_name }}" = schedule; then
-          echo "modified=$(ls -d *-* | sort | jq -Rsc 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+          echo "debug: collecting all models"
+          MODELS=$(ls -d *-* | sort | jq -Rsc 'split("\n")[:-1]')
         else
           if [[ "${{ github.event_name }}" == pull_request* ]]; then
             git fetch origin --depth=2 "${{ github.base_ref }}"
@@ -26,12 +27,20 @@ jobs:
           fi
           echo "debug: base: $BASE"
           git diff --stat $BASE
-          echo "modified=$(
+          echo "debug: collecting changed models"
+          MODELS=$(
             for model in $(ls -d *-*); do
               git diff --quiet $BASE -- $model || echo $model
             done | sort | jq -Rsc 'split("\n")[:-1]'
-          )" >> $GITHUB_OUTPUT
+          )
         fi
+        echo "modified=$MODELS" >> $GITHUB_OUTPUT
+        echo "debug: collecting binary builds"
+        echo "modified_aarch64_macos=$(
+          for model in $(echo "$MODELS" | jq -r .[]); do
+            test -f $model/build-aarch64-apple-darwin.sh && echo $model || :
+          done | sort | jq -Rsc 'split("\n")[:-1]'
+        )" >> $GITHUB_OUTPUT
     - name: Launch self-hosted runners
       if: steps.list.outputs.modified != '[]'
       run: |
@@ -48,6 +57,7 @@ jobs:
         MACHINE: ${{ secrets.PAPERSPACE_MACHINE }}
     outputs:
       models: ${{ steps.list.outputs.modified }}
+      models_macos-latest-xlarge: ${{ steps.list.outputs.modified_aarch64_macos }}
   docker-build-test-push:
     concurrency: # terminate on new commits to PRs
       group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-${{ matrix.model }}
@@ -86,7 +96,7 @@ jobs:
         TESTS_SKIP_CPU: ${{ github.event_name == 'push' && '1' || '' }}
         # avoid OoM errors (TODO: remove when using larger GPU)
         TESTS_SKIP_GPU: ${{ contains(fromJSON('["a2t-whisper","cht-dolly-v2","cht-gorilla","cht-llama-v2","cht-mpt","cht-xgen","dfs-dalle","dfs-diffusers"]'), matrix.model) && '1' || '' }}
-  bin-build-release:
+  macos-aarch64-build-release:
     concurrency: # terminate on new commits to PRs
       group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-${{ matrix.model }}-bin
       cancel-in-progress: true
@@ -95,9 +105,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        model: ${{ fromJson(needs.setup.outputs.models) }}
+        model: ${{ fromJson(needs.setup.outputs.models_macos-latest-xlarge) }}
     # if nothing to do, skip without failing
-    if: needs.setup.outputs.models != '[]'
+    if: needs.setup.outputs.models_macos-latest-xlarge != '[]'
     permissions:
       contents: write
     steps:
@@ -107,16 +117,13 @@ jobs:
     - uses: actions/setup-python@v4
       with: {python-version: 3.11}
     - id: dist
-      name: build aarch64
+      name: build
       run: |
         pip install virtualenv
-        if test -f ./build-aarch64-apple-darwin.sh; then
-          ./build-aarch64-apple-darwin.sh $(python -c 'import sys; print(".".join(map(str,sys.version_info[:2])))')
-        fi
+        ./build-aarch64-apple-darwin.sh $(python -c 'import sys; print(".".join(map(str,sys.version_info[:2])))')
       working-directory: ${{ matrix.model }}
     - uses: actions/upload-artifact@v3
-      with:
-        path: dist/*
+      with: {path: dist/*}
     - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       name: Update release assets
       run: |
@@ -125,7 +132,7 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
   pass: # convenient single job to apply branch protection to
-    needs: [docker-build-test-push, bin-build-release]
+    needs: [docker-build-test-push, macos-aarch64-build-release]
     runs-on: ubuntu-latest
     steps:
     - run: echo success
