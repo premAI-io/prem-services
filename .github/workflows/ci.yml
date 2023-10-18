@@ -48,7 +48,7 @@ jobs:
         MACHINE: ${{ secrets.PAPERSPACE_MACHINE }}
     outputs:
       models: ${{ steps.list.outputs.modified }}
-  build-test-push:
+  docker-build-test-push:
     concurrency: # terminate on new commits to PRs
       group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-${{ matrix.model }}
       cancel-in-progress: true
@@ -86,7 +86,7 @@ jobs:
         TESTS_SKIP_CPU: ${{ github.event_name == 'push' && '1' || '' }}
         # avoid OoM errors (TODO: remove when using larger GPU)
         TESTS_SKIP_GPU: ${{ contains(fromJSON('["a2t-whisper","cht-dolly-v2","cht-gorilla","cht-llama-v2","cht-mpt","cht-xgen","dfs-dalle","dfs-diffusers"]'), matrix.model) && '1' || '' }}
-  build-bin:
+  bin-build-release:
     concurrency: # terminate on new commits to PRs
       group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-${{ matrix.model }}-bin
       cancel-in-progress: true
@@ -126,13 +126,13 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
   pass: # convenient single job to apply branch protection to
-    needs: [build-test-push, build-bin]
+    needs: [docker-build-test-push, bin-build-release]
     runs-on: ubuntu-latest
     steps:
     - run: echo success
   teardown:
     environment: ${{ github.event_name == 'pull_request_target' && ! contains('OWNER,MEMBER,COLLABORATOR', github.event.pull_request.author_association) && 'external' || 'internal' }}
-    needs: build-test-push
+    needs: docker-build-test-push
     if: always()
     runs-on: ubuntu-latest
     steps:
