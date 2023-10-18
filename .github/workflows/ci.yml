@@ -105,14 +105,13 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.head.sha || github.ref }}
     - uses: actions/setup-python@v4
-      with:
-        python-version: 3.11
+      with: {python-version: 3.11}
     - id: dist
       name: build aarch64
       run: |
         pip install virtualenv
         if test -f ./build-aarch64-apple-darwin.sh; then
-          ./build-aarch64-apple-darwin.sh
+          ./build-aarch64-apple-darwin.sh $(python -c 'import sys; print(".".join(map(str,sys.version_info[:2])))')
         fi
       working-directory: ${{ matrix.model }}
     - uses: actions/upload-artifact@v3
