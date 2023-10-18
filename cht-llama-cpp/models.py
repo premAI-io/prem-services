@@ -1,17 +1,8 @@
 import multiprocessing
-import os
 
 from llama_cpp import Llama
 
-MODEL_ZOO = {
-    "gpt4all-lora-q4": {"modelWeightsName": "gpt4all-lora-q4.bin", "ctxMaxTokens": 512},
-    "vicuna-7b-q4": {"modelWeightsName": "vicuna-7b-q4.bin", "ctxMaxTokens": 512},
-}
 DEFAULT_N_THREADS = max(multiprocessing.cpu_count() // 2, 1)
-
-
-def get_model_info() -> dict:
-    return MODEL_ZOO[os.getenv("MODEL_ID", "vicuna-7b-q4")]
 
 
 class LLaMACPPBasedModel(object):
@@ -24,7 +15,7 @@ class LLaMACPPBasedModel(object):
     @classmethod
     def reduce_number_of_messages(cls, messages, max_tokens):
         buffer_tokens = 32
-        ctx_max_tokens = get_model_info()["ctxMaxTokens"]
+        ctx_max_tokens = 4096
         num_messages = len(messages)
 
         tokens = [len(cls.tokenize(doc["content"])) for doc in messages]
@@ -62,12 +53,9 @@ class LLaMACPPBasedModel(object):
         )
 
     @classmethod
-    def get_model(cls):
+    def get_model(cls, model_path):
         if cls.model is None:
-            cls.model = Llama(
-                model_path=f"./ml/models/{get_model_info()['modelWeightsName']}",
-                embedding=True,
-            )
+            cls.model = Llama(model_path)
 
         return cls.model
 

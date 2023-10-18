@@ -1,4 +1,6 @@
+import argparse
 import logging
+import os
 
 import uvicorn
 from dotenv import load_dotenv
@@ -7,6 +9,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes import router as api_router
 
 load_dotenv()
+
+MODEL_PATH = f"./ml/models/{os.getenv('MODEL_ID', 'mistral-7b-instruct-v0.1.Q5_0')}.gguf"
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_path", help="Path to GGUF", default=MODEL_PATH)
+    args = parser.parse_args()
+    MODEL_PATH = args.model_path
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -19,7 +28,7 @@ def create_start_app_handler(app: FastAPI):
     def start_app() -> None:
         from models import LLaMACPPBasedModel
 
-        LLaMACPPBasedModel.get_model()
+        LLaMACPPBasedModel.get_model(MODEL_PATH)
 
     return start_app
 
@@ -42,4 +51,4 @@ app = get_application()
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
