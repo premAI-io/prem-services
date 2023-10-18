@@ -123,12 +123,13 @@ jobs:
         ./build-aarch64-apple-darwin.sh $(python -c 'import sys; print(".".join(map(str,sys.version_info[:2])))')
       working-directory: ${{ matrix.model }}
     - uses: actions/upload-artifact@v3
-      with: {path: dist/*}
+      with:
+        path: ${{ matrix.model }}/dist/*
     - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       name: Update release assets
       run: |
         tag="${GITHUB_REF#refs/tags/}"
-        gh release upload --clobber "${tag%%.*}" dist/*
+        gh release upload --clobber "${tag%%.*}" ${{ matrix.model }}/dist/*
       env:
         GH_TOKEN: ${{ github.token }}
   pass: # convenient single job to apply branch protection to
