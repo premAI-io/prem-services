@@ -2,7 +2,7 @@
 
 ## Download the Models
 
-e.g.,
+e.g.:
 
 ```bash
 mkdir -p ./ml/models/
@@ -13,16 +13,12 @@ wget -P ./ml/models/ https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/re
 ## Compile the Backend
 
 ```bash
-virtualenv venv -p=3.11
-source ./venv/bin/activate
-pip install -r requirements.txt pyinstaller
-LLAMA_CPP_PATH=$(python -c 'import llama_cpp; print(llama_cpp.__path__[0])')
-# macOS (dylib) package
-pyinstaller --onefile --add-binary "$LLAMA_CPP_PATH/libllama.dylib:llama_cpp" --name=chat-service --paths ./venv/lib/python3.10/site-packages main.py
+pip install virtualenv
+./build-aarch64-apple-darwin.sh
 ```
 
 ## Run the compiled file
 
 ```bash
-./dist/chat-service
+./dist/mistral-1-aarch64-apple-darwin --model_path ./ml/models/mistral-7b-instruct-v0.1.Q5_0.gguf
 ```
