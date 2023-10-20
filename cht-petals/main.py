@@ -1,6 +1,5 @@
 import argparse
 import logging
-import os
 
 import uvicorn
 from dotenv import load_dotenv
@@ -11,6 +10,7 @@ from routes import router as api_router
 load_dotenv()
 
 MODEL_PATH = "./models"
+DHT_PREFIX = "StableBeluga2"
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", help="Path to Model files directory", default=MODEL_PATH)
@@ -30,6 +30,7 @@ def create_start_app_handler(app: FastAPI):
     def start_app() -> None:
         from models import PetalsBasedModel
 
+        print(f"Using {MODEL_PATH=} and {DHT_PREFIX=}")
         PetalsBasedModel.get_model(MODEL_PATH, DHT_PREFIX)
 
     return start_app
@@ -51,6 +52,5 @@ def get_application() -> FastAPI:
 
 app = get_application()
 
-
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
