@@ -60,5 +60,9 @@ class PetalsBasedModel(ChatModel):
         if cls.model is None:
             Tokenizer = LlamaTokenizer if "llama" in os.getenv("MODEL_ID").lower() else AutoTokenizer
             cls.tokenizer = Tokenizer.from_pretrained(os.getenv("MODEL_ID"))
-            cls.model = AutoDistributedModelForCausalLM.from_pretrained(os.getenv("MODEL_ID", model_path), torch_dtype=torch.float32, dht_prefix=os.getenv("DHT_PREFIX", dht_prefix))
+            cls.model = AutoDistributedModelForCausalLM.from_pretrained(
+                os.getenv("MODEL_ID", model_path),
+                torch_dtype=torch.float32,
+                dht_prefix=os.getenv("DHT_PREFIX", dht_prefix),
+            )
         return cls.model

@@ -17,6 +17,9 @@ print(f"Downloading model {args.model} with DHT prefix {args.dht_prefix}")
 def download_model() -> None:
     Tokenizer = LlamaTokenizer if "llama" in args.model.lower() else AutoTokenizer
     _ = Tokenizer.from_pretrained(args.model)
-    _ = AutoDistributedModelForCausalLM.from_pretrained(args.model, torch_dtype=torch.float32, dht_prefix=args.dht_prefix)
+    _ = AutoDistributedModelForCausalLM.from_pretrained(
+        args.model, torch_dtype=torch.float32, dht_prefix=args.dht_prefix
+    )
+
 
 download_model()
