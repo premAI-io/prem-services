@@ -15,6 +15,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model_path", help="Path to Model files directory", default=MODEL_PATH)
     parser.add_argument("--dht_prefix", help="DHT prefix to use")
+    parser.add_argument("--port", help="Port to run model server on", type=int)
     args = parser.parse_args()
     MODEL_PATH = args.model_path
     DHT_PREFIX = args.dht_prefix
@@ -53,4 +54,4 @@ def get_application() -> FastAPI:
 app = get_application()
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=args.port)
