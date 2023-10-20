@@ -1,9 +1,9 @@
-fastapi==0.*
-uvicorn==0.*
+fastapi
+uvicorn
 pytest==7.*
 requests==2.*
 tqdm==4.*
-httpx==0.*
+httpx
 python-dotenv==1.*
 tenacity==8.*
 petals==2.*
