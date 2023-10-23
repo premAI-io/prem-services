@@ -13,7 +13,6 @@ wget -P ./ml/models/ https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/re
 ## Compile the Backend
 
 ```bash
-pip install virtualenv
 ./build-aarch64-apple-darwin.sh
 ```
 

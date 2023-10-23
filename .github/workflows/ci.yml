@@ -118,9 +118,7 @@ jobs:
       with: {python-version: 3.11}
     - id: dist
       name: build
-      run: |
-        pip install virtualenv
-        ./build-aarch64-apple-darwin.sh $(python -c 'import sys; print(".".join(map(str,sys.version_info[:2])))')
+      run: ./build-aarch64-apple-darwin.sh
       working-directory: ${{ matrix.model }}
     - uses: actions/upload-artifact@v3
       with:
