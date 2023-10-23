@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # Usage: setup-petals.sh [--model-path=<DIR>] [--dht-prefix=<PREFIX>] [--port=<INT>]
+set -eEuo pipefail
 
-tmpdir="${PREM_APPDIR:-.}/$(uuid)"
+tmpdir="${PREM_APPDIR:-.}/petals-$(uuid)"
 
 cleanup(){
   for i in $(jobs -p); do
-    kill -n 9 $i
+    kill -n 9 $i || :
   done
   rm -rf "$tmpdir"
   exit 0
@@ -13,6 +14,7 @@ cleanup(){
 
 trap "cleanup" SIGTERM
 trap "cleanup" SIGINT
+trap "cleanup" ERR
 
 # clone source
 git clone -n --depth=1 --filter=tree:0 https://github.com/premAI-io/prem-services.git "$tmpdir"
