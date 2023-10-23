@@ -10,12 +10,14 @@ from routes import router as api_router
 
 load_dotenv()
 
+MODEL_ID = os.getenv("MODEL_ID", "petals-team/StableBeluga2")
 MODEL_PATH = os.getenv("MODEL_PATH", "./models")
 DHT_PREFIX = os.getenv("DHT_PREFIX", "StableBeluga2")
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--model-id", help="HuggingFace Model", default=MODEL_ID)
     parser.add_argument("--model-path", help="Path to Model files directory", default=MODEL_PATH)
-    parser.add_argument("--dht-prefix", help="DHT prefix to use")
+    parser.add_argument("--dht-prefix", help="DHT prefix to use", default=DHT_PREFIX)
     parser.add_argument("--port", help="Port to run model server on", type=int, default=8000)
     args = parser.parse_args()
     MODEL_PATH = args.model_path
