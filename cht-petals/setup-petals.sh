@@ -12,4 +12,4 @@ git -C "$tmpdir" checkout
 # run server
 PYTHONPATH="$tmpdir/cht-petals" "${PREM_PYTHON:-python}" "$tmpdir/cht-petals/main.py" "$@" || :
 
-rm -r "$tmpdir"
+rm -rf "$tmpdir"
