@@ -9,7 +9,6 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--model", help="Model to download")
 parser.add_argument("--dht-prefix", help="DHT prefix to use")
 args = parser.parse_args()
-
 print(f"Downloading model {args.model} with DHT prefix {args.dht_prefix}")
 
 

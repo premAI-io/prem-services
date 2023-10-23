@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", help="Path to Model files directory", default=MODEL_PATH)
     parser.add_argument("--dht-prefix", help="DHT prefix to use")
-    parser.add_argument("--port", help="Port to run model server on", type=int)
+    parser.add_argument("--port", help="Port to run model server on", type=int, default=8000)
     args = parser.parse_args()
     MODEL_PATH = args.model_path
     DHT_PREFIX = args.dht_prefix
