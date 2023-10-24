@@ -1,4 +1,6 @@
+import argparse
 import logging
+import os
 
 import uvicorn
 from dotenv import load_dotenv
@@ -7,6 +9,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from routes import router as api_router
 
 load_dotenv()
+
+MODEL_ID = os.getenv("MODEL_ID", "petals-team/StableBeluga2")
+MODEL_PATH = os.getenv("MODEL_PATH", "./models")
+DHT_PREFIX = os.getenv("DHT_PREFIX", "StableBeluga2")
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model-id", help="HuggingFace Model", default=MODEL_ID)
+    parser.add_argument("--model-path", help="Path to Model files directory", default=MODEL_PATH)
+    parser.add_argument("--dht-prefix", help="DHT prefix to use", default=DHT_PREFIX)
+    parser.add_argument("--port", help="Port to run model server on", type=int, default=8000)
+    args = parser.parse_args()
+    MODEL_PATH = args.model_path
+    DHT_PREFIX = args.dht_prefix
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -19,7 +34,8 @@ def create_start_app_handler(app: FastAPI):
     def start_app() -> None:
         from models import PetalsBasedModel
 
-        PetalsBasedModel.get_model()
+        print(f"Using {MODEL_PATH=} and {DHT_PREFIX=}")
+        PetalsBasedModel.get_model(MODEL_PATH, DHT_PREFIX)
 
     return start_app
 
@@ -40,6 +56,5 @@ def get_application() -> FastAPI:
 
 app = get_application()
 
-
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=args.port)

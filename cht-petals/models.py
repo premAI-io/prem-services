@@ -1,6 +1,4 @@
-import os
 from abc import ABC, abstractmethod
-from platform import machine
 from typing import List
 
 import torch
@@ -56,13 +54,16 @@ class PetalsBasedModel(ChatModel):
         return [cls.tokenizer.decode(outputs[0])]
 
     @classmethod
-    def get_model(cls):
+    def get_model(
+        cls,
+        model_path: str = "./models",
+        dht_prefix: str = "StableBeluga2",
+        model_id: str = "petals-team/StableBeluga2",
+    ):
         if cls.model is None:
-            Tokenizer = LlamaTokenizer if "llama" in os.getenv("MODEL_ID").lower() else AutoTokenizer
-            cls.tokenizer = Tokenizer.from_pretrained(os.getenv("MODEL_ID"))
-
-            kwargs = {}
-            if "x86_64" in machine():
-                kwargs["torch_dtype"] = torch.float32
-            cls.model = AutoDistributedModelForCausalLM.from_pretrained(os.getenv("MODEL_ID"), **kwargs)
+            Tokenizer = LlamaTokenizer if "llama" in model_path.lower() else AutoTokenizer
+            cls.tokenizer = Tokenizer.from_pretrained(model_id)
+            cls.model = AutoDistributedModelForCausalLM.from_pretrained(
+                model_id, torch_dtype=torch.float32, dht_prefix=dht_prefix
+            )
         return cls.model
