@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-export VERSION=1.0.0
+export VERSION=1.1.0
 
 virtualenv venv -p=${1:-3.11}
 source ./venv/bin/activate
