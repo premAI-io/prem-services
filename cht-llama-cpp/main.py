@@ -13,7 +13,8 @@ load_dotenv()
 MODEL_PATH = f"./ml/models/{os.getenv('MODEL_ID', 'mistral-7b-instruct-v0.1.Q5_0')}.gguf"
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--model_path", help="Path to GGUF", default=MODEL_PATH)
+    parser.add_argument("--model-path", help="Path to GGUF", default=MODEL_PATH)
+    parser.add_argument("--port", help="Port to run model server on", type=int, default=8000)
     args = parser.parse_args()
     MODEL_PATH = args.model_path
 
@@ -51,4 +52,4 @@ app = get_application()
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=args.port)

@@ -19,5 +19,5 @@ wget -P ./ml/models/ https://huggingface.co/TheBloke/Mistral-7B-OpenOrca-GGUF/re
 ## Run the compiled file
 
 ```bash
-./dist/cht-llama-cpp-mistral-1-aarch64-apple-darwin --model_path ./ml/models/mistral-7b-instruct-v0.1.Q5_0.gguf
+./dist/cht-llama-cpp-mistral-1-aarch64-apple-darwin --model-path ./ml/models/mistral-7b-instruct-v0.1.Q5_0.gguf
 ```
