@@ -11,6 +11,10 @@ from routes import router as api_router
 load_dotenv()
 
 MODEL_PATH = f"./ml/models/{os.getenv('MODEL_ID', 'mistral-7b-instruct-v0.1.Q5_0')}.gguf"
+# Mistral gguf follows ChatML syntax
+# https://github.com/openai/openai-python/blob/main/chatml.md
+PROMPT_TEMPLATE_STRING = '{"system_prompt_template": "<|im_start|>system\\n{}\\n<|im_end|>\\n", "default_system_text": "You are an helpful AI assistant.", "user_prompt_template": "<|im_start|>user\\n{}\\n<|im_end|>\\n", "assistant_prompt_template": "<|im_start|>assistant\\n{}\\n<|im_end|>\\n", "request_assistant_response_token": "<|im_start|>assistant\\n", "template_format": "chatml"}'  # noqa
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", help="Path to GGUF", default=MODEL_PATH)
@@ -29,7 +33,7 @@ def create_start_app_handler(app: FastAPI):
     def start_app() -> None:
         from models import LLaMACPPBasedModel
 
-        LLaMACPPBasedModel.get_model(MODEL_PATH)
+        LLaMACPPBasedModel.get_model(MODEL_PATH, PROMPT_TEMPLATE_STRING)
 
     return start_app
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export VERSION=1.1.1
+export VERSION=1.1.2
 
 test -f venv/bin/activate || python -m venv venv
 source venv/bin/activate
