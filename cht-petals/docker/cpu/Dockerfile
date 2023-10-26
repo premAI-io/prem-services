@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 ARG MODEL_ID
 COPY download.py .
-RUN python download.py --model $MODEL_ID --dht-prefix "$DHT_PREFIX"
+RUN python download.py --model $MODEL_ID
 
 COPY . .
 ENV MODEL_ID=$MODEL_ID
