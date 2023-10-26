@@ -11,8 +11,8 @@ from routes import router as api_router
 load_dotenv()
 
 MODEL_ID = os.getenv("MODEL_ID", "petals-team/StableBeluga2")
-MODEL_PATH = os.getenv("MODEL_PATH", "./models")
-DHT_PREFIX = os.getenv("DHT_PREFIX", "StableBeluga2")
+MODEL_PATH = os.getenv("MODEL_PATH", "models")
+DHT_PREFIX = os.getenv("DHT_PREFIX", "StableBeluga2-hf")
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-id", help="HuggingFace Model", default=MODEL_ID)
