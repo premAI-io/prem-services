@@ -62,8 +62,16 @@ class PetalsBasedModel(ChatModel):
     ):
         if cls.model is None:
             Tokenizer = LlamaTokenizer if "llama" in model_path.lower() else AutoTokenizer
-            cls.tokenizer = Tokenizer.from_pretrained(model_path)
-            cls.model = AutoDistributedModelForCausalLM.from_pretrained(
-                model_path, torch_dtype=torch.float32, dht_prefix=dht_prefix
-            )
+            try:
+                cls.tokenizer = Tokenizer.from_pretrained(model_path)
+                cls.model = AutoDistributedModelForCausalLM.from_pretrained(
+                    model_path, torch_dtype=torch.float32, dht_prefix=dht_prefix
+                )
+            except EnvironmentError as e:
+                print(f"Error loading model {model_id} from {model_path}: {e}")
+                print("Downloading model...")
+                cls.tokenizer = Tokenizer.from_pretrained(model_id)
+                cls.model = AutoDistributedModelForCausalLM.from_pretrained(
+                    model_id, torch_dtype=torch.float32, dht_prefix=dht_prefix
+                )
         return cls.model

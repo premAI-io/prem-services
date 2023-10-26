@@ -6,18 +6,18 @@ from tenacity import retry, stop_after_attempt, wait_fixed
 from transformers import AutoTokenizer, LlamaTokenizer
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--model", help="Model to download")
+parser.add_argument("--model-id", help="Model to download")
 parser.add_argument("--dht-prefix", help="DHT prefix to use")
 args = parser.parse_args()
-print(f"Downloading model {args.model} with DHT prefix {args.dht_prefix}")
+print(f"Downloading model {args.model_id} with DHT prefix {args.dht_prefix}")
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(5))
 def download_model() -> None:
-    Tokenizer = LlamaTokenizer if "llama" in args.model.lower() else AutoTokenizer
-    _ = Tokenizer.from_pretrained(args.model)
+    Tokenizer = LlamaTokenizer if "llama" in args.model_id.lower() else AutoTokenizer
+    _ = Tokenizer.from_pretrained(args.model_id)
     _ = AutoDistributedModelForCausalLM.from_pretrained(
-        args.model, torch_dtype=torch.float32, dht_prefix=args.dht_prefix
+        args.model_id, torch_dtype=torch.float32, dht_prefix=args.dht_prefix
     )
 
 
