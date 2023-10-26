@@ -12,7 +12,7 @@ def initiate_chatml_prompt_template(
     messages: List[llama_types.ChatCompletionRequestMessage],
     **kwargs: Any,
 ) -> llama_chat_format.ChatFormatterResponse:
-    # Until https://github.com/abetlen/llama-cpp-python/issues/717 supports ChatML.
+    # TODO: drop when https://github.com/abetlen/llama-cpp-python/issues/717 supports ChatML
 
     _prompt = LLaMACPPBasedModel.stitch_prompt(messages, LLaMACPPBasedModel.PROMPT_TEMPLATE)
     return llama_chat_format.ChatFormatterResponse(prompt=_prompt)
