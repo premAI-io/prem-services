@@ -11,8 +11,9 @@ from routes import router as api_router
 load_dotenv()
 
 MODEL_ID = os.getenv("MODEL_ID", "petals-team/StableBeluga2")
-MODEL_PATH = os.getenv("MODEL_PATH", "./models")
-DHT_PREFIX = os.getenv("DHT_PREFIX", "StableBeluga2")
+MODEL_PATH = os.getenv("MODEL_PATH", "models")
+DHT_PREFIX = os.getenv("DHT_PREFIX", "StableBeluga2-hf")
+PROMPT_TEMPLATE_STRING = '{"system_prompt_template": "### System:\\n{}\\n", "default_system_text": "You are an helpful AI assistant.", "user_prompt_template": "\\n### User:\\n{}\\n", "assistant_prompt_template": "\\n### Assistant:\\n{}\\n", "request_assistant_response_token": "\\n### Assistant:\\n", "template_format": "stablebeluga2"}'  # noqa
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-id", help="HuggingFace Model", default=MODEL_ID)
@@ -35,7 +36,7 @@ def create_start_app_handler(app: FastAPI):
         from models import PetalsBasedModel
 
         print(f"Using {MODEL_PATH=} and {DHT_PREFIX=}")
-        PetalsBasedModel.get_model(MODEL_PATH, DHT_PREFIX)
+        PetalsBasedModel.get_model(MODEL_PATH, DHT_PREFIX, prompt_template_jsonstr=PROMPT_TEMPLATE_STRING)
 
     return start_app
 

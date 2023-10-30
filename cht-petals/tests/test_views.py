@@ -1,5 +1,8 @@
+import json
+
 from fastapi.testclient import TestClient
-from main import get_application
+from main import PROMPT_TEMPLATE_STRING, get_application
+from models import PetalsBasedModel
 
 
 def test_chat_llama_cpp() -> None:
@@ -24,3 +27,31 @@ def test_chat_llama_cpp() -> None:
             },
         )
         assert response.status_code == 200
+
+
+def test_chatml_stitch_prompt():
+    messages = [
+        {"role": "user", "content": "Why should we run ML models on premise?"},
+        {
+            "role": "assistant",
+            "content": "There are several reasons why an organization might choose to run machine learning (ML) models on-premise:\n\n1. Security and privacy concerns: Running ML models on-premise allows organizations to",  # noqa
+        },
+    ]
+    prompt_template = json.loads(PROMPT_TEMPLATE_STRING)
+    result = PetalsBasedModel.stitch_prompt(messages, prompt_template=prompt_template)
+    assert (
+        result
+        == """### System:
+You are an helpful AI assistant.
+
+### User:
+Why should we run ML models on premise?
+
+### Assistant:
+There are several reasons why an organization might choose to run machine learning (ML) models on-premise:
+
+1. Security and privacy concerns: Running ML models on-premise allows organizations to
+
+### Assistant:
+"""
+    )
