@@ -5,7 +5,7 @@ from main import PROMPT_TEMPLATE_STRING, get_application
 from models import PetalsBasedModel
 
 
-def test_chat_llama_cpp() -> None:
+def test_chat_petals() -> None:
     app = get_application()
     with TestClient(app) as client:
         response = client.post(
@@ -39,10 +39,11 @@ def test_chatml_stitch_prompt():
     ]
     prompt_template = json.loads(PROMPT_TEMPLATE_STRING)
     result = PetalsBasedModel.stitch_prompt(messages, prompt_template=prompt_template)
+    print(result)
     assert (
         result
         == """### System:
-You are an helpful AI assistant.
+You are an helpful AI assistant created by StabilityAI.
 
 ### User:
 Why should we run ML models on premise?
