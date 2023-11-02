@@ -1,11 +1,10 @@
 import json
 from abc import ABC, abstractmethod
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import torch
 from petals import AutoDistributedModelForCausalLM
-from transformers import AutoTokenizer, LlamaTokenizer, logging, pipeline
-from utils import LlamaStoppingCriteria
+from transformers import AutoTokenizer, LlamaTokenizer, PreTrainedTokenizer, logging
 
 logging.set_verbosity_error()
 
@@ -37,7 +36,6 @@ class ChatModel(ABC):
 class PetalsBasedModel(ChatModel):
     model = None
     tokenizer = None
-    stopping_criteria = None
     PROMPT_TEMPLATE = {}
 
     @classmethod
@@ -49,28 +47,59 @@ class PetalsBasedModel(ChatModel):
         n: int = 1,
         stream: bool = False,
         max_tokens: int = 128,
-        stop: str = "",
+        stop: str = "/s>",
         **kwargs,
     ) -> List:
         prompt = cls.stitch_prompt(messages, cls.PROMPT_TEMPLATE)
-        return [
-            cls.model(
-                prompt,
-                max_new_tokens=max_tokens,
-                num_return_sequences=n,
-                temperature=temperature,
-                top_p=top_p,
-                eos_token_id=cls.tokenizer.eos_token_id,
-                return_full_text=kwargs.get("return_full_text", False),
-                do_sample=kwargs.get("do_sample", True),
-                stop_sequence=stop[0] if stop else None,
-                stopping_criteria=cls.stopping_criteria(stop, prompt, cls.tokenizer),
-            )[0]["generated_text"]
-            .rstrip(stop[0] if stop else "")
-            .rsplit(".", 1)[0]
-            .rsplit("\n### User:")[0]
-            .strip()
-        ]
+        inputs = cls.tokenizer(prompt, return_tensors="pt")["input_ids"]
+        n_input_tokens = inputs.shape[1]
+
+        outputs = cls.model.generate(
+            inputs=inputs,
+            do_sample=kwargs.get("do_sample", True),
+            temperature=temperature,
+            top_p=top_p,
+            max_new_tokens=max_tokens,
+        )
+        outputs = cls.safe_decode(cls.tokenizer, outputs[0, n_input_tokens:], streaming=stream, stop=stop)
+        return [outputs]
+
+    @classmethod
+    def generate_streaming(
+        cls,
+        messages: list,
+        temperature: float = 0.9,
+        top_p: float = 0.9,
+        n: int = 1,
+        stream: bool = False,
+        max_tokens: int = 128,
+        stop: str = "/s>",
+        session=None,
+        inputs=None,
+        **kwargs,
+    ) -> List:
+        if inputs is not None:
+            prompt = cls.stitch_prompt(messages, cls.PROMPT_TEMPLATE)
+            inputs = cls.tokenizer(prompt, return_tensors="pt")["input_ids"]
+            n_input_tokens = inputs.shape[1]
+        else:
+            n_input_tokens = 0
+
+        outputs = cls.model.generate(
+            inputs=inputs,
+            do_sample=kwargs.get("do_sample", True),
+            temperature=temperature,
+            top_p=top_p,
+            max_new_tokens=max_tokens,
+            session=session,
+        )
+        delta = outputs[0, n_input_tokens:].tolist()
+        token_count = len(delta)  # noqa
+        outputs = cls.safe_decode(cls.tokenizer, delta, streaming=stream, stop=stop)
+        if not outputs:
+            return None  # end
+        outputs = outputs.lstrip() if inputs is not None else outputs
+        return outputs
 
     @classmethod
     def get_model(
@@ -85,24 +114,16 @@ class PetalsBasedModel(ChatModel):
             cls.PROMPT_TEMPLATE = json.loads(prompt_template_jsonstr)
             try:
                 cls.tokenizer = Tokenizer.from_pretrained(model_path)
-                model = AutoDistributedModelForCausalLM.from_pretrained(
+                cls.model = AutoDistributedModelForCausalLM.from_pretrained(
                     model_path, torch_dtype=torch.float32, dht_prefix=dht_prefix
                 )
             except EnvironmentError as e:
                 print(f"Error loading model {model_id} from {model_path}: {e}")
                 print("Downloading model...")
                 cls.tokenizer = Tokenizer.from_pretrained(model_id)
-                model = AutoDistributedModelForCausalLM.from_pretrained(
+                cls.model = AutoDistributedModelForCausalLM.from_pretrained(
                     model_id, torch_dtype=torch.float32, dht_prefix=dht_prefix
                 )
-            cls.model = pipeline(
-                "text-generation",
-                model=model,
-                tokenizer=cls.tokenizer,
-                torch_dtype=torch.float32,
-                model_kwargs={"dht_prefix": dht_prefix},
-            )
-        cls.stopping_criteria = LlamaStoppingCriteria
         return cls.model
 
     @staticmethod
@@ -128,3 +149,17 @@ class PetalsBasedModel(ChatModel):
             system_prompt = system_prompt_template.format(default_system_text)
 
         return system_prompt + chat_prompt + request_assistant_response_token
+
+    def safe_decode(
+        tokenizer: PreTrainedTokenizer,
+        outputs: Union[torch.Tensor, List[int]],
+        streaming: bool = False,
+        stop: str = "/s>",
+    ) -> str:
+        # Workaround to make SentencePiece .decode() keep leading spaces in a token
+        fake_token = tokenizer("^")["input_ids"][0]
+        outputs = outputs.tolist() if isinstance(outputs, torch.Tensor) else outputs
+        result = tokenizer.decode([fake_token] + outputs)
+        if streaming:
+            return result.lstrip("<s>").lstrip(stop)
+        return result.lstrip("<s>").rsplit("</s>", 1)[0].rsplit(stop, 1)[0].strip()
