@@ -31,6 +31,6 @@ mkdir -p "$tmpdir"
 curl -fsSL "$url" > "$tmpdir/redis-stack-server.zip"
 unzip -d "$tmpdir" "$tmpdir/redis-stack-server.zip"
 
-PATH="$tmpdir:$PATH" "$tmpdir/bin/redis-stack-server" &
+PATH="$tmpdir/bin:$PATH" "$tmpdir/bin/redis-stack-server" &
 
 wait
