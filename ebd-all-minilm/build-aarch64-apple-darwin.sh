@@ -24,6 +24,7 @@ pyinstaller --onefile \
   --hidden-import=tiktoken_ext.openai_public \
   --hidden-import=tiktoken_ext \
   --name=$NAME \
+  --add-data 'main.py:.' \
   main.py
 cp dist/$NAME dist/ebd-all-minilm-${VERSION%%.*}-aarch64-apple-darwin
 
