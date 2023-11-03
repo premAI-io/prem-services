@@ -1,3 +1,4 @@
+import argparse
 import logging
 
 import uvicorn
@@ -41,4 +42,7 @@ app = get_application()
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--port", help="Port to run model server on", type=int, default=8444)
+    args = parser.parse_args()
+    uvicorn.run("main:app", host="0.0.0.0", port=args.port)
