@@ -38,7 +38,7 @@ curl -fsSL "$REDIS_STACK_URL" -o "$REDIS_DIR/redis-stack-server.zip"
 
 # Unpack the Redis Stack Server and remove the zip file
 echo "Unpacking Redis Stack Server..."
-unzip "$REDIS_DIR/redis-stack-server.zip" -d "$REDIS_DIR" && rm "$REDIS_DIR/redis-stack-server.zip"
+unzip -o "$REDIS_DIR/redis-stack-server.zip" -d "$REDIS_DIR" && rm "$REDIS_DIR/redis-stack-server.zip"
 
 # Export PATH to include the Redis bin directory
 export PATH="$REDIS_DIR/bin:$PATH"
