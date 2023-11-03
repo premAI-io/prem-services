@@ -1,10 +1,4 @@
-#!/usr/bin/env bash
-
-# Usage: ./build-apple-darwin.sh <arch> <arch_name>
-#
-# Parameters:
-#   arch: The architecture to use.
-#   arch_name: The architecture name to use.
+#!/bin/bash
 
 set -e
 
@@ -36,9 +30,9 @@ pyinstaller --onefile \
   --copy-metadata tokenizers \
   --hidden-import=tiktoken_ext.openai_public \
   --hidden-import=tiktoken_ext \
-  --target-arch $ARCH \
+  --target-arch arm64 \
   --name=$NAME \
   main.py
-cp dist/$NAME dist/ebd-all-minilm-${VERSION%%.*}-$ARCH_NAME-apple-darwin
+cp dist/$NAME dist/ebd-all-minilm-${VERSION%%.*}-aarch64-apple-darwin
 
 deactivate
