@@ -2,7 +2,7 @@
 # Usage: setup-redis.sh
 set -eEuo pipefail
 
-tmpdir="${PREM_APPDIR:-.}/redis-$(uuid)"
+tmpdir="${PREM_APPDIR:-.}/redis-$(uuidgen)"
 
 cleanup(){
   for i in $(jobs -p); do
