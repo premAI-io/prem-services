@@ -14,8 +14,5 @@ class SentenceTransformerBasedModel(object):
     @classmethod
     def get_model(cls, model_path):
         if cls.model is None:
-            cls.model = SentenceTransformer(
-                model_path,
-                device=os.getenv("DEVICE", "cpu"),
-            )
+            cls.model = SentenceTransformer(model_path, device=os.getenv("DEVICE", "cpu"))
         return cls.model
