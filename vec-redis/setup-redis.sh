@@ -2,7 +2,7 @@
 # Usage: setup-redis.sh
 set -eEuo pipefail
 
-tmpdir="${PREM_APPDIR:-.}/redis"
+tmpdir="${PREM_APPDIR:-.}/redis-$(uuid)"
 
 cleanup(){
   for i in $(jobs -p); do
@@ -16,23 +16,19 @@ trap "cleanup" SIGTERM
 trap "cleanup" SIGINT
 trap "cleanup" ERR
 
-arch_type=$(uname -m)
-case "$arch_type" in
-  "x86_64")
-    arch_suffix="catalina.x86_64"
-    ;;
-  "arm64")
-    arch_suffix="monterey.arm64"
-    ;;
+ARCH=$(uname -m)
+case "$ARCH" in
+  x86_64)
+    arch_suffix=catalina.x86_64 ;;
+  arm64|aarch64)
+    arch_suffix=monterey.arm64 ;;
   *)
-    echo "Unsupported architecture: $arch_type"
-    exit 1
-    ;;
+    echo "Unsupported architecture: $ARCH"; exit 1 ;;
 esac
 url="https://packages.redis.io/redis-stack/redis-stack-server-7.2.0-v6.$arch_suffix.zip"
 
 mkdir -p "$tmpdir"
-wget "$url" -O "$tmpdir/redis-stack-server.zip"
+curl -fsSL "$url" > "$tmpdir/redis-stack-server.zip"
 unzip -d "$tmpdir" "$tmpdir/redis-stack-server.zip"
 
 PATH="$tmpdir:$PATH" "$tmpdir/bin/redis-stack-server" &
