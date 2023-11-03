@@ -41,7 +41,6 @@ MODULEDIR="$tmpdir/lib"
  --protected-mode no \
  --daemonize no \
  --loadmodule "${MODULEDIR}/redisearch.so" ${REDISEARCH_ARGS} \
- --loadmodule "${MODULEDIR}/redisgears.so" v8-plugin-path "${MODULEDIR}/libredisgears_v8_plugin.so"  ${REDISGEARS_ARGS} \
  "$@") &
 
 wait
