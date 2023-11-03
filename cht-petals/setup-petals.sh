@@ -2,7 +2,7 @@
 # Usage: setup-petals.sh [--model-path=<DIR>] [--dht-prefix=<PREFIX>] [--port=<INT>]
 set -eEuo pipefail
 
-tmpdir="${PREM_APPDIR:-.}/petals-$(uuidgen)"
+tmpdir="${PREM_APPDIR:-.}/petals-$(uuidgen 2>/dev/null || uuid)"
 
 cleanup(){
   for i in $(jobs -p); do
