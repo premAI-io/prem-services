@@ -9,7 +9,7 @@ source venv/bin/activate
 
 
 pip install -r requirements.txt pyinstaller
-NAME=ebd-all-minilm-${VERSION}-x86_64-apple-darwin
+NAME=ebd-all-minilm-${VERSION}-aarch64-apple-darwin
 pyinstaller --onefile \
   --copy-metadata tqdm \
   --copy-metadata regex \
