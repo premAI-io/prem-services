@@ -1,6 +1,5 @@
 import logging
 
-import tqdm  # noqa
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI

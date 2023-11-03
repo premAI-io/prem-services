@@ -2,9 +2,6 @@
 
 set -e
 
-ARCH=${1:-arm64}
-ARCH_NAME=${2:-aarch64}
-
 export VERSION=1.0.5
 
 test -f venv/bin/activate || python -m venv venv
