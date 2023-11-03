@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: setup-redis.sh
+# Usage: setup-redis.sh [redis-stack-server-options]
 set -eEuo pipefail
 
 tmpdir="${PREM_APPDIR:-.}/redis-$(uuidgen 2>/dev/null || uuid)"
@@ -31,6 +31,6 @@ mkdir -p "$tmpdir"
 curl -fsSL "$url" > "$tmpdir/redis-stack-server.zip"
 unzip -d "$tmpdir" "$tmpdir/redis-stack-server.zip"
 
-PATH="$tmpdir/bin:$PATH" "$tmpdir/bin/redis-stack-server" &
+PATH="$tmpdir/bin:$PATH" "$tmpdir/bin/redis-stack-server" "$@" &
 
 wait
