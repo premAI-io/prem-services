@@ -11,14 +11,14 @@ from routes import router as api_router
 
 load_dotenv()
 
-MODEL_PATH = f"./ml/models/{os.getenv('MODEL_ID', 'all-MiniLM-L6-v2')}"
+MODEL_DIR = os.getenv("MODEL_ID", "all-MiniLM-L6-v2")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--port", help="Port to run model server on", type=int, default=8444)
-    parser.add_argument("--model-path", help="Path to model", default=MODEL_PATH)
+    parser.add_argument("--model-dir", help="Path to model dir", default=MODEL_DIR)
     args = parser.parse_args()
-    MODEL_PATH = args.model_path
+    MODEL_DIR = args.model_dir
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -29,7 +29,7 @@ logging.basicConfig(
 
 def create_start_app_handler(app: FastAPI):
     def start_app() -> None:
-        SentenceTransformerBasedModel.get_model(MODEL_PATH)
+        SentenceTransformerBasedModel.get_model(MODEL_DIR)
 
     return start_app
 
