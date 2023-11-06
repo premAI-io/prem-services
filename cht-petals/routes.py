@@ -13,7 +13,7 @@ from pydantic import BaseModel
 class ChatCompletionInput(BaseModel):
     model: str
     messages: List[dict]
-    stop: Optional[Union[str, List[str]]] = "/s>"
+    stop: Optional[Union[str, List[str]]] = ["</s>", "/s>"]
     temperature: float = 1.0
     top_p: float = 1.0
     n: int = 1
