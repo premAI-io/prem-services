@@ -12,10 +12,7 @@ class SentenceTransformerBasedModel(object):
         return values.tolist()
 
     @classmethod
-    def get_model(cls):
+    def get_model(cls, model_path):
         if cls.model is None:
-            cls.model = SentenceTransformer(
-                os.getenv("MODEL_ID", "all-MiniLM-L6-v2"),
-                device=os.getenv("DEVICE", "cpu"),
-            )
+            cls.model = SentenceTransformer(model_path, device=os.getenv("DEVICE", "cpu"))
         return cls.model
