@@ -42,7 +42,7 @@ class PetalsBasedModel(ChatModel):
     def generate(
         cls,
         messages: list,
-        stop: Optional[Union[str, List[str]]],
+        stop: Optional[Union[str, List[str]]] = None,
         temperature: float = 0.9,
         top_p: float = 0.9,
         n: int = 1,
@@ -68,7 +68,7 @@ class PetalsBasedModel(ChatModel):
     def generate_streaming(
         cls,
         messages: list,
-        stop: Optional[Union[str, List[str]]],
+        stop: Optional[Union[str, List[str]]] = None,
         temperature: float = 0.9,
         top_p: float = 0.9,
         n: int = 1,
@@ -153,7 +153,7 @@ class PetalsBasedModel(ChatModel):
     def safe_decode(
         tokenizer: PreTrainedTokenizer,
         outputs: Union[torch.Tensor, List[int]],
-        stop_tokens: Optional[Union[str, List[str]]],
+        stop_tokens: Optional[Union[str, List[str]]] = None,
     ) -> str:
         # Workaround to make SentencePiece .decode() keep leading spaces in a token
         fake_token = tokenizer("^")["input_ids"][0]
