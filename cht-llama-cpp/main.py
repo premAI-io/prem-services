@@ -10,7 +10,7 @@ from routes import router as api_router
 
 load_dotenv()
 
-MODEL_PATH = f"./ml/models/{os.getenv('MODEL_ID', 'mistral-7b-instruct-v0.1.Q5_0')}.gguf"
+MODEL_PATH = f"./ml/models/{os.getenv('MODEL_ID', 'yarn-mistral-7b-128k.Q4_K_M')}.gguf"
 # Mistral gguf follows ChatML syntax
 # https://github.com/openai/openai-python/blob/main/chatml.md
 PROMPT_TEMPLATE_STRING = '{"system_prompt_template": "<|im_start|>system\\n{}\\n<|im_end|>\\n", "default_system_text": "You are an helpful AI assistant.", "user_prompt_template": "<|im_start|>user\\n{}\\n<|im_end|>\\n", "assistant_prompt_template": "<|im_start|>assistant\\n{}\\n<|im_end|>\\n", "request_assistant_response_token": "<|im_start|>assistant\\n", "template_format": "chatml"}'  # noqa
@@ -19,8 +19,10 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", help="Path to GGUF", default=MODEL_PATH)
     parser.add_argument("--port", help="Port to run model server on", type=int, default=8000)
+    parser.add_argument("--ctx", help="Context dimension", type=int, default=4096)
     args = parser.parse_args()
     MODEL_PATH = args.model_path
+    MODEL_CTX = args.ctx
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-8s %(message)s",
@@ -33,7 +35,7 @@ def create_start_app_handler(app: FastAPI):
     def start_app() -> None:
         from models import LLaMACPPBasedModel
 
-        LLaMACPPBasedModel.get_model(MODEL_PATH, PROMPT_TEMPLATE_STRING)
+        LLaMACPPBasedModel.get_model(MODEL_PATH, PROMPT_TEMPLATE_STRING, MODEL_CTX)
 
     return start_app
 
