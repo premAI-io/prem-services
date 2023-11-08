@@ -27,20 +27,6 @@ class LLaMACPPBasedModel(object):
         return cls.model.tokenize(b" " + prompt.encode("utf-8"))
 
     @classmethod
-    def reduce_number_of_messages(cls, messages, max_tokens):
-        buffer_tokens = 32
-        ctx_max_tokens = 4096
-        num_messages = len(messages)
-
-        tokens = [len(cls.tokenize(doc["content"])) for doc in messages]
-
-        token_count = sum(tokens[:num_messages])
-        while token_count + max_tokens + buffer_tokens > ctx_max_tokens:
-            num_messages -= 1
-            token_count -= tokens[num_messages]
-        return messages[:num_messages]
-
-    @classmethod
     def generate(
         cls,
         messages: list,
@@ -55,7 +41,6 @@ class LLaMACPPBasedModel(object):
     ):
         if stop is None:
             stop = []
-        messages = cls.reduce_number_of_messages(messages[::-1], max_tokens)[::-1]
         cls.model.n_threads = n_threads
         cht_resp = cls.model.create_chat_completion(
             messages,
@@ -75,13 +60,13 @@ class LLaMACPPBasedModel(object):
         return cht_resp
 
     @classmethod
-    def get_model(cls, model_path, prompt_template_jsonstr):
+    def get_model(cls, model_path, prompt_template_jsonstr, n_ctx):
         chat_format = "llama-2"
         if "mistral" in model_path:
             cls.PROMPT_TEMPLATE = json.loads(prompt_template_jsonstr)
             chat_format = cls.PROMPT_TEMPLATE.get("template_format", "chatml")
         if cls.model is None:
-            cls.model = Llama(model_path, chat_format=chat_format)
+            cls.model = Llama(model_path, chat_format=chat_format, n_ctx=n_ctx)
 
         return cls.model
 

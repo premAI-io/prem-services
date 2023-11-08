@@ -6,4 +6,4 @@ tqdm==4.65.0
 httpx==0.23.3
 python-dotenv==1.0.0
 tenacity==8.2.2
-llama-cpp-python==0.2.11
+llama-cpp-python==0.2.14
