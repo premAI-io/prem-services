@@ -62,7 +62,7 @@ class LLaMACPPBasedModel(object):
     @classmethod
     def get_model(cls, model_path, prompt_template_jsonstr, n_ctx):
         chat_format = "llama-2"
-        if "mistral" in model_path:
+        if prompt_template_jsonstr != "" and "mistral" in model_path:
             cls.PROMPT_TEMPLATE = json.loads(prompt_template_jsonstr)
             chat_format = cls.PROMPT_TEMPLATE.get("template_format", "chatml")
         if cls.model is None:
