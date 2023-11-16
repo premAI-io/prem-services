@@ -15,4 +15,5 @@ RUN wget -O ./ml/models/${MODEL_ID}.gguf ${MODEL_DOWNLOAD_URL}
 
 COPY . .
 ENV MODEL_ID=$MODEL_ID
+ENV DEVICE=cpu
 CMD python main.py

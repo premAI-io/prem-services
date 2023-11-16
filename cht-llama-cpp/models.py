@@ -1,5 +1,6 @@
 import json
 import multiprocessing
+import os
 from typing import Any, Dict, List
 
 from llama_cpp import Llama, llama_chat_format, llama_types
@@ -66,7 +67,8 @@ class LLaMACPPBasedModel(object):
             cls.PROMPT_TEMPLATE = json.loads(prompt_template_jsonstr)
             chat_format = cls.PROMPT_TEMPLATE.get("template_format", "chatml")
         if cls.model is None:
-            cls.model = Llama(model_path, chat_format=chat_format, n_ctx=n_ctx)
+            gpu_offload_layers = -1 if os.getenv("DEVICE") != "cpu" else 0
+            cls.model = Llama(model_path, chat_format=chat_format, n_ctx=n_ctx, n_gpu_layers=gpu_offload_layers)
 
         return cls.model
 
